@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "address-display",
+  "type": "registry:ui",
+  "title": "Address Display",
+  "description": "Displays an EVM wallet address with copy-to-clipboard and an optional block explorer link. Chain-agnostic.",
+  "dependencies": ["viem"],
+  "devDependencies": [],
+  "registryDependencies": ["sonner"],
+  "files": [
+    {
+      "path": "registry/onchain-ui/address-display.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/address-display.tsx"
+    }
+  ]
+}

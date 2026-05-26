@@ -1,0 +1,76 @@
+---
+title: Address Display
+description: Displays an EVM wallet address with copy-to-clipboard and an optional block explorer link. Chain-agnostic.
+---
+
+## Installation
+
+```bash
+npx shadcn add https://onchain-ui.dev/r/address-display
+```
+
+This will also install the [sonner](https://ui.shadcn.com/docs/components/sonner) component if you don't have it already.
+
+## Usage
+
+```tsx
+import { AddressDisplay } from "@/components/ui/address-display";
+
+<AddressDisplay address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" />
+```
+
+## Examples
+
+### Default
+
+Shows a truncated address with copy button and Etherscan link.
+
+```tsx
+<AddressDisplay address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" />
+```
+
+### Custom explorer (Base)
+
+```tsx
+<AddressDisplay
+  address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+  explorerUrl="https://basescan.org/address/0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+/>
+```
+
+### Full address, no explorer
+
+```tsx
+<AddressDisplay
+  address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+  truncate={false}
+  showExplorer={false}
+/>
+```
+
+### Copy only
+
+```tsx
+<AddressDisplay
+  address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+  showExplorer={false}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `address` | `Address` | — | EVM wallet address (required) |
+| `truncate` | `boolean` | `true` | Truncate the address |
+| `truncateChars` | `number` | `4` | Trailing chars shown when truncated |
+| `showCopy` | `boolean` | `true` | Show copy-to-clipboard button |
+| `showExplorer` | `boolean` | `true` | Show block explorer link |
+| `explorerUrl` | `string` | Etherscan | Full explorer URL for this address |
+| `className` | `string` | — | Applied to the address text element |
+
+## Notes
+
+- `explorerUrl` defaults to `https://etherscan.io/address/{address}`. Pass your chain's explorer URL for Base, Arbitrum, Optimism, etc.
+- The `Address` type is from [viem](https://viem.sh) — a `0x${string}`.
+- Copy feedback is delivered via [sonner](https://ui.shadcn.com/docs/components/sonner). Make sure `<Toaster />` is in your layout.

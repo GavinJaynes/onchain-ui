@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 
 export async function GET(
@@ -8,21 +8,33 @@ export async function GET(
 ) {
   const { name } = await params;
 
-  try {
-    const filePath = join(process.cwd(), "public", "r", `${name}.json`);
-    const content = readFileSync(filePath, "utf-8");
-    const json = JSON.parse(content);
+  const metaPath = join(process.cwd(), "registry", "meta", `${name}.json`);
 
-    return NextResponse.json(json, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "public, max-age=3600",
-      },
-    });
-  } catch {
+  if (!existsSync(metaPath)) {
     return NextResponse.json(
       { error: `Component "${name}" not found` },
       { status: 404 }
     );
   }
+
+  const meta = JSON.parse(readFileSync(metaPath, "utf-8"));
+
+  // Inject file content into each file entry
+  const files = meta.files.map((file: { path: string; type: string; target: string }) => {
+    const sourcePath = join(process.cwd(), file.path);
+    const content = existsSync(sourcePath)
+      ? readFileSync(sourcePath, "utf-8")
+      : "";
+    return { ...file, content };
+  });
+
+  return NextResponse.json(
+    { ...meta, files },
+    {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+      },
+    }
+  );
 }
