@@ -1,8 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CheckIcon, CopyIcon } from "lucide-react";
 
 const demoComponents: Record<string, React.ComponentType> = {
   "address-display": dynamic(() =>
@@ -15,13 +16,22 @@ const demoComponents: Record<string, React.ComponentType> = {
 interface ComponentPreviewClientProps {
   name: string;
   highlightedCode: string;
+  rawCode: string;
 }
 
 export function ComponentPreviewClient({
   name,
   highlightedCode,
+  rawCode,
 }: ComponentPreviewClientProps) {
   const Demo = demoComponents[name];
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(rawCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <Tabs defaultValue="preview" className="my-6">
@@ -51,10 +61,23 @@ export function ComponentPreviewClient({
       </TabsContent>
 
       <TabsContent value="code">
-        <div
-          className="[&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:p-4 [&_pre]:text-sm [&_pre]:leading-relaxed [&_pre]:border [&_pre]:border-border"
-          dangerouslySetInnerHTML={{ __html: highlightedCode }}
-        />
+        <div className="relative rounded-lg border border-border overflow-hidden">
+          <button
+            onClick={handleCopy}
+            className="absolute right-3 top-3 z-10 flex items-center justify-center rounded-md border border-border bg-background p-1.5 text-muted-foreground transition-colors hover:text-foreground"
+            title="Copy code"
+          >
+            {copied ? (
+              <CheckIcon className="size-3.5" />
+            ) : (
+              <CopyIcon className="size-3.5" />
+            )}
+          </button>
+          <div
+            className="[&_pre]:overflow-x-auto [&_pre]:p-4 [&_pre]:text-sm [&_pre]:leading-6 [&_.line]:block [&_.line]:min-h-[1lh]"
+            dangerouslySetInnerHTML={{ __html: highlightedCode }}
+          />
+        </div>
       </TabsContent>
     </Tabs>
   );

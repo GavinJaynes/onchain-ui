@@ -7,7 +7,9 @@ interface ComponentPreviewProps {
 }
 
 export async function ComponentPreview({ name, code }: ComponentPreviewProps) {
-  const highlightedCode = await codeToHtml(code.trim(), {
+  const raw = code.trim();
+
+  const highlightedCode = await codeToHtml(raw, {
     lang: "tsx",
     themes: {
       light: "github-light",
@@ -16,5 +18,11 @@ export async function ComponentPreview({ name, code }: ComponentPreviewProps) {
     defaultColor: false,
   });
 
-  return <ComponentPreviewClient name={name} highlightedCode={highlightedCode} />;
+  return (
+    <ComponentPreviewClient
+      name={name}
+      highlightedCode={highlightedCode}
+      rawCode={raw}
+    />
+  );
 }
