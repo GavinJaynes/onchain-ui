@@ -1,0 +1,32 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "token-balance",
+  "type": "registry:ui",
+  "title": "Token Balance",
+  "description": "Displays a token amount with optional logo, fiat value, and change.",
+  "dependencies": ["@base-ui/react", "lucide-react"],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/onchain-ui/token-logo.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/token-logo.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/token-price.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/token-price.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/token-balance.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/token-balance.tsx"
+    },
+    {
+      "path": "components/ui/tooltip.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/tooltip.tsx"
+    }
+  ]
+}

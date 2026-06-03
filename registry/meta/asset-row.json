@@ -1,0 +1,37 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "asset-row",
+  "type": "registry:ui",
+  "title": "Asset Row",
+  "description": "Displays a practical portfolio or watchlist row from token identity, network, amount, value, and change.",
+  "dependencies": ["@base-ui/react", "lucide-react"],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/onchain-ui/token-logo.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/token-logo.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/network-logo.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/network-logo.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/token-price.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/token-price.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/asset-row.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/asset-row.tsx"
+    },
+    {
+      "path": "components/ui/tooltip.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/tooltip.tsx"
+    }
+  ]
+}

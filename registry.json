@@ -9,6 +9,55 @@
       "title": "Address Display",
       "description": "Displays an EVM wallet address with copy-to-clipboard and an optional block explorer link.",
       "url": "https://onchain-ui.dev/r/address-display"
+    },
+    {
+      "name": "address-identity",
+      "type": "registry:ui",
+      "title": "Address Identity",
+      "description": "Resolves an EVM address to an ENS or Base name with optional avatar, copy-to-clipboard, and explorer link.",
+      "url": "https://onchain-ui.dev/r/address-identity"
+    },
+    {
+      "name": "token-logo",
+      "type": "registry:ui",
+      "title": "Token Logo",
+      "description": "Displays a token image with resilient symbol, name, or address fallback.",
+      "url": "https://onchain-ui.dev/r/token-logo"
+    },
+    {
+      "name": "token-stack",
+      "type": "registry:ui",
+      "title": "Token Stack",
+      "description": "Displays overlapping token logos for baskets, pools, routes, and portfolio rows.",
+      "url": "https://onchain-ui.dev/r/token-stack"
+    },
+    {
+      "name": "token-price",
+      "type": "registry:ui",
+      "title": "Token Price",
+      "description": "Formats token prices with optional positive, negative, or neutral change.",
+      "url": "https://onchain-ui.dev/r/token-price"
+    },
+    {
+      "name": "network-logo",
+      "type": "registry:ui",
+      "title": "Network Logo",
+      "description": "Displays a network or chain logo with known chain fallbacks.",
+      "url": "https://onchain-ui.dev/r/network-logo"
+    },
+    {
+      "name": "token-balance",
+      "type": "registry:ui",
+      "title": "Token Balance",
+      "description": "Displays a token amount with optional logo, fiat value, and change.",
+      "url": "https://onchain-ui.dev/r/token-balance"
+    },
+    {
+      "name": "asset-row",
+      "type": "registry:ui",
+      "title": "Asset Row",
+      "description": "Displays a practical portfolio or watchlist row from token identity, network, amount, value, and change.",
+      "url": "https://onchain-ui.dev/r/asset-row"
     }
   ]
 }

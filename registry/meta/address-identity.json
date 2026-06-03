@@ -1,9 +1,9 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
-  "name": "address-display",
+  "name": "address-identity",
   "type": "registry:ui",
-  "title": "Address Display",
-  "description": "Displays an EVM wallet address with copy-to-clipboard and an optional block explorer link.",
+  "title": "Address Identity",
+  "description": "Resolves an EVM address to an ENS or Base name with optional avatar, copy-to-clipboard, and explorer link.",
   "dependencies": ["viem", "sonner", "lucide-react"],
   "devDependencies": [],
   "registryDependencies": ["sonner"],
@@ -14,9 +14,19 @@
       "target": "components/ui/address-display.tsx"
     },
     {
+      "path": "registry/onchain-ui/address-identity.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/address-identity.tsx"
+    },
+    {
       "path": "lib/onchain/format.ts",
       "type": "registry:lib",
       "target": "lib/onchain/format.ts"
+    },
+    {
+      "path": "lib/onchain/resolvers.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/resolvers.ts"
     }
   ]
 }

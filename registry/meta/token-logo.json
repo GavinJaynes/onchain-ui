@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "token-logo",
+  "type": "registry:ui",
+  "title": "Token Logo",
+  "description": "Displays a token image with resilient symbol, name, or address fallback.",
+  "dependencies": ["@base-ui/react"],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/onchain-ui/token-logo.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/token-logo.tsx"
+    },
+    {
+      "path": "components/ui/tooltip.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/tooltip.tsx"
+    }
+  ]
+}

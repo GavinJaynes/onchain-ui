@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "network-logo",
+  "type": "registry:ui",
+  "title": "Network Logo",
+  "description": "Displays a network or chain logo with known chain fallbacks.",
+  "dependencies": ["@base-ui/react"],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/onchain-ui/network-logo.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/network-logo.tsx"
+    },
+    {
+      "path": "components/ui/tooltip.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/tooltip.tsx"
+    }
+  ]
+}

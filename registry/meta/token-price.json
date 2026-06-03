@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "token-price",
+  "type": "registry:ui",
+  "title": "Token Price",
+  "description": "Formats token prices with optional positive, negative, or neutral change.",
+  "dependencies": ["lucide-react"],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/onchain-ui/token-price.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/token-price.tsx"
+    }
+  ]
+}

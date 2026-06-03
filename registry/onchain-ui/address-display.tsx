@@ -3,20 +3,22 @@
 import { toast } from "sonner";
 import { CopyIcon, ExternalLinkIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { truncateAddress } from "@/lib/onchain/format";
 import type { Address } from "viem";
+import type { ReactNode } from "react";
 
-function truncateAddress(address: string, chars = 4): string {
-  if (!address) return "";
-  return `${address.slice(0, chars + 2)}...${address.slice(-chars)}`;
-}
-
-interface AddressDisplayProps {
+export interface AddressDisplayProps {
   /** EVM wallet address */
   address: Address;
+  /** Display label. The copied value is always the underlying address. */
+  label?: ReactNode;
+  /** Applied to the root wrapper */
   className?: string;
+  /** Applied to the address text or copy trigger */
+  addressClassName?: string;
   /** Truncate the address. Default: true */
   truncate?: boolean;
-  /** Number of trailing chars to show when truncated. Default: 4 */
+  /** Number of characters to show at each end when truncated. Default: 4 */
   truncateChars?: number;
   /** Show copy-to-clipboard button. Default: true */
   showCopy?: boolean;
@@ -24,16 +26,24 @@ interface AddressDisplayProps {
   showExplorer?: boolean;
   /** Full explorer URL e.g. "https://basescan.org/address/0x..." */
   explorerUrl?: string;
+  /** Icon rendered before the address when copy is enabled */
+  copyIcon?: ReactNode;
+  /** Icon rendered for the explorer link */
+  explorerIcon?: ReactNode;
 }
 
 export function AddressDisplay({
   address,
+  label,
   className,
+  addressClassName,
   truncate = true,
   truncateChars = 4,
   showCopy = true,
   showExplorer = true,
   explorerUrl,
+  copyIcon = <CopyIcon className="size-3 shrink-0" />,
+  explorerIcon = <ExternalLinkIcon className="size-3 shrink-0" />,
 }: AddressDisplayProps) {
   const handleCopy = () => {
     navigator.clipboard.writeText(address);
@@ -41,27 +51,35 @@ export function AddressDisplay({
   };
 
   const href = explorerUrl ?? `https://etherscan.io/address/${address}`;
-  const label = truncate ? truncateAddress(address, truncateChars) : address;
+  const displayLabel =
+    label ?? (truncate ? truncateAddress(address, truncateChars) : address);
+  const labelClassName = truncate ? "whitespace-nowrap" : "break-all";
 
   return (
-    <div className="flex items-center gap-1.5">
+    <div className={cn("flex min-w-0 items-center gap-1.5", className)}>
       {showCopy ? (
         <button
           type="button"
           onClick={handleCopy}
           title="Copy address"
           className={cn(
-            "flex items-center gap-1.5 font-mono text-xs text-muted-foreground",
+            "flex min-w-0 items-center gap-1.5 font-mono text-xs text-muted-foreground",
             "hover:text-foreground cursor-copy transition-colors duration-150",
-            className
+            addressClassName
           )}
         >
-          <CopyIcon className="size-3 shrink-0" />
-          {label}
+          {copyIcon}
+          <span className={labelClassName}>{displayLabel}</span>
         </button>
       ) : (
-        <span className={cn("font-mono text-xs text-muted-foreground", className)}>
-          {label}
+        <span
+          className={cn(
+            "min-w-0 font-mono text-xs text-muted-foreground",
+            labelClassName,
+            addressClassName
+          )}
+        >
+          {displayLabel}
         </span>
       )}
 
@@ -73,7 +91,7 @@ export function AddressDisplay({
           title="View on explorer"
           className="text-muted-foreground hover:text-foreground transition-colors duration-150"
         >
-          <ExternalLinkIcon className="size-3 shrink-0" />
+          {explorerIcon}
         </a>
       )}
     </div>
