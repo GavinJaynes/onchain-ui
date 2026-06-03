@@ -1,0 +1,125 @@
+---
+title: Asset Row
+description: Displays a practical portfolio or watchlist row from token identity, network, amount, value, and change.
+---
+
+Use `AssetRow` when you need the composed version of the primitives: wallet assets, watchlists, portfolio tables, token selectors, and positions.
+
+<ComponentPreview
+  name="asset-row"
+  code={[
+    'import { AssetRow } from "@/components/ui/asset-row"',
+    "",
+    "export function AssetRowDemo() {",
+    "  return (",
+    "    <AssetRow",
+    '      symbol="USDC"',
+    '      name="USD Coin"',
+    "      amount={1842.2}",
+    "      value={1842.2}",
+    "      change={0.01}",
+    "      chainId={8453}",
+    '      subtitle="Base"',
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+## Installation
+
+```bash
+npx shadcn add https://onchain-ui.dev/r/asset-row
+```
+
+## Usage
+
+```tsx
+import { AssetRow } from "@/components/ui/asset-row"
+
+<AssetRow
+  symbol="USDC"
+  name="USD Coin"
+  amount={1842.2}
+  value={1842.2}
+  change={0.01}
+  chainId={8453}
+  subtitle="Base"
+/>
+```
+
+`AssetRow` composes `TokenLogo`, `NetworkLogo`, and `TokenPrice`. Use it as a starting point for product surfaces, then pass class hooks or child props when your app needs a tighter treatment.
+
+## Examples
+
+### Portfolio
+
+<ComponentPreview
+  name="asset-row-portfolio"
+  codeOpen={false}
+  code={[
+    'import { AssetRow } from "@/components/ui/asset-row"',
+    "",
+    "export function AssetRowPortfolio({ assets }) {",
+    "  return (",
+    '    <div className="grid gap-2">',
+    "      {assets.map((asset) => (",
+    "        <AssetRow key={asset.symbol} {...asset} />",
+    "      ))}",
+    "    </div>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Watchlist
+
+Hide the amount to use the same row shape for market and watchlist views.
+
+<ComponentPreview
+  name="asset-row-watchlist"
+  codeOpen={false}
+  code={[
+    'import { AssetRow } from "@/components/ui/asset-row"',
+    "",
+    "export function AssetRowWatchlist({ assets }) {",
+    "  return (",
+    '    <div className="grid gap-2">',
+    "      {assets.map((asset) => (",
+    "        <AssetRow",
+    "          key={asset.symbol}",
+    "          {...asset}",
+    "          hideAmount",
+    "          priceProps={{ showChangeIcon: false }}",
+    "        />",
+    "      ))}",
+    "    </div>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `symbol` | `string` | - | Token symbol |
+| `name` | `string \| null` | - | Token name |
+| `src` | `string \| null` | - | Token image URL |
+| `address` | `string \| null` | - | Token contract address |
+| `amount` | `number \| string \| null \| undefined` | - | Token amount held by the user |
+| `value` | `TokenPriceProps["value"]` | - | Fiat value for the position |
+| `change` | `number \| null` | - | Price or position change percentage |
+| `chainId` | `number \| null` | - | Network chain id for the logo badge |
+| `networkName` | `string \| null` | - | Network name for the logo badge |
+| `networkSrc` | `string \| null` | - | Network image URL for the logo badge |
+| `subtitle` | `ReactNode` | - | Secondary metadata under the token name |
+| `hideAmount` | `boolean` | `false` | Hide the right-side token amount |
+| `locale` | `string` | Browser/default locale | Locale passed to `Intl.NumberFormat` |
+| `maximumFractionDigits` | `number` | `4` | Maximum fraction digits for token amount |
+| `logoProps` | `Partial<TokenLogoProps>` | - | Props passed to `TokenLogo` |
+| `networkLogoProps` | `Partial<NetworkLogoProps>` | - | Props passed to `NetworkLogo` |
+| `priceProps` | `Partial<TokenPriceProps>` | - | Props passed to `TokenPrice` |
+| `className` | `string` | - | Applied to the root wrapper |
+| `identityClassName` | `string` | - | Applied to the token identity block |
+| `valueClassName` | `string` | - | Applied to the right-side value block |

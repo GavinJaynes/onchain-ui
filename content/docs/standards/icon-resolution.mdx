@@ -1,0 +1,98 @@
+---
+title: Icon Resolution
+description: How onchain-ui resolves network and token icons without locking your app into one icon source.
+---
+
+Crypto icons need good defaults and clean escape hatches. Common networks should work with a `chainId`, while obscure networks and long-tail tokens should still render without broken images.
+
+## Goals
+
+- `chainId` should be enough for supported networks.
+- Explicit app data should always win.
+- Unknown assets should degrade to readable fallbacks.
+- Components should not require one specific icon provider.
+- Token identity should not rely on symbol alone.
+
+## Network Icons
+
+Networks are identified by `chainId`, so `NetworkLogo` resolves in this order:
+
+1. `src`
+2. Built-in logo for a supported `chainId`
+3. `fallback`
+4. `symbol`
+5. `name`
+6. `chainId`
+7. `?`
+
+```tsx
+<NetworkLogo chainId={8453} />
+```
+
+Supported chains render built-in logos automatically. If your app needs an unsupported chain, pass a `src`, `name`, `symbol`, or `fallback`.
+
+```tsx
+<NetworkLogo
+  chainId={7777777}
+  name="Zora"
+  symbol="ZORA"
+  src="/chains/zora.svg"
+/>
+```
+
+## Token Icons
+
+Tokens are harder than networks. A symbol is not a unique identifier: `USDC` can exist on multiple chains, and unknown tokens often share symbols with known assets.
+
+`TokenLogo` resolves in this order:
+
+1. `src`
+2. `fallback`
+3. `symbol`
+4. `name`
+5. `address`
+6. `?`
+
+Prefer token metadata from your app, token list, indexer, or API:
+
+```tsx
+<TokenLogo
+  chainId={8453}
+  address="0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
+  symbol="USDC"
+  name="USD Coin"
+  src={token.logoURI}
+/>
+```
+
+## Provider Strategy
+
+onchain-ui components should be provider-agnostic. A future icon adapter can map common assets to Cryptocons, app-owned SVGs, token-list URLs, or another provider, but the component contract stays the same:
+
+```tsx
+<NetworkLogo chainId={8453} />
+<TokenLogo symbol="USDC" src={token.logoURI} />
+```
+
+Use an icon package when it gives your app better coverage, but keep explicit overrides available for obscure chains and tokens.
+
+## Recommended Data Shape
+
+```ts
+type NetworkMetadata = {
+  chainId: number
+  name: string
+  symbol?: string
+  logoURI?: string
+}
+
+type TokenMetadata = {
+  chainId: number
+  address?: `0x${string}`
+  symbol: string
+  name?: string
+  logoURI?: string
+}
+```
+
+That shape lets components render good defaults while preserving enough identity for product code, tables, token selectors, and portfolio rows.

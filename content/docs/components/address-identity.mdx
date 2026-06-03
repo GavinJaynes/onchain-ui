@@ -1,0 +1,164 @@
+---
+title: Address Identity
+description: Resolves an EVM address to an ENS or Base name with optional avatar, copy-to-clipboard, and explorer link.
+---
+
+Use `AddressIdentity` when an address should feel like a person or account, not only a hex string. It composes `AddressDisplay`, so the displayed label can resolve while copy and explorer behavior still use the underlying address.
+
+<ComponentPreview
+  name="address-identity"
+  code={[
+    'import { AddressIdentity } from "@/components/ui/address-identity"',
+    "",
+    "export function AddressIdentityDemo() {",
+    "  return (",
+    '    <AddressIdentity address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" />',
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+## Installation
+
+```bash
+npx shadcn add https://onchain-ui.dev/r/address-identity
+```
+
+### Requirements
+
+Add `<Toaster />` from [sonner](https://ui.shadcn.com/docs/components/sonner) to your root layout so copy feedback can show a toast.
+
+```tsx
+import { Toaster } from "@/components/ui/sonner"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        {children}
+        <Toaster />
+      </body>
+    </html>
+  )
+}
+```
+
+### Dependencies
+
+The registry item uses `viem`, `sonner`, and `lucide-react`.
+
+```bash
+npm install viem sonner lucide-react
+```
+
+## Usage
+
+```tsx
+import { AddressIdentity } from "@/components/ui/address-identity"
+
+<AddressIdentity address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" />
+```
+
+By default, `AddressIdentity` tries Base reverse resolution first, then ENS reverse resolution. If a name resolves, it also attempts to resolve the avatar record. If nothing resolves, it falls back to the truncated address.
+
+## Examples
+
+### Resolved Name
+
+Pass `name` and `avatarUrl` when you already have profile data from your own API or indexer.
+
+<ComponentPreview
+  name="address-identity-resolved"
+  codeOpen={false}
+  code={[
+    'import { AddressIdentity } from "@/components/ui/address-identity"',
+    "",
+    "export function AddressIdentityResolved() {",
+    "  return (",
+    "    <AddressIdentity",
+    '      address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"',
+    '      name="vitalik.eth"',
+    '      avatarUrl="https://metadata.ens.domains/mainnet/avatar/vitalik.eth"',
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Fallback Only
+
+Disable resolution when you want deterministic rendering or already know there is no profile.
+
+<ComponentPreview
+  name="address-identity-fallback"
+  codeOpen={false}
+  code={[
+    'import { AddressIdentity } from "@/components/ui/address-identity"',
+    "",
+    "export function AddressIdentityFallback() {",
+    "  return (",
+    "    <AddressIdentity",
+    '      address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"',
+    "      resolveIdentity={false}",
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### No Avatar
+
+Hide the avatar when the identity sits inside dense tables or compact nav.
+
+<ComponentPreview
+  name="address-identity-no-avatar"
+  codeOpen={false}
+  code={[
+    'import { AddressIdentity } from "@/components/ui/address-identity"',
+    "",
+    "export function AddressIdentityNoAvatar() {",
+    "  return (",
+    "    <AddressIdentity",
+    '      address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"',
+    '      name="vitalik.eth"',
+    "      showAvatar={false}",
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Resolver Order
+
+Use `resolverOptions` when your app wants ENS before Base Names, or when you want to pass custom viem clients.
+
+```tsx
+<AddressIdentity
+  address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+  resolverOptions={{
+    reverseLookupOrder: ["ens", "basename"],
+  }}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `address` | `Address` | - | EVM wallet address (required) |
+| `name` | `string \| null` | - | Resolved name override |
+| `avatarUrl` | `string \| null` | - | Avatar URL override |
+| `resolveIdentity` | `boolean` | `true` | Resolve ENS/Base name and avatar |
+| `resolverOptions` | `OnchainResolverOptions` | Base then ENS | Resolver clients and lookup order |
+| `showAvatar` | `boolean` | `true` | Show avatar or initials fallback |
+| `truncate` | `boolean` | `true` | Truncate the fallback address |
+| `truncateChars` | `number` | `4` | Characters shown at each end when fallback address is truncated |
+| `showCopy` | `boolean` | `true` | Show copy-to-clipboard behavior from `AddressDisplay` |
+| `showExplorer` | `boolean` | `true` | Show explorer link from `AddressDisplay` |
+| `explorerUrl` | `string` | Etherscan address URL | Full explorer URL for this address |
+| `copyIcon` | `ReactNode` | Lucide copy icon | Icon rendered before the label when copy is enabled |
+| `explorerIcon` | `ReactNode` | Lucide external link icon | Icon rendered for the explorer link |
+| `className` | `string` | - | Applied to the root wrapper |
+| `avatarClassName` | `string` | - | Applied to the avatar |
+| `contentClassName` | `string` | - | Applied to the inner `AddressDisplay` wrapper |
+| `addressClassName` | `string` | - | Applied to the address text or copy trigger |

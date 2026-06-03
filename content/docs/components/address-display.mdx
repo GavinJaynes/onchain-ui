@@ -1,17 +1,21 @@
 ---
 title: Address Display
-description: Displays an EVM wallet address with copy-to-clipboard and an optional block explorer link. Chain-agnostic.
+description: Displays an EVM wallet address with copy-to-clipboard and an optional block explorer link.
 ---
+
+Use `AddressDisplay` anywhere you need a compact wallet identity primitive in tables, cards, account headers, transaction rows, and activity feeds.
 
 <ComponentPreview
   name="address-display"
-  code={`import { AddressDisplay } from "@/components/ui/address-display"
-
-const address = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
-
-export function Demo() {
-  return <AddressDisplay address={address} />
-}`}
+  code={[
+    'import { AddressDisplay } from "@/components/ui/address-display"',
+    "",
+    "export function AddressDisplayDemo() {",
+    "  return (",
+    '    <AddressDisplay address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" />',
+    "  )",
+    "}",
+  ].join("\n")}
 />
 
 ## Installation
@@ -20,7 +24,48 @@ export function Demo() {
 npx shadcn add https://onchain-ui.dev/r/address-display
 ```
 
-This also installs the [sonner](https://ui.shadcn.com/docs/components/sonner) component. Make sure `<Toaster />` is in your root layout.
+### Requirements
+
+Add `<Toaster />` from [sonner](https://ui.shadcn.com/docs/components/sonner) to your root layout so copy feedback can show a toast.
+
+```tsx
+import { Toaster } from "@/components/ui/sonner"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        {children}
+        <Toaster />
+      </body>
+    </html>
+  )
+}
+```
+
+### Dependencies
+
+The registry item uses `viem`, `sonner`, and `lucide-react` by default.
+
+```bash
+npm install viem sonner lucide-react
+```
+
+The icons are replaceable. If your app uses another icon set, pass `copyIcon` and `explorerIcon` and keep the same component API.
+
+```tsx
+import { Copy01Icon, LinkSquare02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { AddressDisplay } from "@/components/ui/address-display"
+
+<AddressDisplay
+  address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+  copyIcon={<HugeiconsIcon icon={Copy01Icon} className="size-3 shrink-0" />}
+  explorerIcon={
+    <HugeiconsIcon icon={LinkSquare02Icon} className="size-3 shrink-0" />
+  }
+/>
+```
 
 ## Usage
 
@@ -30,41 +75,89 @@ import { AddressDisplay } from "@/components/ui/address-display"
 <AddressDisplay address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" />
 ```
 
+By default, explorer links point to Etherscan. Pass `explorerUrl` for Base, Optimism, Arbitrum, or any other EVM chain explorer.
+
 ## Examples
 
-### Custom explorer (Base)
+### With Base Explorer
 
-```tsx
-<AddressDisplay
-  address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
-  explorerUrl="https://basescan.org/address/0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+Pass `explorerUrl` to link to any chain's explorer.
+
+<ComponentPreview
+  name="address-display-base"
+  codeOpen={false}
+  code={[
+    'import { AddressDisplay } from "@/components/ui/address-display"',
+    'import type { Address } from "viem"',
+    "",
+    'const address: Address = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"',
+    "",
+    "export function AddressDisplayWithExplorer() {",
+    "  return (",
+    "    <AddressDisplay",
+    "      address={address}",
+    "      explorerUrl={`https://basescan.org/address/${address}`}",
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
 />
-```
 
-### Full address, no explorer
+### Full Address
 
-```tsx
-<AddressDisplay
-  address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
-  truncate={false}
-  showExplorer={false}
+Disable truncation to show the full address. Full addresses can wrap in narrow containers, so prefer the default truncated display in dense layouts.
+
+<ComponentPreview
+  name="address-display-full"
+  codeOpen={false}
+  code={[
+    'import { AddressDisplay } from "@/components/ui/address-display"',
+    "",
+    "export function AddressDisplayFull() {",
+    "  return (",
+    "    <AddressDisplay",
+    '      address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"',
+    "      truncate={false}",
+    "      showExplorer={false}",
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
 />
-```
+
+### Copy Only
+
+Hide the explorer link when you just need clipboard copy.
+
+<ComponentPreview
+  name="address-display-copy-only"
+  codeOpen={false}
+  code={[
+    'import { AddressDisplay } from "@/components/ui/address-display"',
+    "",
+    "export function AddressDisplayCopyOnly() {",
+    "  return (",
+    "    <AddressDisplay",
+    '      address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"',
+    "      showExplorer={false}",
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
 
 ## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `address` | `Address` | — | EVM wallet address (required) |
+| `address` | `Address` | - | EVM wallet address (required) |
+| `label` | `ReactNode` | Truncated address | Display label. The copied value is always the underlying address |
 | `truncate` | `boolean` | `true` | Truncate the address |
-| `truncateChars` | `number` | `4` | Trailing chars shown when truncated |
+| `truncateChars` | `number` | `4` | Characters shown at each end when truncated |
 | `showCopy` | `boolean` | `true` | Show copy-to-clipboard button |
 | `showExplorer` | `boolean` | `true` | Show block explorer link |
-| `explorerUrl` | `string` | Etherscan | Full explorer URL for this address |
-| `className` | `string` | — | Applied to the address text element |
-
-## Notes
-
-- `explorerUrl` defaults to `https://etherscan.io/address/{address}`. Pass your chain's explorer for Base, Arbitrum, Optimism, etc.
-- The `Address` type is from [viem](https://viem.sh) — a `0x${string}`.
-- Copy feedback uses [sonner](https://ui.shadcn.com/docs/components/sonner). Ensure `<Toaster />` is in your layout.
+| `explorerUrl` | `string` | Etherscan address URL | Full explorer URL for this address |
+| `copyIcon` | `ReactNode` | Lucide copy icon | Icon rendered before the address when copy is enabled |
+| `explorerIcon` | `ReactNode` | Lucide external link icon | Icon rendered for the explorer link |
+| `className` | `string` | - | Applied to the root wrapper |
+| `addressClassName` | `string` | - | Applied to the address text or copy trigger |

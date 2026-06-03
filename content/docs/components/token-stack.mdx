@@ -1,0 +1,144 @@
+---
+title: Token Stack
+description: Displays overlapping token logos for baskets, pools, routes, and portfolio rows.
+---
+
+Use `TokenStack` when a UI needs to show a group of assets at a glance: index baskets, liquidity pools, swap routes, portfolio composition, and multi-token positions.
+
+<ComponentPreview
+  name="token-stack"
+  code={[
+    'import { TokenStack } from "@/components/ui/token-stack"',
+    "",
+    "const tokens = [",
+    '  { symbol: "ETH", name: "Ethereum", src: "https://assets.coingecko.com/coins/images/279/large/ethereum.png" },',
+    '  { symbol: "USDC", name: "USD Coin", src: "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png" },',
+    '  { symbol: "AERO", name: "Aerodrome", src: "https://assets.coingecko.com/coins/images/31745/large/token.png" },',
+    '  { symbol: "cbBTC", name: "Coinbase Wrapped BTC", src: "https://assets.coingecko.com/coins/images/40143/large/cbbtc.webp" },',
+    "]",
+    "",
+    "export function TokenStackDemo() {",
+    "  return <TokenStack tokens={tokens} />",
+    "}",
+  ].join("\n")}
+/>
+
+## Installation
+
+```bash
+npx shadcn add https://onchain-ui.dev/r/token-stack
+```
+
+## Usage
+
+```tsx
+import { TokenStack } from "@/components/ui/token-stack"
+
+<TokenStack tokens={tokens} limit={5} />
+```
+
+`TokenStack` composes `TokenLogo` by default and supports a `renderToken` escape hatch for curated icon libraries, chain badge overlays, or app-specific token treatments.
+
+## Examples
+
+### Overflow
+
+Limit visible tokens and show a `+N` overflow indicator.
+
+<ComponentPreview
+  name="token-stack-overflow"
+  codeOpen={false}
+  code={[
+    'import { TokenStack } from "@/components/ui/token-stack"',
+    "",
+    "export function TokenStackOverflow({ tokens }) {",
+    "  return <TokenStack tokens={tokens} limit={4} />",
+    "}",
+  ].join("\n")}
+/>
+
+### Tooltips
+
+Enable tooltips when the stack appears without a nearby legend. The overflow tooltip lists hidden tokens by default.
+
+<ComponentPreview
+  name="token-stack-tooltip"
+  codeOpen={false}
+  code={[
+    'import { TokenStack } from "@/components/ui/token-stack"',
+    "",
+    "export function TokenStackTooltip({ tokens }) {",
+    "  return <TokenStack tokens={tokens} limit={4} showTooltip />",
+    "}",
+  ].join("\n")}
+/>
+
+### Sizes
+
+Match the stack size to tables, cards, or larger app surfaces.
+
+<ComponentPreview
+  name="token-stack-sizes"
+  codeOpen={false}
+  code={[
+    'import { TokenStack } from "@/components/ui/token-stack"',
+    "",
+    "export function TokenStackSizes({ tokens }) {",
+    "  return (",
+    '    <div className="flex items-center gap-6">',
+    '      <TokenStack tokens={tokens} size="sm" />',
+    '      <TokenStack tokens={tokens} size="md" />',
+    '      <TokenStack tokens={tokens} size="lg" />',
+    "    </div>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Custom Render
+
+Use `renderToken` when you want to render Cryptocons, chain overlays, or a branded token treatment.
+
+<ComponentPreview
+  name="token-stack-custom-render"
+  codeOpen={false}
+  code={[
+    'import { TokenLogo } from "@/components/ui/token-logo"',
+    'import { TokenStack } from "@/components/ui/token-stack"',
+    "",
+    "export function TokenStackCustomRender({ tokens }) {",
+    "  return (",
+    "    <TokenStack",
+    "      tokens={tokens}",
+    "      renderToken={(token) => (",
+    "        <TokenLogo",
+    "          symbol={token.symbol}",
+    "          name={token.name}",
+    "          fallback={token.symbol?.slice(0, 1)}",
+    '          className="border-primary/30 bg-primary/10 text-primary"',
+    "        />",
+    "      )}",
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `tokens` | `TokenStackItem[]` | - | Tokens to display |
+| `limit` | `number` | `5` | Maximum visible tokens before overflow |
+| `size` | `"xs" \| "sm" \| "md" \| "lg" \| "xl"` | `"md"` | Token logo size |
+| `direction` | `"left" \| "right"` | `"left"` | Overlap direction |
+| `showOverflow` | `boolean` | `true` | Show overflow count when tokens exceed limit |
+| `renderOverflow` | `(count: number) => ReactNode` | - | Custom overflow renderer |
+| `renderToken` | `(token, index) => ReactNode` | - | Custom token renderer |
+| `showTooltip` | `boolean` | `false` | Show animated tooltips for tokens |
+| `getTooltipContent` | `(token, index) => ReactNode` | Token name, symbol, then address | Token tooltip content |
+| `getOverflowTooltipContent` | `(tokens) => ReactNode` | Hidden token symbols/names | Overflow tooltip content |
+| `aria-label` | `string` | `"Token stack"` | Accessible label for the group |
+| `className` | `string` | - | Applied to the root wrapper |
+| `itemClassName` | `string` | - | Applied to each token wrapper |
+| `overflowClassName` | `string` | - | Applied to the overflow item |

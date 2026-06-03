@@ -1,0 +1,110 @@
+---
+title: Token Balance
+description: Displays a token amount with optional logo, fiat value, and change.
+---
+
+Use `TokenBalance` for wallet balances, portfolio summaries, account drawers, and compact asset cells.
+
+<ComponentPreview
+  name="token-balance"
+  code={[
+    'import { TokenBalance } from "@/components/ui/token-balance"',
+    "",
+    "export function TokenBalanceDemo() {",
+    "  return (",
+    "    <TokenBalance",
+    "      amount={1.2845}",
+    '      symbol="ETH"',
+    '      name="Ethereum"',
+    '      src="https://assets.coingecko.com/coins/images/279/large/ethereum.png"',
+    "      fiatValue={4163.91}",
+    "      change={2.41}",
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+## Installation
+
+```bash
+npx shadcn add https://onchain-ui.dev/r/token-balance
+```
+
+## Usage
+
+```tsx
+import { TokenBalance } from "@/components/ui/token-balance"
+
+<TokenBalance amount={1.2845} symbol="ETH" fiatValue={4163.91} change={2.41} />
+```
+
+`TokenBalance` composes `TokenLogo` and `TokenPrice`, so it keeps token identity, amount formatting, and fiat value display consistent.
+
+## Examples
+
+### List
+
+<ComponentPreview
+  name="token-balance-list"
+  codeOpen={false}
+  code={[
+    'import { TokenBalance } from "@/components/ui/token-balance"',
+    "",
+    "export function TokenBalanceList() {",
+    "  return (",
+    '    <div className="grid gap-4">',
+    '      <TokenBalance amount={1.2845} symbol="ETH" fiatValue={4163.91} change={2.41} />',
+    '      <TokenBalance amount={1842.2} symbol="USDC" fiatValue={1842.2} change={0.01} />',
+    '      <TokenBalance amount={925.348} symbol="AERO" fiatValue={692.14} change={-4.16} />',
+    "    </div>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Compact
+
+<ComponentPreview
+  name="token-balance-compact"
+  codeOpen={false}
+  code={[
+    'import { TokenBalance } from "@/components/ui/token-balance"',
+    "",
+    "export function TokenBalanceCompact() {",
+    "  return (",
+    "    <TokenBalance",
+    "      amount={0.128934}",
+    '      symbol="cbBTC"',
+    '      name="Coinbase Wrapped BTC"',
+    "      fiatValue={13248.12}",
+    '      logoProps={{ size: "lg" }}',
+    "      priceProps={{ compact: true, showChangeIcon: false }}",
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `amount` | `number \| string \| null \| undefined` | - | Token amount |
+| `symbol` | `string \| null` | - | Token symbol shown after the amount |
+| `name` | `string \| null` | - | Token name, used for logo alt text |
+| `src` | `string \| null` | - | Token image URL |
+| `address` | `string \| null` | - | Token contract address |
+| `fiatValue` | `TokenPriceProps["value"]` | - | Fiat value for the balance |
+| `change` | `number \| null` | - | Fiat value percentage change |
+| `showLogo` | `boolean` | `true` | Show the token logo |
+| `showFiatValue` | `boolean` | `true` | Show fiat value when provided |
+| `locale` | `string` | Browser/default locale | Locale passed to `Intl.NumberFormat` |
+| `maximumFractionDigits` | `number` | `4` | Maximum fraction digits for token amount |
+| `minimumFractionDigits` | `number` | - | Minimum fraction digits for token amount |
+| `fallback` | `ReactNode` | `"--"` | Shown when amount is missing or invalid |
+| `logoProps` | `Partial<TokenLogoProps>` | - | Props passed to `TokenLogo` |
+| `priceProps` | `Partial<TokenPriceProps>` | - | Props passed to `TokenPrice` |
+| `className` | `string` | - | Applied to the root wrapper |
+| `amountClassName` | `string` | - | Applied to the amount line |
+| `fiatClassName` | `string` | - | Applied to the fiat value line |

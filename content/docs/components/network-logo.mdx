@@ -1,0 +1,129 @@
+---
+title: Network Logo
+description: Displays a network or chain logo from an EVM chain id.
+---
+
+Use `NetworkLogo` for chain selectors, token badges, bridge routes, wallet rows, and cross-chain asset views. Pass a supported `chainId` and the matching network logo renders automatically.
+
+<ComponentPreview
+  name="network-logo"
+  code={[
+    'import { NetworkLogo } from "@/components/ui/network-logo"',
+    "",
+    "export function NetworkLogoDemo() {",
+    "  return <NetworkLogo chainId={8453} showTooltip />",
+    "}",
+  ].join("\n")}
+/>
+
+## Installation
+
+```bash
+npx shadcn add https://onchain-ui.dev/r/network-logo
+```
+
+## Usage
+
+```tsx
+import { NetworkLogo } from "@/components/ui/network-logo"
+
+<NetworkLogo chainId={8453} />
+```
+
+`NetworkLogo` ships with built-in logos for common EVM networks. Use `src` only when you need to override a logo or support a chain that is not built in yet.
+
+See [Icon Resolution](/docs/standards/icon-resolution) for the full network and token icon strategy.
+
+## Supported Chains
+
+| Chain | `chainId` |
+|-------|-----------|
+| Ethereum | `1` |
+| Optimism | `10` |
+| Polygon | `137` |
+| Base | `8453` |
+| Arbitrum One | `42161` |
+
+## Examples
+
+### Networks
+
+<ComponentPreview
+  name="network-logo-networks"
+  codeOpen={false}
+  code={[
+    'import { NetworkLogo } from "@/components/ui/network-logo"',
+    "",
+    "export function NetworkLogoNetworks() {",
+    "  return (",
+    '    <div className="flex items-center gap-3">',
+    "      <NetworkLogo chainId={1} />",
+    "      <NetworkLogo chainId={8453} />",
+    "      <NetworkLogo chainId={10} />",
+    "      <NetworkLogo chainId={42161} />",
+    "      <NetworkLogo chainId={137} />",
+    "    </div>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Sizes
+
+<ComponentPreview
+  name="network-logo-sizes"
+  codeOpen={false}
+  code={[
+    'import { NetworkLogo } from "@/components/ui/network-logo"',
+    "",
+    "export function NetworkLogoSizes() {",
+    "  return (",
+    '    <div className="flex items-center gap-3">',
+    '      <NetworkLogo chainId={8453} size="xs" />',
+    '      <NetworkLogo chainId={8453} size="sm" />',
+    '      <NetworkLogo chainId={8453} size="md" />',
+    '      <NetworkLogo chainId={8453} size="lg" />',
+    '      <NetworkLogo chainId={8453} size="xl" />',
+    "    </div>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Custom Network
+
+<ComponentPreview
+  name="network-logo-custom"
+  codeOpen={false}
+  code={[
+    'import { NetworkLogo } from "@/components/ui/network-logo"',
+    "",
+    "export function NetworkLogoCustom() {",
+    "  return (",
+    "    <NetworkLogo",
+    '      name="Zora"',
+    '      symbol="ZORA"',
+    '      fallback="Z"',
+    '      className="border-foreground/20 bg-foreground text-background"',
+    "      showTooltip",
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `chainId` | `number \| null` | - | EVM chain id |
+| `src` | `string \| null` | Built-in chain logo | Network image URL override |
+| `name` | `string \| null` | Built-in network name | Network name |
+| `symbol` | `string \| null` | Built-in network symbol | Short symbol for fallback |
+| `size` | `"xs" \| "sm" \| "md" \| "lg" \| "xl"` | `"md"` | Visual size |
+| `fallback` | `ReactNode` | Symbol/name/chain fallback | Custom fallback for unsupported chains |
+| `showTooltip` | `boolean` | `false` | Show an animated tooltip |
+| `tooltipContent` | `ReactNode` | Name, symbol, then chain id | Tooltip content |
+| `className` | `string` | - | Applied to the root wrapper |
+| `imageClassName` | `string` | - | Applied to the image |
+| `fallbackClassName` | `string` | - | Applied to the fallback |

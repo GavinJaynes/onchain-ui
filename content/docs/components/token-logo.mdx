@@ -1,0 +1,148 @@
+---
+title: Token Logo
+description: Displays a token image with resilient symbol, name, or address fallback.
+---
+
+Use `TokenLogo` anywhere you need a compact token identity: tables, swap rows, portfolio cards, asset selectors, and token stacks.
+
+<ComponentPreview
+  name="token-logo"
+  code={[
+    'import { TokenLogo } from "@/components/ui/token-logo"',
+    "",
+    "export function TokenLogoDemo() {",
+    "  return (",
+    "    <TokenLogo",
+    '      src="https://assets.coingecko.com/coins/images/279/large/ethereum.png"',
+    '      symbol="ETH"',
+    '      name="Ethereum"',
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+## Installation
+
+```bash
+npx shadcn add https://onchain-ui.dev/r/token-logo
+```
+
+## Usage
+
+```tsx
+import { TokenLogo } from "@/components/ui/token-logo"
+
+<TokenLogo
+  src="https://assets.coingecko.com/coins/images/279/large/ethereum.png"
+  symbol="ETH"
+  name="Ethereum"
+/>
+```
+
+`TokenLogo` uses a plain `img` element for portability. It does not require Next.js image configuration and works with arbitrary token image URLs from APIs, indexers, and token lists.
+
+See [Icon Resolution](/docs/standards/icon-resolution) for the full network and token icon strategy.
+
+## Examples
+
+### Fallback
+
+When `src` is missing or the image fails to load, the component falls back to the token symbol, name, address, or `?`.
+
+<ComponentPreview
+  name="token-logo-fallback"
+  codeOpen={false}
+  code={[
+    'import { TokenLogo } from "@/components/ui/token-logo"',
+    "",
+    "export function TokenLogoFallback() {",
+    '  return <TokenLogo symbol="USDC" name="USD Coin" />',
+    "}",
+  ].join("\n")}
+/>
+
+### Sizes
+
+Use size tokens for predictable layout in tables and dense controls.
+
+<ComponentPreview
+  name="token-logo-sizes"
+  codeOpen={false}
+  code={[
+    'import { TokenLogo } from "@/components/ui/token-logo"',
+    "",
+    "export function TokenLogoSizes() {",
+    "  return (",
+    '    <div className="flex items-center gap-3">',
+    '      <TokenLogo symbol="ETH" size="xs" />',
+    '      <TokenLogo symbol="ETH" size="sm" />',
+    '      <TokenLogo symbol="ETH" size="md" />',
+    '      <TokenLogo symbol="ETH" size="lg" />',
+    '      <TokenLogo symbol="ETH" size="xl" />',
+    "    </div>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Custom Fallback
+
+Pass fallback content and classes when your product has a preferred token treatment.
+
+<ComponentPreview
+  name="token-logo-custom-fallback"
+  codeOpen={false}
+  code={[
+    'import { TokenLogo } from "@/components/ui/token-logo"',
+    "",
+    "export function TokenLogoCustomFallback() {",
+    "  return (",
+    "    <TokenLogo",
+    '      symbol="WETH"',
+    '      fallback="Ξ"',
+    '      className="border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-300"',
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Tooltip
+
+Enable an animated tooltip when the logo appears without nearby token text.
+
+<ComponentPreview
+  name="token-logo-tooltip"
+  codeOpen={false}
+  code={[
+    'import { TokenLogo } from "@/components/ui/token-logo"',
+    "",
+    "export function TokenLogoTooltip() {",
+    "  return (",
+    "    <TokenLogo",
+    '      src="https://assets.coingecko.com/coins/images/279/large/ethereum.png"',
+    '      symbol="ETH"',
+    '      name="Ethereum"',
+    "      showTooltip",
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `src` | `string \| null` | - | Token image URL |
+| `symbol` | `string \| null` | - | Token symbol, used for alt text and fallback |
+| `name` | `string \| null` | - | Token name, used for alt text and fallback |
+| `address` | `string \| null` | - | Token contract address, used as a fallback label |
+| `size` | `"xs" \| "sm" \| "md" \| "lg" \| "xl"` | `"md"` | Visual size |
+| `fallback` | `ReactNode` | Symbol/name/address fallback | Custom fallback content |
+| `showTooltip` | `boolean` | `false` | Show an animated tooltip |
+| `tooltipContent` | `ReactNode` | Name, symbol, then address | Tooltip content |
+| `className` | `string` | - | Applied to the root wrapper |
+| `imageClassName` | `string` | - | Applied to the image |
+| `fallbackClassName` | `string` | - | Applied to the fallback |

@@ -2,18 +2,11 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* Shiki dual-theme support — light/dark switching via fumadocs RootProvider */
-.shiki,
-.shiki span {
-  color: var(--shiki-light);
-  background-color: var(--shiki-light-bg);
-}
-
-.dark .shiki,
-.dark .shiki span {
-  color: var(--shiki-dark);
-  background-color: var(--shiki-dark-bg);
-}
+/* ─── Code block ─────────────────────────────────────────────────────────────
+   Scoped to .not-fumadocs-codeblock so fumadocs skips these elements.
+   Pattern mirrors shadcn/ui: counter-reset on code, counter-increment on
+   each line's ::before, no grid (grid breaks counter rendering in some envs).
+   ─────────────────────────────────────────────────────────────────────────── */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -140,4 +133,32 @@
   html {
     @apply font-sans;
   }
+}
+
+/* ── Code block: line numbers + token colours ─────────────────────────────────
+   Placed after @layer base so this un-layered CSS wins over layered Tailwind
+   rules. Layout/spacing is injected as inline styles in the shiki transformer
+   (component-preview.tsx) to beat any inherited prose line-height from fumadocs.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* Line number counter — must be CSS because inline styles can't do ::before */
+.not-fumadocs-codeblock code[data-line-numbers] > [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 1rem;
+  margin-right: 1.75rem;
+  text-align: right;
+  color: #71717a; /* zinc-500 */
+  user-select: none;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Token colours via shiki dual-theme CSS variables */
+.not-fumadocs-codeblock [data-line] span {
+  color: var(--shiki-light);
+}
+.dark .not-fumadocs-codeblock [data-line] span {
+  color: var(--shiki-dark);
 }

@@ -1,0 +1,139 @@
+---
+title: Token Price
+description: Formats token prices with optional positive, negative, or neutral change.
+---
+
+Use `TokenPrice` for token rows, market cards, swap quotes, portfolio summaries, and any UI that needs a price plus a compact change signal.
+
+<ComponentPreview
+  name="token-price"
+  code={[
+    'import { TokenPrice } from "@/components/ui/token-price"',
+    "",
+    "export function TokenPriceDemo() {",
+    "  return <TokenPrice value={3241.82} change={2.41} />",
+    "}",
+  ].join("\n")}
+/>
+
+## Installation
+
+```bash
+npx shadcn add https://onchain-ui.dev/r/token-price
+```
+
+## Usage
+
+```tsx
+import { TokenPrice } from "@/components/ui/token-price"
+
+<TokenPrice value={3241.82} change={2.41} />
+```
+
+`TokenPrice` is display-only. Bring your own data from CoinGecko, DefiLlama, an indexer, an oracle, or your app backend, then pass the resolved value into the component.
+
+## Examples
+
+### Change States
+
+Pass `change` as a percentage value. For example, `-2.34` renders as `-2.34%`.
+
+<ComponentPreview
+  name="token-price-changes"
+  codeOpen={false}
+  code={[
+    'import { TokenPrice } from "@/components/ui/token-price"',
+    "",
+    "export function TokenPriceChanges() {",
+    "  return (",
+    '    <div className="grid gap-3">',
+    "      <TokenPrice value={3241.82} change={2.41} />",
+    "      <TokenPrice value={0.9978} change={-0.12} />",
+    "      <TokenPrice value={1} change={0} />",
+    "    </div>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Small Values
+
+Small token prices automatically keep more decimal places.
+
+<ComponentPreview
+  name="token-price-small-values"
+  codeOpen={false}
+  code={[
+    'import { TokenPrice } from "@/components/ui/token-price"',
+    "",
+    "export function TokenPriceSmallValues() {",
+    "  return (",
+    '    <div className="grid gap-3">',
+    "      <TokenPrice value={0.9978} change={0.02} />",
+    "      <TokenPrice value={0.034567} change={-4.16} />",
+    "      <TokenPrice value={0.00012891} change={12.08} />",
+    "    </div>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Compact
+
+Use compact notation for larger market numbers or tight card layouts.
+
+<ComponentPreview
+  name="token-price-compact"
+  codeOpen={false}
+  code={[
+    'import { TokenPrice } from "@/components/ui/token-price"',
+    "",
+    "export function TokenPriceCompact() {",
+    "  return <TokenPrice value={1234567.89} change={8.24} compact />",
+    "}",
+  ].join("\n")}
+/>
+
+### Custom Styling
+
+Use class hooks to match your table, card, or badge treatment.
+
+<ComponentPreview
+  name="token-price-custom"
+  codeOpen={false}
+  code={[
+    'import { TokenPrice } from "@/components/ui/token-price"',
+    "",
+    "export function TokenPriceCustom() {",
+    "  return (",
+    "    <TokenPrice",
+    "      value={184.42}",
+    "      change={-3.18}",
+    '      className="rounded-md border bg-card px-3 py-2"',
+    '      priceClassName="text-lg font-semibold"',
+    '      changeClassName="rounded-sm bg-red-500/10 px-1.5 py-0.5"',
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number \| string \| null \| undefined` | - | Token price value |
+| `currency` | `string` | `"USD"` | ISO 4217 currency code |
+| `locale` | `string` | Browser/default locale | Locale passed to `Intl.NumberFormat` |
+| `compact` | `boolean` | `false` | Use compact notation |
+| `fallback` | `ReactNode` | `"--"` | Shown when price is missing or invalid |
+| `minimumFractionDigits` | `number` | - | Minimum fraction digits for the price |
+| `maximumFractionDigits` | `number` | Based on value size | Maximum fraction digits for the price |
+| `change` | `number \| null` | - | Percentage change, e.g. `-2.34` means `-2.34%` |
+| `trend` | `"up" \| "down" \| "neutral"` | Derived from `change` | Override the change direction |
+| `showChangeIcon` | `boolean` | `true` | Show the trend icon |
+| `changeFractionDigits` | `number` | `2` | Fraction digits for the change value |
+| `hidePositiveSign` | `boolean` | `false` | Hide `+` for positive changes |
+| `className` | `string` | - | Applied to the root wrapper |
+| `priceClassName` | `string` | - | Applied to the formatted price |
+| `changeClassName` | `string` | - | Applied to the change element |

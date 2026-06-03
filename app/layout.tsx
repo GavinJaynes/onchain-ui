@@ -21,6 +21,12 @@ export const metadata: Metadata = {
   },
   description:
     "Open source shadcn registry of web3 UI components. Built with wagmi + viem.",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/logo-mark.svg", type: "image/svg+xml" },
+    ],
+  },
 };
 
 export default function RootLayout({

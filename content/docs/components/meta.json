@@ -1,4 +1,13 @@
 {
   "title": "Components",
-  "pages": ["address-display"]
+  "pages": [
+    "address-display",
+    "address-identity",
+    "token-logo",
+    "token-stack",
+    "token-price",
+    "network-logo",
+    "token-balance",
+    "asset-row"
+  ]
 }
