@@ -170,7 +170,7 @@ export default function HomePage() {
                 Browse components
               </Link>
               <a
-                href="https://github.com/onchain-ui/onchain-ui"
+                href="https://github.com/GavinJaynes/onchain-ui"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-5 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"

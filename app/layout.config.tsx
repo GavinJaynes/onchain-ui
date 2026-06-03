@@ -12,7 +12,7 @@ export const baseOptions: BaseLayoutProps = {
     },
     {
       text: "GitHub",
-      url: "https://github.com/onchain-ui/onchain-ui",
+      url: "https://github.com/GavinJaynes/onchain-ui",
     },
   ],
 };
