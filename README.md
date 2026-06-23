@@ -61,6 +61,12 @@ Build the site and registry routes:
 npm run build
 ```
 
+Run registry contract tests:
+
+```bash
+npm run test
+```
+
 ## Project Structure
 
 ```txt

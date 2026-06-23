@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "token-logo",
+  "type": "registry:ui",
+  "title": "Token Logo",
+  "description": "Displays a token image with resilient symbol, name, or address fallback.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/onchain-ui/token-logo.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/token-logo.tsx",
+      "content": "\"use client\";\n\nimport { useMemo, useState, type ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { Tooltip } from \"@/components/ui/tooltip\";\n\nconst sizeClasses = {\n  xs: \"size-5 text-[9px]\",\n  sm: \"size-6 text-[10px]\",\n  md: \"size-8 text-xs\",\n  lg: \"size-10 text-sm\",\n  xl: \"size-12 text-base\",\n} as const;\n\nexport interface TokenLogoProps {\n  /** Token image URL */\n  src?: string | null;\n  /** Token symbol, used for alt text and fallback initials */\n  symbol?: string | null;\n  /** Token name, used for alt text */\n  name?: string | null;\n  /** Token contract address, used as a fallback label */\n  address?: string | null;\n  /** Visual size. Default: md */\n  size?: keyof typeof sizeClasses;\n  /** Custom fallback content when the image is missing or fails */\n  fallback?: ReactNode;\n  /** Show an animated tooltip. Default: false */\n  showTooltip?: boolean;\n  /** Tooltip content. Defaults to name, symbol, then address. */\n  tooltipContent?: ReactNode;\n  /** Applied to the root wrapper */\n  className?: string;\n  /** Applied to the image */\n  imageClassName?: string;\n  /** Applied to the fallback */\n  fallbackClassName?: string;\n}\n\nfunction getFallbackText({\n  address,\n  name,\n  symbol,\n}: Pick<TokenLogoProps, \"address\" | \"name\" | \"symbol\">) {\n  if (symbol) return symbol.slice(0, 4).toUpperCase();\n  if (name) return name.slice(0, 2).toUpperCase();\n  if (address) return address.slice(2, 4).toUpperCase();\n  return \"?\";\n}\n\nexport function TokenLogo({\n  src,\n  symbol,\n  name,\n  address,\n  size = \"md\",\n  fallback,\n  showTooltip = false,\n  tooltipContent,\n  className,\n  imageClassName,\n  fallbackClassName,\n}: TokenLogoProps) {\n  const [hasImageError, setHasImageError] = useState(false);\n  const shouldShowImage = Boolean(src) && !hasImageError;\n\n  const alt = useMemo(() => {\n    if (name && symbol) return `${name} (${symbol})`;\n    return name ?? symbol ?? address ?? \"Token\";\n  }, [address, name, symbol]);\n\n  const tooltip = tooltipContent ?? name ?? symbol ?? address;\n\n  const logo = (\n    <span\n      className={cn(\n        \"relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border bg-muted font-medium text-muted-foreground\",\n        sizeClasses[size],\n        className\n      )}\n    >\n      {shouldShowImage ? (\n        <img\n          src={src ?? undefined}\n          alt={alt}\n          className={cn(\"size-full object-cover\", imageClassName)}\n          loading=\"lazy\"\n          decoding=\"async\"\n          referrerPolicy=\"no-referrer\"\n          onError={() => setHasImageError(true)}\n        />\n      ) : (\n        <span className={cn(\"select-none\", fallbackClassName)}>\n          {fallback ?? getFallbackText({ address, name, symbol })}\n        </span>\n      )}\n    </span>\n  );\n\n  if (!showTooltip) return logo;\n\n  return <Tooltip content={tooltip}>{logo}</Tooltip>;\n}\n"
+    },
+    {
+      "path": "components/ui/tooltip.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/tooltip.tsx",
+      "content": "\"use client\";\n\nimport { Tooltip as BaseTooltip } from \"@base-ui/react/tooltip\";\nimport type { ReactElement, ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\ninterface TooltipProps {\n  children: ReactElement;\n  content: ReactNode;\n  delay?: number;\n  side?: \"top\" | \"right\" | \"bottom\" | \"left\";\n  className?: string;\n}\n\nexport function Tooltip({\n  children,\n  content,\n  delay = 200,\n  side = \"top\",\n  className,\n}: TooltipProps) {\n  if (!content) return children;\n\n  return (\n    <BaseTooltip.Root>\n      <BaseTooltip.Trigger delay={delay} render={children} />\n      <BaseTooltip.Portal>\n        <BaseTooltip.Positioner side={side} sideOffset={6}>\n          <BaseTooltip.Popup\n            className={cn(\n              \"z-50 max-w-64 rounded-md border bg-popover px-2.5 py-1.5 text-xs text-popover-foreground shadow-md outline-none\",\n              \"origin-[var(--transform-origin)] transition-[opacity,transform] duration-150\",\n              \"data-[starting-style]:scale-95 data-[starting-style]:opacity-0\",\n              \"data-[ending-style]:scale-95 data-[ending-style]:opacity-0\",\n              className\n            )}\n          >\n            {content}\n            <BaseTooltip.Arrow className=\"fill-popover\" />\n          </BaseTooltip.Popup>\n        </BaseTooltip.Positioner>\n      </BaseTooltip.Portal>\n    </BaseTooltip.Root>\n  );\n}\n\n"
+    }
+  ]
+}

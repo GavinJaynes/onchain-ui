@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "registry:build": "node scripts/build-registry.mjs",
+    "prebuild": "npm run registry:build",
     "build": "next build",
+    "pretest": "npm run registry:build",
+    "test": "node --test tests/*.test.mjs",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "fumadocs-mdx"
