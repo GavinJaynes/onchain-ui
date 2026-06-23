@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@/components/ui/tooltip";
 
@@ -152,16 +152,12 @@ export function NetworkLogo({
   imageClassName,
   fallbackClassName,
 }: NetworkLogoProps) {
-  const [hasImageError, setHasImageError] = useState(false);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const knownNetwork = getKnownNetwork(chainId);
   const knownIcon = getKnownNetworkIcon(chainId);
   const displayName = name ?? knownNetwork?.name ?? null;
   const displaySymbol = symbol ?? knownNetwork?.symbol ?? null;
-  const shouldShowImage = Boolean(src) && !hasImageError;
-
-  useEffect(() => {
-    setHasImageError(false);
-  }, [src]);
+  const shouldShowImage = Boolean(src) && failedSrc !== src;
 
   const alt = useMemo(() => {
     if (displayName && displaySymbol) return `${displayName} (${displaySymbol})`;
@@ -186,7 +182,7 @@ export function NetworkLogo({
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"
-          onError={() => setHasImageError(true)}
+          onError={() => setFailedSrc(src ?? null)}
         />
       ) : knownIcon && !fallback ? (
         knownIcon

@@ -51,14 +51,16 @@ export function AddressIdentity({
   truncateChars = 4,
   ...addressDisplayProps
 }: AddressIdentityProps) {
-  const [identity, setIdentity] = useState<OnchainIdentity | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const identityKey = `${address}:${name ?? ""}:${avatarUrl ?? ""}:${resolveIdentity}`;
+  const [resolvedIdentity, setResolvedIdentity] = useState<{
+    key: string;
+    identity: OnchainIdentity;
+  } | null>(null);
 
   useEffect(() => {
     if (!resolveIdentity || (name && avatarUrl)) return;
 
     let isMounted = true;
-    setIsLoading(true);
 
     const identityPromise = name
       ? resolveNameAvatar(name, resolverOptions).then((avatar) => ({
@@ -69,23 +71,24 @@ export function AddressIdentity({
         }) satisfies OnchainIdentity)
       : resolveOnchainIdentity(address, resolverOptions);
 
-    setIdentity(null);
-
     identityPromise
       .then((result) => {
-        if (isMounted) setIdentity(result);
-      })
-      .finally(() => {
-        if (isMounted) setIsLoading(false);
+        if (isMounted) {
+          setResolvedIdentity({ key: identityKey, identity: result });
+        }
       });
 
     return () => {
       isMounted = false;
     };
-  }, [address, avatarUrl, name, resolveIdentity, resolverOptions]);
+  }, [address, avatarUrl, identityKey, name, resolveIdentity, resolverOptions]);
 
-  const displayName = name ?? identity?.name ?? null;
-  const displayAvatar = avatarUrl ?? identity?.avatar ?? null;
+  const activeIdentity =
+    resolvedIdentity?.key === identityKey ? resolvedIdentity.identity : null;
+  const displayName = name ?? activeIdentity?.name ?? null;
+  const displayAvatar = avatarUrl ?? activeIdentity?.avatar ?? null;
+  const isLoading =
+    resolveIdentity && !(name && avatarUrl) && activeIdentity === null;
   const fallbackLabel = truncate
     ? truncateAddress(address, truncateChars)
     : address;
