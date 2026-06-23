@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { RootProvider } from "fumadocs-ui/provider/next";
+import { AlphaBanner } from "@/components/alpha-banner";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -41,7 +42,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <RootProvider>{children}</RootProvider>
+        <RootProvider>
+          <AlphaBanner />
+          {children}
+        </RootProvider>
         <Toaster />
       </body>
     </html>

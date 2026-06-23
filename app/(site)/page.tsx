@@ -139,7 +139,7 @@ export default function HomePage() {
           <div className="space-y-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground shadow-sm">
               <span className="size-1.5 rounded-full bg-foreground" />
-              Open source / shadcn registry / wagmi + viem
+              Alpha / open source / shadcn registry / wagmi + viem
             </div>
 
             <div className="space-y-5">
