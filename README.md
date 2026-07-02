@@ -22,6 +22,7 @@ The registry currently includes:
 | Network Logo | `npx shadcn add https://onchain-ui.dev/r/network-logo` |
 | Token Balance | `npx shadcn add https://onchain-ui.dev/r/token-balance` |
 | Asset Row | `npx shadcn add https://onchain-ui.dev/r/asset-row` |
+| Crypto Icons (adapter) | `npx shadcn add https://onchain-ui.dev/r/crypto-icons` |
 
 ## Why
 
