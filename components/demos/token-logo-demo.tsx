@@ -12,6 +12,31 @@ export function TokenLogoDemo() {
   );
 }
 
+export function TokenLogoDemoInferred() {
+  return (
+    <div className="flex items-center gap-3">
+      <TokenLogo
+        chainId={8453}
+        address="0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+        symbol="USDC"
+        name="USD Coin"
+      />
+      <TokenLogo
+        chainId={1}
+        address="0x514910771AF9Ca656af840dff83E8264EcF986CA"
+        symbol="LINK"
+        name="Chainlink"
+      />
+      <TokenLogo
+        chainId={1}
+        address="0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
+        symbol="UNI"
+        name="Uniswap"
+      />
+    </div>
+  );
+}
+
 export function TokenLogoDemoFallback() {
   return <TokenLogo symbol="USDC" name="USD Coin" />;
 }

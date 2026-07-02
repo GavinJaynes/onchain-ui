@@ -38,22 +38,40 @@ export interface OnchainIdentity {
   source: "ens" | "basename" | null;
 }
 
-const defaultMainnetClient = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-});
+// The default clients use each chain's public RPC endpoint. Public endpoints
+// are rate limited and fine for demos; pass your own clients through
+// `OnchainResolverOptions` in production.
+function createDefaultMainnetClient() {
+  return createPublicClient({ chain: mainnet, transport: http() });
+}
 
-const defaultBaseClient = createPublicClient({
-  chain: base,
-  transport: http(),
-});
+function createDefaultBaseClient() {
+  return createPublicClient({ chain: base, transport: http() });
+}
+
+let defaultMainnetClient:
+  | ReturnType<typeof createDefaultMainnetClient>
+  | undefined;
+let defaultBaseClient: ReturnType<typeof createDefaultBaseClient> | undefined;
 
 function getMainnetClient(options?: OnchainResolverOptions) {
-  return options?.mainnetClient ?? defaultMainnetClient;
+  if (options?.mainnetClient) return options.mainnetClient;
+  if (!defaultMainnetClient) defaultMainnetClient = createDefaultMainnetClient();
+  return defaultMainnetClient;
 }
 
 function getBaseClient(options?: OnchainResolverOptions) {
-  return options?.baseClient ?? defaultBaseClient;
+  if (options?.baseClient) return options.baseClient;
+  if (!defaultBaseClient) defaultBaseClient = createDefaultBaseClient();
+  return defaultBaseClient;
+}
+
+function hasCustomResolverConfig(options?: OnchainResolverOptions) {
+  return Boolean(
+    options?.mainnetClient ??
+      options?.baseClient ??
+      options?.basenameResolverAddress
+  );
 }
 
 function getBasenameResolverAddress(options?: OnchainResolverOptions) {
@@ -109,10 +127,29 @@ export async function resolveBasename(
   }
 }
 
+// Session-level caches so repeated lookups (portfolio rows, remounts) don't
+// refetch. Keyed lookups share in-flight promises, deduping concurrent calls.
+// Skipped when custom clients are provided, since results may differ.
+const avatarCache = new Map<string, Promise<string | null>>();
+const identityCache = new Map<string, Promise<OnchainIdentity>>();
+
 export async function resolveNameAvatar(
   name: string,
   options?: OnchainResolverOptions
 ) {
+  if (!hasCustomResolverConfig(options)) {
+    const cached = avatarCache.get(name);
+    if (cached) return cached;
+
+    const promise = fetchNameAvatar(name, options);
+    avatarCache.set(name, promise);
+    return promise;
+  }
+
+  return fetchNameAvatar(name, options);
+}
+
+async function fetchNameAvatar(name: string, options?: OnchainResolverOptions) {
   try {
     if (name.endsWith(".base.eth")) {
       return await getBaseClient(options).getEnsAvatar({
@@ -160,6 +197,24 @@ export async function resolveOnchainIdentity(
     "ens",
   ];
 
+  if (!hasCustomResolverConfig(options)) {
+    const cacheKey = `${address.toLowerCase()}:${reverseLookupOrder.join(",")}`;
+    const cached = identityCache.get(cacheKey);
+    if (cached) return cached;
+
+    const promise = fetchOnchainIdentity(address, reverseLookupOrder, options);
+    identityCache.set(cacheKey, promise);
+    return promise;
+  }
+
+  return fetchOnchainIdentity(address, reverseLookupOrder, options);
+}
+
+async function fetchOnchainIdentity(
+  address: Address,
+  reverseLookupOrder: Array<"ens" | "basename">,
+  options?: OnchainResolverOptions
+): Promise<OnchainIdentity> {
   for (const source of reverseLookupOrder) {
     const name =
       source === "basename"

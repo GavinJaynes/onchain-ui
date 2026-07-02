@@ -9,12 +9,7 @@ export function AddressDisplayDemo() {
 }
 
 export function AddressDisplayDemoBase() {
-  return (
-    <AddressDisplay
-      address={ADDR}
-      explorerUrl={`https://basescan.org/address/${ADDR}`}
-    />
-  );
+  return <AddressDisplay address={ADDR} chainId={8453} />;
 }
 
 export function AddressDisplayDemoFull() {

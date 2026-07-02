@@ -74,6 +74,10 @@ const demos: Record<string, DemoLoader> = {
     import("@/components/demos/token-logo-demo").then((m) => ({
       default: m.TokenLogoDemo,
     })),
+  "token-logo-inferred": () =>
+    import("@/components/demos/token-logo-demo").then((m) => ({
+      default: m.TokenLogoDemoInferred,
+    })),
   "token-logo-fallback": () =>
     import("@/components/demos/token-logo-demo").then((m) => ({
       default: m.TokenLogoDemoFallback,
