@@ -22,6 +22,10 @@ Use `NetworkLogo` for chain selectors, token badges, bridge routes, wallet rows,
 npx shadcn add https://onchain-ui.dev/r/network-logo
 ```
 
+### Requirements
+
+Tooltips compose the standard shadcn [tooltip](https://ui.shadcn.com/docs/components/tooltip). The install adds it if your app does not already have `components/ui/tooltip.tsx`; if you do, your existing (possibly customized) tooltip is used as-is. Wrap your app with `TooltipProvider` if you have not already.
+
 ## Usage
 
 ```tsx

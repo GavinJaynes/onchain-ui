@@ -18,7 +18,7 @@ Crypto icons need good defaults and clean escape hatches. Common networks should
 Networks are identified by `chainId`, so `NetworkLogo` resolves in this order:
 
 1. `src`
-2. Built-in logo for a supported `chainId`
+2. [Crypto icons adapter](/docs/standards/crypto-icons) result for the `chainId` (built-in logos for supported chains)
 3. `fallback`
 4. `symbol`
 5. `name`
@@ -47,11 +47,12 @@ Tokens are harder than networks. A symbol is not a unique identifier: `USDC` can
 `TokenLogo` resolves in this order:
 
 1. `src`
-2. `fallback`
-3. `symbol`
-4. `name`
-5. `address`
-6. `?`
+2. [Crypto icons adapter](/docs/standards/crypto-icons) result for `chainId` + `address`
+3. `fallback`
+4. `symbol`
+5. `name`
+6. `address`
+7. `?`
 
 Prefer token metadata from your app, token list, indexer, or API:
 
@@ -67,7 +68,7 @@ Prefer token metadata from your app, token list, indexer, or API:
 
 ## Provider Strategy
 
-onchain-ui components should be provider-agnostic. A future icon adapter can map common assets to Cryptocons, app-owned SVGs, token-list URLs, or another provider, but the component contract stays the same:
+onchain-ui components are provider-agnostic. All icon lookups flow through the [crypto-icons adapter](/docs/standards/crypto-icons) — one editable file that can map assets to an icon package, app-owned SVGs, token-list URLs, or another provider, while the component contract stays the same:
 
 ```tsx
 <NetworkLogo chainId={8453} />

@@ -75,28 +75,25 @@ import { AddressDisplay } from "@/components/ui/address-display"
 <AddressDisplay address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" />
 ```
 
-By default, explorer links point to Etherscan. Pass `explorerUrl` for Base, Optimism, Arbitrum, or any other EVM chain explorer.
+Pass `chainId` to link to a known chain's explorer: Ethereum (1), Optimism (10), Polygon (137), Base (8453), and Arbitrum (42161). Without a `chainId`, explorer links point to Etherscan. For other chains, pass a full `explorerUrl`.
 
 ## Examples
 
 ### With Base Explorer
 
-Pass `explorerUrl` to link to any chain's explorer.
+Pass `chainId` to link to a known chain's explorer, or `explorerUrl` for any other chain.
 
 <ComponentPreview
   name="address-display-base"
   codeOpen={false}
   code={[
     'import { AddressDisplay } from "@/components/ui/address-display"',
-    'import type { Address } from "viem"',
-    "",
-    'const address: Address = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"',
     "",
     "export function AddressDisplayWithExplorer() {",
     "  return (",
     "    <AddressDisplay",
-    "      address={address}",
-    "      explorerUrl={`https://basescan.org/address/${address}`}",
+    '      address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"',
+    "      chainId={8453}",
     "    />",
     "  )",
     "}",
@@ -156,7 +153,8 @@ Hide the explorer link when you just need clipboard copy.
 | `truncateChars` | `number` | `4` | Characters shown at each end when truncated |
 | `showCopy` | `boolean` | `true` | Show copy-to-clipboard button |
 | `showExplorer` | `boolean` | `true` | Show block explorer link |
-| `explorerUrl` | `string` | Etherscan address URL | Full explorer URL for this address |
+| `chainId` | `number \| null` | `1` | EVM chain id used to pick a known block explorer |
+| `explorerUrl` | `string` | Derived from `chainId` | Full explorer URL override for this address |
 | `copyIcon` | `ReactNode` | Lucide copy icon | Icon rendered before the address when copy is enabled |
 | `explorerIcon` | `ReactNode` | Lucide external link icon | Icon rendered for the explorer link |
 | `className` | `string` | - | Applied to the root wrapper |

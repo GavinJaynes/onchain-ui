@@ -31,6 +31,10 @@ Use `TokenBalance` for wallet balances, portfolio summaries, account drawers, an
 npx shadcn add https://onchain-ui.dev/r/token-balance
 ```
 
+### Requirements
+
+Tooltips compose the standard shadcn [tooltip](https://ui.shadcn.com/docs/components/tooltip). The install adds it if your app does not already have `components/ui/tooltip.tsx`; if you do, your existing (possibly customized) tooltip is used as-is. Wrap your app with `TooltipProvider` if you have not already.
+
 ## Usage
 
 ```tsx
@@ -94,7 +98,8 @@ import { TokenBalance } from "@/components/ui/token-balance"
 | `symbol` | `string \| null` | - | Token symbol shown after the amount |
 | `name` | `string \| null` | - | Token name, used for logo alt text |
 | `src` | `string \| null` | - | Token image URL |
-| `address` | `string \| null` | - | Token contract address |
+| `address` | `string \| null` | - | Token contract address, used for icon inference and as a fallback label |
+| `chainId` | `number \| null` | - | EVM chain id, used with `address` to infer a token icon |
 | `fiatValue` | `TokenPriceProps["value"]` | - | Fiat value for the balance |
 | `change` | `number \| null` | - | Fiat value percentage change |
 | `showLogo` | `boolean` | `true` | Show the token logo |

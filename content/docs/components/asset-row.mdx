@@ -32,6 +32,10 @@ Use `AssetRow` when you need the composed version of the primitives: wallet asse
 npx shadcn add https://onchain-ui.dev/r/asset-row
 ```
 
+### Requirements
+
+Tooltips compose the standard shadcn [tooltip](https://ui.shadcn.com/docs/components/tooltip). The install adds it if your app does not already have `components/ui/tooltip.tsx`; if you do, your existing (possibly customized) tooltip is used as-is. Wrap your app with `TooltipProvider` if you have not already.
+
 ## Usage
 
 ```tsx
@@ -106,7 +110,7 @@ Hide the amount to use the same row shape for market and watchlist views.
 | `symbol` | `string` | - | Token symbol |
 | `name` | `string \| null` | - | Token name |
 | `src` | `string \| null` | - | Token image URL |
-| `address` | `string \| null` | - | Token contract address |
+| `address` | `string \| null` | - | Token contract address, used for icon inference and as a fallback label |
 | `amount` | `number \| string \| null \| undefined` | - | Token amount held by the user |
 | `value` | `TokenPriceProps["value"]` | - | Fiat value for the position |
 | `change` | `number \| null` | - | Price or position change percentage |

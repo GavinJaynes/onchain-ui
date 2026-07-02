@@ -1,0 +1,84 @@
+---
+title: Crypto Icons
+description: One swappable adapter file resolves token and network icons for every onchain-ui component.
+---
+
+Crypto icons don't fit the way shadcn swaps UI icon libraries. UI icons are a closed set, so a lucide icon always has a HugeIcons equivalent. Tokens are an open set with canonical identity `(chainId, address)`: no icon package covers them all, symbols are not unique, and new tokens appear daily.
+
+onchain-ui borrows the *pattern* instead of the mechanism: the icon decision is made once, in one file you own.
+
+## The Adapter
+
+`lib/onchain/crypto-icons.tsx` is installed alongside `TokenLogo` and `NetworkLogo` and exports two functions:
+
+```ts
+export function getTokenIcon(query: {
+  chainId?: number | null
+  address?: string | null
+  symbol?: string | null
+}): CryptoIcon
+
+export function getNetworkIcon(chainId?: number | null): CryptoIcon
+```
+
+Both may return:
+
+- a `string`, treated as an image URL
+- a `ReactNode`, rendered directly in place of the image
+- `null`, meaning "unknown" — components fall back to readable initials
+
+Explicit props always win. The full resolution order is:
+
+1. `src` prop
+2. Adapter result
+3. `fallback` prop and initials
+
+## Default Behavior
+
+- **Networks**: crisp inline SVG marks for Ethereum (1), Optimism (10), Polygon (137), Base (8453), and Arbitrum (42161). `<NetworkLogo chainId={8453} />` works offline with zero configuration.
+- **Tokens**: icon URLs inferred from `chainId` + `address` via the community-maintained [Trust Wallet assets](https://github.com/trustwallet/assets) repo. Coverage is good for established tokens; misses degrade to initials, never broken images.
+
+```tsx
+<TokenLogo
+  chainId={8453}
+  address="0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+  symbol="USDC"
+/>
+```
+
+<Callout type="warn">
+The default token source hotlinks a community CDN with no SLA. Fine for demos and prototypes; production apps should pass `src` from their own token metadata or point the adapter at their own token list or CDN.
+</Callout>
+
+## Swapping the Implementation
+
+Because the adapter is copy-paste code in your app, changing icon strategy never touches component code:
+
+- **Your token list or indexer**: edit `getTokenIcon` to build URLs from your own data.
+- **An icon package**: return rendered components, e.g. from [`@web3icons/react`](https://www.npmjs.com/package/@web3icons/react):
+
+```tsx
+import { TokenIcon, NetworkIcon } from "@web3icons/react"
+
+export function getTokenIcon({ chainId, address, symbol }: TokenIconQuery): CryptoIcon {
+  if (address) {
+    return <TokenIcon address={address.toLowerCase()} network="base" size={32} variant="branded" />
+  }
+  if (symbol) {
+    return <TokenIcon symbol={symbol} size={32} variant="branded" />
+  }
+  return null
+}
+```
+
+- **More networks**: add entries to the chain maps, or return URLs for chains without inline marks.
+
+A prebuilt `crypto-icons-web3icons` registry variant is planned so switching becomes a single install command.
+
+## Re-adding the Default
+
+The adapter also ships as its own registry item, so you can restore or diff the default at any time:
+
+```bash
+npx shadcn add https://onchain-ui.dev/r/crypto-icons
+```
