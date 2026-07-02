@@ -58,6 +58,13 @@
       "title": "Asset Row",
       "description": "Displays a practical portfolio or watchlist row from token identity, network, amount, value, and change.",
       "url": "https://onchain-ui.dev/r/asset-row"
+    },
+    {
+      "name": "crypto-icons",
+      "type": "registry:lib",
+      "title": "Crypto Icons",
+      "description": "Swappable adapter that resolves token and network icons for onchain-ui components.",
+      "url": "https://onchain-ui.dev/r/crypto-icons"
     }
   ]
 }

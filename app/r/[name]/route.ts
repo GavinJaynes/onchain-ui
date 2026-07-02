@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import addressDisplay from "@/registry/generated/address-display.json";
 import addressIdentity from "@/registry/generated/address-identity.json";
 import assetRow from "@/registry/generated/asset-row.json";
+import cryptoIcons from "@/registry/generated/crypto-icons.json";
 import networkLogo from "@/registry/generated/network-logo.json";
 import tokenBalance from "@/registry/generated/token-balance.json";
 import tokenLogo from "@/registry/generated/token-logo.json";
@@ -26,6 +27,7 @@ const registryItems = {
   "address-display": addressDisplay,
   "address-identity": addressIdentity,
   "asset-row": assetRow,
+  "crypto-icons": cryptoIcons,
   "network-logo": networkLogo,
   "token-balance": tokenBalance,
   "token-logo": tokenLogo,

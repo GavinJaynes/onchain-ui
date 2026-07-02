@@ -1,9 +1,13 @@
 import { cn } from "@/lib/utils";
+import {
+  parseNumericValue,
+  type NumericValue,
+} from "@/lib/onchain/format";
 import { TokenLogo, type TokenLogoProps } from "./token-logo";
 import { TokenPrice, type TokenPriceProps } from "./token-price";
 import type { ReactNode } from "react";
 
-type BalanceValue = number | string | null | undefined;
+type BalanceValue = NumericValue;
 
 export interface TokenBalanceProps {
   /** Token amount */
@@ -14,8 +18,10 @@ export interface TokenBalanceProps {
   name?: string | null;
   /** Token image URL */
   src?: string | null;
-  /** Token contract address, used as a fallback label */
+  /** Token contract address, used for icon inference and as a fallback label */
   address?: string | null;
+  /** EVM chain id, used with address to infer a token icon */
+  chainId?: number | null;
   /** Fiat value for the token balance */
   fiatValue?: TokenPriceProps["value"];
   /** Fiat value percentage change */
@@ -44,15 +50,6 @@ export interface TokenBalanceProps {
   fiatClassName?: string;
 }
 
-function parseBalanceValue(value: BalanceValue) {
-  if (typeof value === "number") return Number.isFinite(value) ? value : null;
-  if (typeof value === "string" && value.trim() !== "") {
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : null;
-  }
-  return null;
-}
-
 function formatAmount({
   locale,
   maximumFractionDigits,
@@ -65,7 +62,11 @@ function formatAmount({
   value: number;
 }) {
   return new Intl.NumberFormat(locale, {
-    maximumFractionDigits,
+    // Intl.NumberFormat throws a RangeError when min > max
+    maximumFractionDigits: Math.max(
+      maximumFractionDigits,
+      minimumFractionDigits ?? 0
+    ),
     minimumFractionDigits,
   }).format(value);
 }
@@ -76,6 +77,7 @@ export function TokenBalance({
   name,
   src,
   address,
+  chainId,
   fiatValue,
   change,
   showLogo = true,
@@ -90,7 +92,7 @@ export function TokenBalance({
   amountClassName,
   fiatClassName,
 }: TokenBalanceProps) {
-  const parsedAmount = parseBalanceValue(amount);
+  const parsedAmount = parseNumericValue(amount);
   const hasFiatValue =
     showFiatValue && fiatValue !== null && fiatValue !== undefined && fiatValue !== "";
 
@@ -99,6 +101,7 @@ export function TokenBalance({
       {showLogo && (
         <TokenLogo
           address={address}
+          chainId={chainId}
           name={name}
           src={src}
           symbol={symbol}

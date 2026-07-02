@@ -7,6 +7,14 @@ import { truncateAddress } from "@/lib/onchain/format";
 import type { Address } from "viem";
 import type { ReactNode } from "react";
 
+const knownExplorers: Record<number, string> = {
+  1: "https://etherscan.io",
+  10: "https://optimistic.etherscan.io",
+  137: "https://polygonscan.com",
+  8453: "https://basescan.org",
+  42161: "https://arbiscan.io",
+};
+
 export interface AddressDisplayProps {
   /** EVM wallet address */
   address: Address;
@@ -24,7 +32,9 @@ export interface AddressDisplayProps {
   showCopy?: boolean;
   /** Show block explorer link. Default: true */
   showExplorer?: boolean;
-  /** Full explorer URL e.g. "https://basescan.org/address/0x..." */
+  /** EVM chain id used to pick a known block explorer. Default: 1 (Etherscan) */
+  chainId?: number | null;
+  /** Full explorer URL override e.g. "https://basescan.org/address/0x..." */
   explorerUrl?: string;
   /** Icon rendered before the address when copy is enabled */
   copyIcon?: ReactNode;
@@ -41,16 +51,23 @@ export function AddressDisplay({
   truncateChars = 4,
   showCopy = true,
   showExplorer = true,
+  chainId,
   explorerUrl,
   copyIcon = <CopyIcon className="size-3 shrink-0" />,
   explorerIcon = <ExternalLinkIcon className="size-3 shrink-0" />,
 }: AddressDisplayProps) {
-  const handleCopy = () => {
-    navigator.clipboard.writeText(address);
-    toast.success("Address copied");
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(address);
+      toast.success("Address copied");
+    } catch {
+      toast.error("Could not copy address");
+    }
   };
 
-  const href = explorerUrl ?? `https://etherscan.io/address/${address}`;
+  const explorerBase =
+    (chainId != null ? knownExplorers[chainId] : undefined) ?? knownExplorers[1];
+  const href = explorerUrl ?? `${explorerBase}/address/${address}`;
   const displayLabel =
     label ?? (truncate ? truncateAddress(address, truncateChars) : address);
   const labelClassName = truncate ? "whitespace-nowrap" : "break-all";

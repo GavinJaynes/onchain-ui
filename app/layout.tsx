@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import { AlphaBanner } from "@/components/alpha-banner";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -43,8 +44,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <RootProvider>
-          <AlphaBanner />
-          {children}
+          <TooltipProvider>
+            <AlphaBanner />
+            {children}
+          </TooltipProvider>
         </RootProvider>
         <Toaster />
       </body>

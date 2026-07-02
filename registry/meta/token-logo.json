@@ -4,9 +4,9 @@
   "type": "registry:ui",
   "title": "Token Logo",
   "description": "Displays a token image with resilient symbol, name, or address fallback.",
-  "dependencies": ["@base-ui/react"],
+  "dependencies": ["viem"],
   "devDependencies": [],
-  "registryDependencies": [],
+  "registryDependencies": ["tooltip"],
   "files": [
     {
       "path": "registry/onchain-ui/token-logo.tsx",
@@ -14,9 +14,9 @@
       "target": "components/ui/token-logo.tsx"
     },
     {
-      "path": "components/ui/tooltip.tsx",
-      "type": "registry:ui",
-      "target": "components/ui/tooltip.tsx"
+      "path": "lib/onchain/crypto-icons.tsx",
+      "type": "registry:lib",
+      "target": "lib/onchain/crypto-icons.tsx"
     }
   ]
 }

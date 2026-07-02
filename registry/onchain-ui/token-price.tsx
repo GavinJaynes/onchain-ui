@@ -1,8 +1,12 @@
 import { ArrowDownIcon, ArrowUpIcon, MinusIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  parseNumericValue,
+  type NumericValue,
+} from "@/lib/onchain/format";
 import type { ReactNode } from "react";
 
-type PriceValue = number | string | null | undefined;
+type PriceValue = NumericValue;
 type Trend = "down" | "neutral" | "up";
 
 const trendClasses = {
@@ -44,15 +48,6 @@ export interface TokenPriceProps {
   changeClassName?: string;
 }
 
-function parsePriceValue(value: PriceValue) {
-  if (typeof value === "number") return Number.isFinite(value) ? value : null;
-  if (typeof value === "string" && value.trim() !== "") {
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : null;
-  }
-  return null;
-}
-
 function getMaximumFractionDigits(value: number) {
   const abs = Math.abs(value);
   if (abs >= 1) return 2;
@@ -75,14 +70,36 @@ function formatPrice({
   minimumFractionDigits?: number;
   value: number;
 }) {
+  const abs = Math.abs(value);
+  const hasExplicitDigits =
+    maximumFractionDigits !== undefined || minimumFractionDigits !== undefined;
+
+  // Sub-cent prices round to $0.00 with fraction digits; keep the leading
+  // significant figures instead, e.g. $0.00000041.
+  if (!hasExplicitDigits && abs > 0 && abs < 0.01) {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency,
+      currencyDisplay: "narrowSymbol",
+      notation: compact ? "compact" : "standard",
+      maximumSignificantDigits: 2,
+    }).format(value);
+  }
+
+  const resolvedMaximumFractionDigits =
+    maximumFractionDigits ?? getMaximumFractionDigits(value);
+
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
     currencyDisplay: "narrowSymbol",
     notation: compact ? "compact" : "standard",
     minimumFractionDigits,
-    maximumFractionDigits:
-      maximumFractionDigits ?? getMaximumFractionDigits(value),
+    // Intl.NumberFormat throws a RangeError when min > max
+    maximumFractionDigits: Math.max(
+      resolvedMaximumFractionDigits,
+      minimumFractionDigits ?? 0
+    ),
   }).format(value);
 }
 
@@ -123,7 +140,7 @@ export function TokenPrice({
   priceClassName,
   changeClassName,
 }: TokenPriceProps) {
-  const parsedValue = parsePriceValue(value);
+  const parsedValue = parseNumericValue(value);
   const shouldShowChange = typeof change === "number" && Number.isFinite(change);
   const derivedTrend = trend ?? getTrend(change);
 

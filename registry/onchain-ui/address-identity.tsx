@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { truncateAddress } from "@/lib/onchain/format";
 import {
@@ -56,20 +56,29 @@ export function AddressIdentity({
     key: string;
     identity: OnchainIdentity;
   } | null>(null);
+  const [failedAvatarSrc, setFailedAvatarSrc] = useState<string | null>(null);
+
+  // Read resolver options through a ref so inline object literals don't
+  // retrigger resolution on every render.
+  const resolverOptionsRef = useRef(resolverOptions);
+  useEffect(() => {
+    resolverOptionsRef.current = resolverOptions;
+  });
 
   useEffect(() => {
     if (!resolveIdentity || (name && avatarUrl)) return;
 
     let isMounted = true;
+    const options = resolverOptionsRef.current;
 
     const identityPromise = name
-      ? resolveNameAvatar(name, resolverOptions).then((avatar) => ({
+      ? resolveNameAvatar(name, options).then((avatar) => ({
           address,
           name,
           avatar,
           source: name.endsWith(".base.eth") ? "basename" : "ens",
         }) satisfies OnchainIdentity)
-      : resolveOnchainIdentity(address, resolverOptions);
+      : resolveOnchainIdentity(address, options);
 
     identityPromise
       .then((result) => {
@@ -81,12 +90,16 @@ export function AddressIdentity({
     return () => {
       isMounted = false;
     };
-  }, [address, avatarUrl, identityKey, name, resolveIdentity, resolverOptions]);
+  }, [address, avatarUrl, identityKey, name, resolveIdentity]);
 
   const activeIdentity =
     resolvedIdentity?.key === identityKey ? resolvedIdentity.identity : null;
   const displayName = name ?? activeIdentity?.name ?? null;
-  const displayAvatar = avatarUrl ?? activeIdentity?.avatar ?? null;
+  const resolvedAvatar = avatarUrl ?? activeIdentity?.avatar ?? null;
+  const displayAvatar =
+    resolvedAvatar !== null && resolvedAvatar !== failedAvatarSrc
+      ? resolvedAvatar
+      : null;
   const isLoading =
     resolveIdentity && !(name && avatarUrl) && activeIdentity === null;
   const fallbackLabel = truncate
@@ -116,6 +129,7 @@ export function AddressIdentity({
               alt=""
               className="size-full object-cover"
               referrerPolicy="no-referrer"
+              onError={() => setFailedAvatarSrc(displayAvatar)}
             />
           ) : (
             avatarFallback

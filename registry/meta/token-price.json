@@ -12,6 +12,11 @@
       "path": "registry/onchain-ui/token-price.tsx",
       "type": "registry:ui",
       "target": "components/ui/token-price.tsx"
+    },
+    {
+      "path": "lib/onchain/format.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/format.ts"
     }
   ]
 }

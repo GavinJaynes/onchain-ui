@@ -2,7 +2,12 @@
 
 import { useMemo, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { Tooltip } from "@/components/ui/tooltip";
+import { getTokenIcon } from "@/lib/onchain/crypto-icons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const sizeClasses = {
   xs: "size-5 text-[9px]",
@@ -13,14 +18,16 @@ const sizeClasses = {
 } as const;
 
 export interface TokenLogoProps {
-  /** Token image URL */
+  /** Token image URL. Always wins over inferred icons */
   src?: string | null;
   /** Token symbol, used for alt text and fallback initials */
   symbol?: string | null;
   /** Token name, used for alt text */
   name?: string | null;
-  /** Token contract address, used as a fallback label */
+  /** Token contract address, used for icon inference and as a fallback label */
   address?: string | null;
+  /** EVM chain id, used with address to infer an icon via the crypto-icons adapter */
+  chainId?: number | null;
   /** Visual size. Default: md */
   size?: keyof typeof sizeClasses;
   /** Custom fallback content when the image is missing or fails */
@@ -53,6 +60,7 @@ export function TokenLogo({
   symbol,
   name,
   address,
+  chainId,
   size = "md",
   fallback,
   showTooltip = false,
@@ -61,8 +69,20 @@ export function TokenLogo({
   imageClassName,
   fallbackClassName,
 }: TokenLogoProps) {
-  const [hasImageError, setHasImageError] = useState(false);
-  const shouldShowImage = Boolean(src) && !hasImageError;
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+
+  // Explicit src wins; otherwise ask the crypto-icons adapter.
+  const inferredIcon = useMemo(
+    () => (src ? null : getTokenIcon({ chainId, address, symbol })),
+    [address, chainId, src, symbol]
+  );
+  const resolvedSrc =
+    src ?? (typeof inferredIcon === "string" ? inferredIcon : null);
+  const inferredNode =
+    inferredIcon != null && typeof inferredIcon !== "string"
+      ? inferredIcon
+      : null;
+  const shouldShowImage = Boolean(resolvedSrc) && failedSrc !== resolvedSrc;
 
   const alt = useMemo(() => {
     if (name && symbol) return `${name} (${symbol})`;
@@ -81,14 +101,16 @@ export function TokenLogo({
     >
       {shouldShowImage ? (
         <img
-          src={src ?? undefined}
+          src={resolvedSrc ?? undefined}
           alt={alt}
           className={cn("size-full object-cover", imageClassName)}
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"
-          onError={() => setHasImageError(true)}
+          onError={() => setFailedSrc(resolvedSrc)}
         />
+      ) : inferredNode ? (
+        inferredNode
       ) : (
         <span className={cn("select-none", fallbackClassName)}>
           {fallback ?? getFallbackText({ address, name, symbol })}
@@ -97,7 +119,12 @@ export function TokenLogo({
     </span>
   );
 
-  if (!showTooltip) return logo;
+  if (!showTooltip || tooltip == null) return logo;
 
-  return <Tooltip content={tooltip}>{logo}</Tooltip>;
+  return (
+    <Tooltip>
+      <TooltipTrigger render={logo} />
+      <TooltipContent>{tooltip}</TooltipContent>
+    </Tooltip>
+  );
 }

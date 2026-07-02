@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "crypto-icons",
+  "type": "registry:lib",
+  "title": "Crypto Icons",
+  "description": "Swappable adapter that resolves token and network icons for onchain-ui components.",
+  "dependencies": ["viem"],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "lib/onchain/crypto-icons.tsx",
+      "type": "registry:lib",
+      "target": "lib/onchain/crypto-icons.tsx"
+    }
+  ]
+}

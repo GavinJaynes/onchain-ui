@@ -1,10 +1,14 @@
 import { cn } from "@/lib/utils";
+import {
+  parseNumericValue,
+  type NumericValue,
+} from "@/lib/onchain/format";
 import { NetworkLogo, type NetworkLogoProps } from "./network-logo";
 import { TokenLogo, type TokenLogoProps } from "./token-logo";
 import { TokenPrice, type TokenPriceProps } from "./token-price";
 import type { ReactNode } from "react";
 
-type AmountValue = number | string | null | undefined;
+type AmountValue = NumericValue;
 
 export interface AssetRowProps {
   /** Token symbol */
@@ -49,15 +53,6 @@ export interface AssetRowProps {
   valueClassName?: string;
 }
 
-function parseAmountValue(value: AmountValue) {
-  if (typeof value === "number") return Number.isFinite(value) ? value : null;
-  if (typeof value === "string" && value.trim() !== "") {
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : null;
-  }
-  return null;
-}
-
 function formatAmount({
   locale,
   maximumFractionDigits,
@@ -94,7 +89,7 @@ export function AssetRow({
   identityClassName,
   valueClassName,
 }: AssetRowProps) {
-  const parsedAmount = parseAmountValue(amount);
+  const parsedAmount = parseNumericValue(amount);
   const hasNetwork = Boolean(chainId || networkName || networkSrc);
   const hasValue = value !== null && value !== undefined && value !== "";
 
@@ -109,6 +104,7 @@ export function AssetRow({
         <span className="relative shrink-0">
           <TokenLogo
             address={address}
+            chainId={chainId}
             name={name}
             size="lg"
             src={src}

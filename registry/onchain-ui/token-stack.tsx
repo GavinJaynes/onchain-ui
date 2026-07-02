@@ -1,12 +1,19 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Tooltip } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { TokenLogo, type TokenLogoProps } from "./token-logo";
 import type { ReactNode } from "react";
 
 export interface TokenStackItem
-  extends Pick<TokenLogoProps, "address" | "fallback" | "name" | "src" | "symbol"> {
+  extends Pick<
+    TokenLogoProps,
+    "address" | "chainId" | "fallback" | "name" | "src" | "symbol"
+  > {
   id?: string;
 }
 
@@ -55,7 +62,9 @@ const overflowSizeClasses = {
 } as const;
 
 function getTokenKey(token: TokenStackItem, index: number) {
-  return token.id ?? token.address ?? token.symbol ?? token.name ?? index;
+  // Index-suffixed so the same token can legitimately appear twice, e.g. in
+  // swap routes.
+  return `${token.id ?? token.address ?? token.symbol ?? token.name ?? "token"}:${index}`;
 }
 
 export function TokenStack({
@@ -118,6 +127,7 @@ export function TokenStack({
             ) : (
               <TokenLogo
                 address={token.address}
+                chainId={token.chainId}
                 fallback={token.fallback}
                 name={token.name}
                 size={size}
@@ -131,41 +141,19 @@ export function TokenStack({
         if (!showTooltip) return item;
 
         return (
-          <Tooltip
-            key={getTokenKey(token, index)}
-            content={
-              getTooltipContent
+          <Tooltip key={getTokenKey(token, index)}>
+            <TooltipTrigger render={item} />
+            <TooltipContent>
+              {getTooltipContent
                 ? getTooltipContent(token, index)
-                : getDefaultTooltipContent(token)
-            }
-          >
-            {item}
+                : getDefaultTooltipContent(token)}
+            </TooltipContent>
           </Tooltip>
         );
       })}
 
-      {showOverflow && overflowCount > 0 && (
-        showTooltip ? (
-          <Tooltip
-            content={
-              getOverflowTooltipContent
-                ? getOverflowTooltipContent(hiddenTokens)
-                : getDefaultOverflowTooltipContent()
-            }
-          >
-            <span
-              className={cn(
-                "relative inline-flex shrink-0 items-center justify-center rounded-full border bg-muted font-medium text-muted-foreground ring-2 ring-background",
-                overflowSizeClasses[size],
-                overflowClassName
-              )}
-              aria-label={`${overflowCount} more tokens`}
-              role="listitem"
-            >
-              {renderOverflow ? renderOverflow(overflowCount) : `+${overflowCount}`}
-            </span>
-          </Tooltip>
-        ) : (
+      {showOverflow && overflowCount > 0 && (() => {
+        const overflowItem = (
           <span
             className={cn(
               "relative inline-flex shrink-0 items-center justify-center rounded-full border bg-muted font-medium text-muted-foreground ring-2 ring-background",
@@ -177,8 +165,21 @@ export function TokenStack({
           >
             {renderOverflow ? renderOverflow(overflowCount) : `+${overflowCount}`}
           </span>
-        )
-      )}
+        );
+
+        if (!showTooltip) return overflowItem;
+
+        return (
+          <Tooltip>
+            <TooltipTrigger render={overflowItem} />
+            <TooltipContent>
+              {getOverflowTooltipContent
+                ? getOverflowTooltipContent(hiddenTokens)
+                : getDefaultOverflowTooltipContent()}
+            </TooltipContent>
+          </Tooltip>
+        );
+      })()}
     </div>
   );
 }

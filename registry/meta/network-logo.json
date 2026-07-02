@@ -4,9 +4,9 @@
   "type": "registry:ui",
   "title": "Network Logo",
   "description": "Displays a network or chain logo with known chain fallbacks.",
-  "dependencies": ["@base-ui/react"],
+  "dependencies": ["viem"],
   "devDependencies": [],
-  "registryDependencies": [],
+  "registryDependencies": ["tooltip"],
   "files": [
     {
       "path": "registry/onchain-ui/network-logo.tsx",
@@ -14,9 +14,9 @@
       "target": "components/ui/network-logo.tsx"
     },
     {
-      "path": "components/ui/tooltip.tsx",
-      "type": "registry:ui",
-      "target": "components/ui/tooltip.tsx"
+      "path": "lib/onchain/crypto-icons.tsx",
+      "type": "registry:lib",
+      "target": "lib/onchain/crypto-icons.tsx"
     }
   ]
 }

@@ -4,9 +4,9 @@
   "type": "registry:ui",
   "title": "Asset Row",
   "description": "Displays a practical portfolio or watchlist row from token identity, network, amount, value, and change.",
-  "dependencies": ["@base-ui/react", "lucide-react"],
+  "dependencies": ["lucide-react", "viem"],
   "devDependencies": [],
-  "registryDependencies": [],
+  "registryDependencies": ["tooltip"],
   "files": [
     {
       "path": "registry/onchain-ui/token-logo.tsx",
@@ -29,9 +29,14 @@
       "target": "components/ui/asset-row.tsx"
     },
     {
-      "path": "components/ui/tooltip.tsx",
-      "type": "registry:ui",
-      "target": "components/ui/tooltip.tsx"
+      "path": "lib/onchain/format.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/format.ts"
+    },
+    {
+      "path": "lib/onchain/crypto-icons.tsx",
+      "type": "registry:lib",
+      "target": "lib/onchain/crypto-icons.tsx"
     }
   ]
 }

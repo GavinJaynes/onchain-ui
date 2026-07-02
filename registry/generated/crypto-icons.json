@@ -1,23 +1,15 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
-  "name": "token-logo",
-  "type": "registry:ui",
-  "title": "Token Logo",
-  "description": "Displays a token image with resilient symbol, name, or address fallback.",
+  "name": "crypto-icons",
+  "type": "registry:lib",
+  "title": "Crypto Icons",
+  "description": "Swappable adapter that resolves token and network icons for onchain-ui components.",
   "dependencies": [
     "viem"
   ],
   "devDependencies": [],
-  "registryDependencies": [
-    "tooltip"
-  ],
+  "registryDependencies": [],
   "files": [
-    {
-      "path": "registry/onchain-ui/token-logo.tsx",
-      "type": "registry:ui",
-      "target": "components/ui/token-logo.tsx",
-      "content": "\"use client\";\n\nimport { useMemo, useState, type ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\nimport { getTokenIcon } from \"@/lib/onchain/crypto-icons\";\nimport {\n  Tooltip,\n  TooltipContent,\n  TooltipTrigger,\n} from \"@/components/ui/tooltip\";\n\nconst sizeClasses = {\n  xs: \"size-5 text-[9px]\",\n  sm: \"size-6 text-[10px]\",\n  md: \"size-8 text-xs\",\n  lg: \"size-10 text-sm\",\n  xl: \"size-12 text-base\",\n} as const;\n\nexport interface TokenLogoProps {\n  /** Token image URL. Always wins over inferred icons */\n  src?: string | null;\n  /** Token symbol, used for alt text and fallback initials */\n  symbol?: string | null;\n  /** Token name, used for alt text */\n  name?: string | null;\n  /** Token contract address, used for icon inference and as a fallback label */\n  address?: string | null;\n  /** EVM chain id, used with address to infer an icon via the crypto-icons adapter */\n  chainId?: number | null;\n  /** Visual size. Default: md */\n  size?: keyof typeof sizeClasses;\n  /** Custom fallback content when the image is missing or fails */\n  fallback?: ReactNode;\n  /** Show an animated tooltip. Default: false */\n  showTooltip?: boolean;\n  /** Tooltip content. Defaults to name, symbol, then address. */\n  tooltipContent?: ReactNode;\n  /** Applied to the root wrapper */\n  className?: string;\n  /** Applied to the image */\n  imageClassName?: string;\n  /** Applied to the fallback */\n  fallbackClassName?: string;\n}\n\nfunction getFallbackText({\n  address,\n  name,\n  symbol,\n}: Pick<TokenLogoProps, \"address\" | \"name\" | \"symbol\">) {\n  if (symbol) return symbol.slice(0, 4).toUpperCase();\n  if (name) return name.slice(0, 2).toUpperCase();\n  if (address) return address.slice(2, 4).toUpperCase();\n  return \"?\";\n}\n\nexport function TokenLogo({\n  src,\n  symbol,\n  name,\n  address,\n  chainId,\n  size = \"md\",\n  fallback,\n  showTooltip = false,\n  tooltipContent,\n  className,\n  imageClassName,\n  fallbackClassName,\n}: TokenLogoProps) {\n  const [failedSrc, setFailedSrc] = useState<string | null>(null);\n\n  // Explicit src wins; otherwise ask the crypto-icons adapter.\n  const inferredIcon = useMemo(\n    () => (src ? null : getTokenIcon({ chainId, address, symbol })),\n    [address, chainId, src, symbol]\n  );\n  const resolvedSrc =\n    src ?? (typeof inferredIcon === \"string\" ? inferredIcon : null);\n  const inferredNode =\n    inferredIcon != null && typeof inferredIcon !== \"string\"\n      ? inferredIcon\n      : null;\n  const shouldShowImage = Boolean(resolvedSrc) && failedSrc !== resolvedSrc;\n\n  const alt = useMemo(() => {\n    if (name && symbol) return `${name} (${symbol})`;\n    return name ?? symbol ?? address ?? \"Token\";\n  }, [address, name, symbol]);\n\n  const tooltip = tooltipContent ?? name ?? symbol ?? address;\n\n  const logo = (\n    <span\n      className={cn(\n        \"relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border bg-muted font-medium text-muted-foreground\",\n        sizeClasses[size],\n        className\n      )}\n    >\n      {shouldShowImage ? (\n        <img\n          src={resolvedSrc ?? undefined}\n          alt={alt}\n          className={cn(\"size-full object-cover\", imageClassName)}\n          loading=\"lazy\"\n          decoding=\"async\"\n          referrerPolicy=\"no-referrer\"\n          onError={() => setFailedSrc(resolvedSrc)}\n        />\n      ) : inferredNode ? (\n        inferredNode\n      ) : (\n        <span className={cn(\"select-none\", fallbackClassName)}>\n          {fallback ?? getFallbackText({ address, name, symbol })}\n        </span>\n      )}\n    </span>\n  );\n\n  if (!showTooltip || tooltip == null) return logo;\n\n  return (\n    <Tooltip>\n      <TooltipTrigger render={logo} />\n      <TooltipContent>{tooltip}</TooltipContent>\n    </Tooltip>\n  );\n}\n"
-    },
     {
       "path": "lib/onchain/crypto-icons.tsx",
       "type": "registry:lib",

@@ -4,9 +4,9 @@
   "type": "registry:ui",
   "title": "Token Balance",
   "description": "Displays a token amount with optional logo, fiat value, and change.",
-  "dependencies": ["@base-ui/react", "lucide-react"],
+  "dependencies": ["lucide-react", "viem"],
   "devDependencies": [],
-  "registryDependencies": [],
+  "registryDependencies": ["tooltip"],
   "files": [
     {
       "path": "registry/onchain-ui/token-logo.tsx",
@@ -24,9 +24,14 @@
       "target": "components/ui/token-balance.tsx"
     },
     {
-      "path": "components/ui/tooltip.tsx",
-      "type": "registry:ui",
-      "target": "components/ui/tooltip.tsx"
+      "path": "lib/onchain/format.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/format.ts"
+    },
+    {
+      "path": "lib/onchain/crypto-icons.tsx",
+      "type": "registry:lib",
+      "target": "lib/onchain/crypto-icons.tsx"
     }
   ]
 }

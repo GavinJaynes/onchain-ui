@@ -52,11 +52,16 @@ test("registry index is in sync with registry metadata", async () => {
   assert.equal(new Set(indexNames).size, indexNames.length);
 });
 
+const allowedItemTypes = ["registry:ui", "registry:lib"];
+
 test("registry index entries point at public registry item routes", async () => {
   const registry = await getRegistryIndex();
 
   for (const item of registry.items) {
-    assert.equal(item.type, "registry:ui");
+    assert.ok(
+      allowedItemTypes.includes(item.type),
+      `${item.name} has unexpected type ${item.type}`
+    );
     assert.equal(item.url, `https://onchain-ui.dev/r/${item.name}`);
     assert.ok(item.title, `${item.name} is missing a title`);
     assert.ok(item.description, `${item.name} is missing a description`);
@@ -68,7 +73,10 @@ test("registry metadata files are valid and reference real source files", async 
 
   for (const { file, item } of metaItems) {
     assert.equal(file, `${item.name}.json`);
-    assert.equal(item.type, "registry:ui");
+    assert.ok(
+      allowedItemTypes.includes(item.type),
+      `${item.name} has unexpected type ${item.type}`
+    );
     assert.ok(item.title, `${item.name} is missing a title`);
     assert.ok(item.description, `${item.name} is missing a description`);
     assert.ok(Array.isArray(item.dependencies), `${item.name} dependencies must be an array`);
