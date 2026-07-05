@@ -5,10 +5,12 @@ import {
   isAddress,
   keccak256,
   namehash,
+  zeroAddress,
   type Address,
   type Hex,
   type PublicClient,
 } from "viem";
+import { normalize, parseAvatarRecord } from "viem/ens";
 import { base, mainnet } from "viem/chains";
 
 export const BASENAME_L2_RESOLVER_ADDRESS =
@@ -19,6 +21,23 @@ const baseNamesAbi = [
     inputs: [{ internalType: "bytes32", name: "node", type: "bytes32" }],
     name: "name",
     outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "node", type: "bytes32" },
+      { internalType: "string", name: "key", type: "string" },
+    ],
+    name: "text",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "node", type: "bytes32" }],
+    name: "addr",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
@@ -66,14 +85,6 @@ function getBaseClient(options?: OnchainResolverOptions) {
   return defaultBaseClient;
 }
 
-function hasCustomResolverConfig(options?: OnchainResolverOptions) {
-  return Boolean(
-    options?.mainnetClient ??
-      options?.baseClient ??
-      options?.basenameResolverAddress
-  );
-}
-
 function getBasenameResolverAddress(options?: OnchainResolverOptions) {
   return options?.basenameResolverAddress ?? BASENAME_L2_RESOLVER_ADDRESS;
 }
@@ -96,21 +107,28 @@ export function convertReverseNodeToBytes(address: Address, chainId: number) {
   );
 }
 
-export async function resolveEnsName(
+// Internal lookups report failures instead of collapsing them into null, so
+// callers can tell "no record exists" (cacheable) from "the RPC call failed"
+// (must not be cached). The exported resolve* functions keep returning null
+// for both.
+type LookupResult<T> = { value: T; failed: boolean };
+
+async function lookupEnsName(
   address: Address,
   options?: OnchainResolverOptions
-) {
+): Promise<LookupResult<string | null>> {
   try {
-    return await getMainnetClient(options).getEnsName({ address });
+    const name = await getMainnetClient(options).getEnsName({ address });
+    return { value: name, failed: false };
   } catch {
-    return null;
+    return { value: null, failed: true };
   }
 }
 
-export async function resolveBasename(
+async function lookupBasename(
   address: Address,
   options?: OnchainResolverOptions
-) {
+): Promise<LookupResult<string | null>> {
   try {
     const reverseNode = convertReverseNodeToBytes(address, base.id);
 
@@ -121,46 +139,123 @@ export async function resolveBasename(
       args: [reverseNode],
     });
 
-    return name || null;
+    return { value: name || null, failed: false };
   } catch {
-    return null;
+    return { value: null, failed: true };
   }
+}
+
+export async function resolveEnsName(
+  address: Address,
+  options?: OnchainResolverOptions
+) {
+  return (await lookupEnsName(address, options)).value;
+}
+
+export async function resolveBasename(
+  address: Address,
+  options?: OnchainResolverOptions
+) {
+  return (await lookupBasename(address, options)).value;
 }
 
 // Session-level caches so repeated lookups (portfolio rows, remounts) don't
 // refetch. Keyed lookups share in-flight promises, deduping concurrent calls.
-// Skipped when custom clients are provided, since results may differ.
-const avatarCache = new Map<string, Promise<string | null>>();
-const identityCache = new Map<string, Promise<OnchainIdentity>>();
+// Failed lookups are evicted once settled so transient RPC errors are retried
+// instead of pinning "no result" for the whole session.
+//
+// Caches are scoped per resolver config: results from different clients or a
+// different Basename resolver must not mix. Scopes are keyed on the client
+// instances via WeakMap so a custom client keeps request deduplication, and
+// short-lived clients get garbage collected along with their cache.
+type ResolverCaches = {
+  avatar: Map<string, Promise<LookupResult<string | null>>>;
+  identity: Map<string, Promise<LookupResult<OnchainIdentity>>>;
+};
+
+const defaultMainnetScope = {};
+const defaultBaseScope = {};
+
+const cacheScopes = new WeakMap<
+  object,
+  WeakMap<object, Map<string, ResolverCaches>>
+>();
+
+function getResolverCaches(options?: OnchainResolverOptions): ResolverCaches {
+  const mainnetScope = options?.mainnetClient ?? defaultMainnetScope;
+  const baseScope = options?.baseClient ?? defaultBaseScope;
+  const resolverAddress = getBasenameResolverAddress(options).toLowerCase();
+
+  let baseScopes = cacheScopes.get(mainnetScope);
+  if (!baseScopes) {
+    baseScopes = new WeakMap();
+    cacheScopes.set(mainnetScope, baseScopes);
+  }
+
+  let resolverScopes = baseScopes.get(baseScope);
+  if (!resolverScopes) {
+    resolverScopes = new Map();
+    baseScopes.set(baseScope, resolverScopes);
+  }
+
+  let caches = resolverScopes.get(resolverAddress);
+  if (!caches) {
+    caches = { avatar: new Map(), identity: new Map() };
+    resolverScopes.set(resolverAddress, caches);
+  }
+
+  return caches;
+}
 
 export async function resolveNameAvatar(
   name: string,
   options?: OnchainResolverOptions
 ) {
-  if (!hasCustomResolverConfig(options)) {
-    const cached = avatarCache.get(name);
-    if (cached) return cached;
-
-    const promise = fetchNameAvatar(name, options);
-    avatarCache.set(name, promise);
-    return promise;
-  }
-
-  return fetchNameAvatar(name, options);
+  return (await lookupNameAvatarCached(name, options)).value;
 }
 
-async function fetchNameAvatar(name: string, options?: OnchainResolverOptions) {
+async function lookupNameAvatarCached(
+  name: string,
+  options?: OnchainResolverOptions
+): Promise<LookupResult<string | null>> {
+  const cache = getResolverCaches(options).avatar;
+
+  const cached = cache.get(name);
+  if (cached) return cached;
+
+  const promise = lookupNameAvatar(name, options);
+  cache.set(name, promise);
+
+  const result = await promise;
+  if (result.failed) cache.delete(name);
+  return result;
+}
+
+async function lookupNameAvatar(
+  name: string,
+  options?: OnchainResolverOptions
+): Promise<LookupResult<string | null>> {
   try {
     if (name.endsWith(".base.eth")) {
-      return await getBaseClient(options).getEnsAvatar({
-        name,
-        universalResolverAddress: getBasenameResolverAddress(options),
+      // The Basename L2 resolver is a plain resolver, not an ENS universal
+      // resolver, so viem's getEnsAvatar reverts against it. Read the avatar
+      // text record directly instead.
+      const client = getBaseClient(options);
+      const record = await client.readContract({
+        abi: baseNamesAbi,
+        address: getBasenameResolverAddress(options),
+        functionName: "text",
+        args: [namehash(normalize(name)), "avatar"],
       });
+
+      if (!record) return { value: null, failed: false };
+      return { value: await parseAvatarRecord(client, { record }), failed: false };
     }
 
-    return await getMainnetClient(options).getEnsAvatar({ name });
+    const avatar = await getMainnetClient(options).getEnsAvatar({ name });
+    return { value: avatar, failed: false };
   } catch {
-    return null;
+    return { value: null, failed: true };
   }
 }
 
@@ -172,10 +267,16 @@ export async function resolveAddress(
 
   try {
     if (input.endsWith(".base.eth")) {
-      return await getBaseClient(options).getEnsAddress({
-        name: input,
-        universalResolverAddress: getBasenameResolverAddress(options),
+      // Direct resolver read; see fetchNameAvatar for why getEnsAddress with
+      // a universalResolverAddress override does not work for Basenames.
+      const address = await getBaseClient(options).readContract({
+        abi: baseNamesAbi,
+        address: getBasenameResolverAddress(options),
+        functionName: "addr",
+        args: [namehash(normalize(input))],
       });
+
+      return address && address !== zeroAddress ? address : null;
     }
 
     if (input.endsWith(".eth")) {
@@ -197,44 +298,57 @@ export async function resolveOnchainIdentity(
     "ens",
   ];
 
-  if (!hasCustomResolverConfig(options)) {
-    const cacheKey = `${address.toLowerCase()}:${reverseLookupOrder.join(",")}`;
-    const cached = identityCache.get(cacheKey);
-    if (cached) return cached;
+  const cache = getResolverCaches(options).identity;
+  const cacheKey = `${address.toLowerCase()}:${reverseLookupOrder.join(",")}`;
 
-    const promise = fetchOnchainIdentity(address, reverseLookupOrder, options);
-    identityCache.set(cacheKey, promise);
-    return promise;
-  }
+  const cached = cache.get(cacheKey);
+  if (cached) return (await cached).value;
 
-  return fetchOnchainIdentity(address, reverseLookupOrder, options);
+  const promise = lookupOnchainIdentity(address, reverseLookupOrder, options);
+  cache.set(cacheKey, promise);
+
+  const result = await promise;
+  if (result.failed) cache.delete(cacheKey);
+  return result.value;
 }
 
-async function fetchOnchainIdentity(
+async function lookupOnchainIdentity(
   address: Address,
   reverseLookupOrder: Array<"ens" | "basename">,
   options?: OnchainResolverOptions
-): Promise<OnchainIdentity> {
+): Promise<LookupResult<OnchainIdentity>> {
+  let failed = false;
+
   for (const source of reverseLookupOrder) {
     const name =
       source === "basename"
-        ? await resolveBasename(address, options)
-        : await resolveEnsName(address, options);
+        ? await lookupBasename(address, options)
+        : await lookupEnsName(address, options);
 
-    if (name) {
+    if (name.failed) failed = true;
+
+    if (name.value) {
+      const avatar = await lookupNameAvatarCached(name.value, options);
+
       return {
-        address,
-        name,
-        avatar: await resolveNameAvatar(name, options),
-        source,
+        value: {
+          address,
+          name: name.value,
+          avatar: avatar.value,
+          source,
+        },
+        failed: failed || avatar.failed,
       };
     }
   }
 
   return {
-    address,
-    name: null,
-    avatar: null,
-    source: null,
+    value: {
+      address,
+      name: null,
+      avatar: null,
+      source: null,
+    },
+    failed,
   };
 }
