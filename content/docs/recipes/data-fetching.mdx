@@ -1,0 +1,113 @@
+---
+title: Data Fetching
+description: Feed live balances, prices, and portfolios into onchain-ui components with TanStack Query.
+---
+
+Components like `AssetRow` and `TokenBalance` render whatever you pass them — the interesting part is keeping that data fresh without hammering your RPC or price API. We recommend [TanStack Query](https://tanstack.com/query/latest): declarative caching, request deduplication, and background refetching. If you already use wagmi, it's in your tree — wagmi's hooks are built on it.
+
+## Portfolio query
+
+Map your API response to `AssetRow` props inside the query, then render the rows. `select` keeps the mapping out of your components, and `placeholderData` avoids a flash of skeletons when the wallet switches.
+
+```tsx
+"use client"
+
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { AssetRow } from "@/components/ui/asset-row"
+import type { Address } from "viem"
+
+type Holding = {
+  symbol: string
+  name: string
+  src: string | null
+  amount: number
+  value: number
+  change: number
+  chainId: number
+}
+
+async function fetchPortfolio(address: Address): Promise<Holding[]> {
+  const res = await fetch(`/api/portfolio/${address}`)
+  if (!res.ok) throw new Error("Failed to load portfolio")
+  return res.json()
+}
+
+export function Portfolio({ address }: { address: Address }) {
+  const { data: holdings, isPending } = useQuery({
+    queryKey: ["portfolio", address],
+    queryFn: () => fetchPortfolio(address),
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+    placeholderData: keepPreviousData,
+  })
+
+  if (isPending) {
+    return (
+      <div className="grid gap-2">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="h-16 animate-pulse rounded-lg border bg-muted" />
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="grid gap-2">
+      {holdings?.map((holding) => (
+        <AssetRow key={`${holding.chainId}:${holding.symbol}`} {...holding} />
+      ))}
+    </div>
+  )
+}
+```
+
+## Cache windows
+
+Different onchain data goes stale at very different rates. These defaults have held up well in production dashboards:
+
+| Data | `staleTime` | `refetchInterval` |
+|------|-------------|-------------------|
+| Token prices | 30s | 60s |
+| Wallet balances | 15–30s | 30–60s |
+| ENS / Basename identity | 24h | — |
+| Historical series (charts) | 5m+ | — |
+| Token metadata (name, decimals, logo) | 24h+ | — |
+
+Two rules of thumb:
+
+- `staleTime` is how long a result is served without a network request; `refetchInterval` re-polls even while the tab is open. Only price-like data needs an interval — everything else can wait for a remount or manual invalidation.
+- Key queries by everything that changes the result: `["portfolio", address, chainId]`, not `["portfolio"]`. Switching wallets then gets its own cache entry instead of clobbering the old one.
+
+<Callout>
+`AddressIdentity` already caches its ENS/Basename lookups internally for the session, so you don't need a query around it. Wrap identity resolution in TanStack Query only when you want the results elsewhere too — e.g. `resolveOnchainIdentity` from `lib/onchain/resolvers` in a `useQuery` with a 24h `staleTime`.
+</Callout>
+
+## Live prices into TokenPrice
+
+For a ticker-style price that updates in place, poll with a tight interval and let `TokenPrice` handle the formatting and trend color:
+
+```tsx
+"use client"
+
+import { useQuery } from "@tanstack/react-query"
+import { TokenPrice } from "@/components/ui/token-price"
+
+async function fetchEthPrice(): Promise<{ price: number; change24h: number }> {
+  const res = await fetch("/api/prices/eth")
+  if (!res.ok) throw new Error("Failed to load price")
+  return res.json()
+}
+
+export function EthPrice() {
+  const { data } = useQuery({
+    queryKey: ["price", "eth"],
+    queryFn: fetchEthPrice,
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+  })
+
+  return <TokenPrice value={data?.price ?? null} change={data?.change24h} />
+}
+```
+
+`TokenPrice` renders its `fallback` (`--` by default) while `value` is `null`, so the loading state needs no extra branching.

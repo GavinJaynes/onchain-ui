@@ -1,0 +1,152 @@
+---
+title: Wallet Connection
+description: Wire onchain-ui components to a connected wallet with wagmi.
+---
+
+onchain-ui components are presentation-only — they take addresses, amounts, and metadata as props and don't care where those come from. For wallet connections on EVM chains we recommend [wagmi](https://2.x.wagmi.sh/): typed hooks for accounts, balances, and chains, built on the same viem primitives the components already use.
+
+<Callout>
+onchain-ui is EVM-first: components accept viem `Address` values and the resolvers understand ENS and Basenames. We don't have a recommendation for Solana or other ecosystems yet.
+</Callout>
+
+## Setup
+
+```bash
+npm install wagmi@2 viem @tanstack/react-query
+```
+
+<Callout>
+These examples target wagmi v2. Wagmi v3 renamed the core hooks (`useAccount` → `useConnection`, mutate-style `useConnect`, wallet SDKs as separate peer dependencies) and the prebuilt modal kits still require v2, so v2 remains the ecosystem default for now.
+</Callout>
+
+Wagmi is configured once and provided at the root. It uses TanStack Query for caching under the hood, so the same `QueryClient` serves your own data fetching too (see [Data Fetching](/docs/recipes/data-fetching)).
+
+```tsx
+// app/providers.tsx
+"use client"
+
+import { WagmiProvider, createConfig, http } from "wagmi"
+import { base, mainnet } from "wagmi/chains"
+import { injected } from "wagmi/connectors"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+
+const config = createConfig({
+  chains: [mainnet, base],
+  connectors: [injected()],
+  transports: {
+    [mainnet.id]: http("https://your-rpc-provider.example/mainnet"),
+    [base.id]: http("https://your-rpc-provider.example/base"),
+  },
+})
+
+const queryClient = new QueryClient()
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </WagmiProvider>
+  )
+}
+```
+
+## Prebuilt connect modals
+
+Rolling your own connect button (below) keeps the bundle small and works with the injected wallet. When you need a full modal — wallet lists, QR codes, mobile deep links — these sit on top of the same wagmi config:
+
+- **[RainbowKit](https://rainbowkit.com)** — our default pick. Polished, lean, actively maintained, and it stays in its lane: connection UX only, themed to match your app.
+- **[Reown AppKit](https://reown.com/appkit)** (formerly WalletConnect Web3Modal) — the most feature-rich option (built-in swaps, on-ramp, notifications, payments), but correspondingly heavy, and it requires a Reown Cloud project ID. Pick it when you want that whole platform, not just a modal.
+- **Embedded wallets** — [Privy](https://privy.io) (now part of Stripe) or [Dynamic](https://dynamic.xyz) (now part of Fireblocks) when your users sign up with email, social, or passkeys and shouldn't need a wallet extension at all. Both expose wagmi connectors, so the components in this recipe work unchanged.
+- **[Base Account SDK](https://docs.base.org/base-account)** — for Base-first apps: Sign in with Base, sub accounts, and Base Pay, pairing naturally with the Basename resolution built into `AddressIdentity`.
+
+## Account chip
+
+`useAccount` feeds `AddressIdentity` directly — the chip resolves the connected wallet's Basename or ENS name and avatar, and falls back to the truncated address.
+
+```bash
+npx shadcn add button card https://onchain-ui.dev/r/address-identity
+```
+
+```tsx
+"use client"
+
+import { useAccount, useConnect, useDisconnect } from "wagmi"
+import { injected } from "wagmi/connectors"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { AddressIdentity } from "@/components/ui/address-identity"
+
+export function AccountChip() {
+  const { address, isConnected } = useAccount()
+  const { connect } = useConnect()
+  const { disconnect } = useDisconnect()
+
+  if (!isConnected || !address) {
+    return (
+      <Button onClick={() => connect({ connector: injected() })}>
+        Connect wallet
+      </Button>
+    )
+  }
+
+  return (
+    <Card size="sm" className="flex-row items-center gap-3 px-3">
+      <AddressIdentity address={address} />
+      <Button variant="ghost" size="sm" onClick={() => disconnect()}>
+        Disconnect
+      </Button>
+    </Card>
+  )
+}
+```
+
+## Native balance
+
+`useBalance` returns a bigint value; format it with viem's `formatUnits` and hand it to `TokenBalance`.
+
+```tsx
+"use client"
+
+import { useAccount, useBalance } from "wagmi"
+import { formatUnits } from "viem"
+import { TokenBalance } from "@/components/ui/token-balance"
+
+export function GasBalance() {
+  const { address } = useAccount()
+  const { data: balance } = useBalance({ address })
+
+  return (
+    <TokenBalance
+      amount={balance ? formatUnits(balance.value, balance.decimals) : null}
+      symbol={balance?.symbol}
+    />
+  )
+}
+```
+
+## Reuse wagmi's clients for identity resolution
+
+`AddressIdentity` accepts viem clients through `resolverOptions`. Instead of configuring RPC endpoints twice, reuse the clients wagmi already created from your `transports` config:
+
+```tsx
+"use client"
+
+import { usePublicClient } from "wagmi"
+import { base, mainnet } from "wagmi/chains"
+import { AddressIdentity } from "@/components/ui/address-identity"
+import type { Address } from "viem"
+
+export function ResolvedIdentity({ address }: { address: Address }) {
+  const mainnetClient = usePublicClient({ chainId: mainnet.id })
+  const baseClient = usePublicClient({ chainId: base.id })
+
+  return (
+    <AddressIdentity
+      address={address}
+      resolverOptions={{ mainnetClient, baseClient }}
+    />
+  )
+}
+```
+
+Lookup results are cached per client, so every component using the wagmi clients shares one cache — see [Address Identity → Caching](/docs/components/address-identity#caching).

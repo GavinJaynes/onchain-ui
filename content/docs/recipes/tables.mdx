@@ -1,0 +1,182 @@
+---
+title: Tables
+description: Sortable markets tables and virtualized lists with TanStack Table and onchain-ui cells.
+---
+
+`AssetRow` covers most portfolio and watchlist lists. Reach for a real table when users need to sort, filter, or scan many columns — market pages, token screeners, holder lists. We recommend [TanStack Table](https://tanstack.com/table/latest): headless, typed, and its cell renderers compose naturally with onchain-ui components.
+
+## Sortable markets table
+
+`TokenLogo` in the asset column, `TokenPrice` for price and change, shadcn's `Table` for the markup.
+
+```bash
+npm install @tanstack/react-table
+npx shadcn add table https://onchain-ui.dev/r/token-logo https://onchain-ui.dev/r/token-price
+```
+
+```tsx
+"use client"
+
+import { useState } from "react"
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type SortingState,
+} from "@tanstack/react-table"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { TokenLogo } from "@/components/ui/token-logo"
+import { TokenPrice } from "@/components/ui/token-price"
+
+type Market = {
+  symbol: string
+  name: string
+  src: string | null
+  price: number
+  change24h: number
+  volume24h: number
+}
+
+const columnHelper = createColumnHelper<Market>()
+
+const columns = [
+  columnHelper.accessor("symbol", {
+    header: "Asset",
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <TokenLogo
+          symbol={row.original.symbol}
+          name={row.original.name}
+          src={row.original.src}
+          size="sm"
+        />
+        <span className="font-medium">{row.original.symbol}</span>
+        <span className="text-muted-foreground">{row.original.name}</span>
+      </div>
+    ),
+  }),
+  columnHelper.accessor("price", {
+    header: "Price",
+    cell: ({ row }) => (
+      <TokenPrice value={row.original.price} change={row.original.change24h} />
+    ),
+  }),
+  columnHelper.accessor("volume24h", {
+    header: "Volume (24h)",
+    cell: ({ getValue }) => (
+      <TokenPrice value={getValue()} compact />
+    ),
+  }),
+]
+
+export function MarketsTable({ markets }: { markets: Market[] }) {
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "volume24h", desc: true },
+  ])
+
+  const table = useReactTable({
+    data: markets,
+    columns,
+    state: { sorting },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  })
+
+  return (
+    <Table>
+      <TableHeader>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id}>
+            {headerGroup.headers.map((header) => (
+              <TableHead
+                key={header.id}
+                className="cursor-pointer select-none"
+                onClick={header.column.getToggleSortingHandler()}
+              >
+                {flexRender(header.column.columnDef.header, header.getContext())}
+                {{ asc: " ↑", desc: " ↓" }[
+                  header.column.getIsSorted() as string
+                ] ?? null}
+              </TableHead>
+            ))}
+          </TableRow>
+        ))}
+      </TableHeader>
+      <TableBody>
+        {table.getRowModel().rows.map((row) => (
+          <TableRow key={row.id}>
+            {row.getVisibleCells().map((cell) => (
+              <TableCell key={cell.id}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  )
+}
+```
+
+Pair it with the [Data Fetching](/docs/recipes/data-fetching) recipe — the `markets` prop is typically a TanStack Query result with a 30–60s refetch window.
+
+## Virtual scrolling
+
+Past a few hundred rows, rendering everything gets slow — token screeners and holder lists easily hit thousands. Add [TanStack Virtual](https://tanstack.com/virtual/latest) and render only what's on screen. For row-shaped data, skip the table markup entirely and virtualize a list of `AssetRow`s:
+
+```bash
+npm install @tanstack/react-virtual
+npx shadcn add https://onchain-ui.dev/r/asset-row
+```
+
+```tsx
+"use client"
+
+import { useRef } from "react"
+import { useVirtualizer } from "@tanstack/react-virtual"
+import { AssetRow, type AssetRowProps } from "@/components/ui/asset-row"
+
+export function VirtualAssetList({ assets }: { assets: AssetRowProps[] }) {
+  const parentRef = useRef<HTMLDivElement>(null)
+
+  const virtualizer = useVirtualizer({
+    count: assets.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 72, // AssetRow height + gap
+    overscan: 10,
+  })
+
+  return (
+    <div ref={parentRef} className="h-96 overflow-y-auto">
+      <div
+        className="relative w-full"
+        style={{ height: virtualizer.getTotalSize() }}
+      >
+        {virtualizer.getVirtualItems().map((item) => (
+          <div
+            key={item.key}
+            className="absolute left-0 top-0 w-full pb-2"
+            style={{ transform: `translateY(${item.start}px)` }}
+          >
+            <AssetRow {...assets[item.index]} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+<Callout>
+Virtualization and identity resolution work well together: if rows contain `AddressIdentity`, only visible rows mount, so only visible addresses resolve — and the session cache means rows scrolled back into view render instantly.
+</Callout>
