@@ -1,0 +1,200 @@
+---
+title: Examples
+description: onchain-ui components composed into real product surfaces.
+---
+
+Each component is useful alone, but they are designed to compose — with each other and with the shadcn/ui components you already have. These examples show small groups of registry items building the surfaces most onchain products need. Every example is copy-paste ready — install the listed components and the code below works as-is.
+
+## Portfolio
+
+The classic wallet view: a shadcn `Card` wrapping an `AssetRow` per holding, with `TokenPrice` rendering the daily change next to the total. Network badges, fiat values, and amount formatting all come from the row's props.
+
+```bash
+npx shadcn add card https://onchain-ui.dev/r/asset-row https://onchain-ui.dev/r/token-price
+```
+
+<ComponentPreview
+  name="example-portfolio"
+  codeOpen={false}
+  code={[
+    'import {',
+    '  Card,',
+    '  CardContent,',
+    '  CardDescription,',
+    '  CardHeader,',
+    '  CardTitle,',
+    '} from "@/components/ui/card"',
+    'import { AssetRow } from "@/components/ui/asset-row"',
+    'import { TokenPrice } from "@/components/ui/token-price"',
+    "",
+    "const holdings = [",
+    "  {",
+    '    symbol: "ETH",',
+    '    name: "Ethereum",',
+    '    src: "https://assets.coingecko.com/coins/images/279/large/ethereum.png",',
+    "    amount: 1.2845,",
+    "    value: 4163.91,",
+    "    change: 2.41,",
+    "    chainId: 1,",
+    '    networkName: "Ethereum",',
+    "  },",
+    "  {",
+    '    symbol: "USDC",',
+    '    name: "USD Coin",',
+    '    src: "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png",',
+    "    amount: 1842.2,",
+    "    value: 1842.2,",
+    "    change: 0.01,",
+    "    chainId: 8453,",
+    '    networkName: "Base",',
+    "  },",
+    "  {",
+    '    symbol: "AERO",',
+    '    name: "Aerodrome",',
+    '    src: "https://assets.coingecko.com/coins/images/31745/large/token.png",',
+    "    amount: 925.348,",
+    "    value: 692.14,",
+    "    change: -4.16,",
+    "    chainId: 8453,",
+    '    networkName: "Base",',
+    "  },",
+    "]",
+    "",
+    "export function Portfolio() {",
+    "  const total = holdings.reduce((sum, asset) => sum + asset.value, 0)",
+    "",
+    "  return (",
+    '    <Card className="w-full max-w-md">',
+    '      <CardHeader className="border-b">',
+    "        <CardDescription>Total balance</CardDescription>",
+    '        <CardTitle className="flex items-baseline gap-2 text-2xl tabular-nums">',
+    '          {total.toLocaleString("en-US", { style: "currency", currency: "USD" })}',
+    "          <TokenPrice value={null} fallback={null} change={1.24} />",
+    "        </CardTitle>",
+    "      </CardHeader>",
+    '      <CardContent className="grid gap-2">',
+    "        {holdings.map((asset) => (",
+    "          <AssetRow key={asset.symbol} {...asset} />",
+    "        ))}",
+    "      </CardContent>",
+    "    </Card>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+## Wallet header
+
+An account chip for a dapp navbar: `AddressIdentity` resolves the connected wallet to its Basename or ENS name (with avatar) live, while `TokenBalance` shows the gas balance — laid out in a horizontal `Card`. Copy and explorer actions come along for free.
+
+```bash
+npx shadcn add card https://onchain-ui.dev/r/address-identity https://onchain-ui.dev/r/token-balance
+```
+
+<ComponentPreview
+  name="example-wallet-header"
+  codeOpen={false}
+  code={[
+    'import { Card } from "@/components/ui/card"',
+    'import { AddressIdentity } from "@/components/ui/address-identity"',
+    'import { TokenBalance } from "@/components/ui/token-balance"',
+    "",
+    '// Resolves live to garlic🧄.base.eth via the Basename L2 resolver',
+    'const WALLET = "0x02506c126A8d6dB0FE0CdfFf77f5007822FE7a16"',
+    "",
+    "export function WalletHeader() {",
+    "  return (",
+    "    <Card",
+    '      size="sm"',
+    '      className="w-full max-w-md flex-row items-center justify-between gap-4 px-4"',
+    "    >",
+    "      <AddressIdentity address={WALLET} chainId={8453} />",
+    "      <TokenBalance",
+    "        amount={1.2845}",
+    '        symbol="ETH"',
+    "        fiatValue={4163.91}",
+    '        src="https://assets.coingecko.com/coins/images/279/large/ethereum.png"',
+    "      />",
+    "    </Card>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+<Callout>
+The preview above performs a real reverse lookup against Base mainnet. See [Address Identity → Caching](/docs/components/address-identity#caching) for how lookups are cached and how to point resolution at your own RPC endpoints.
+</Callout>
+
+## Pool positions
+
+Liquidity positions and pair rows: `TokenStack` overlaps the pool's tokens (hover for tooltips), a shadcn `Badge` tags the venue, and `TokenPrice` renders the position value with its change.
+
+```bash
+npx shadcn add card badge https://onchain-ui.dev/r/token-stack https://onchain-ui.dev/r/token-price
+```
+
+<ComponentPreview
+  name="example-pool-positions"
+  codeOpen={false}
+  code={[
+    'import { Badge } from "@/components/ui/badge"',
+    'import { Card } from "@/components/ui/card"',
+    'import { TokenPrice } from "@/components/ui/token-price"',
+    'import { TokenStack } from "@/components/ui/token-stack"',
+    "",
+    "const pools = [",
+    "  {",
+    '    name: "ETH / USDC",',
+    '    venue: "Uniswap v3",',
+    '    detail: "0.05% fee tier",',
+    "    value: 12480.55,",
+    "    change: 3.2,",
+    "    tokens: [",
+    '      { symbol: "ETH", name: "Ethereum", src: "https://assets.coingecko.com/coins/images/279/large/ethereum.png" },',
+    '      { symbol: "USDC", name: "USD Coin", src: "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png" },',
+    "    ],",
+    "  },",
+    "  {",
+    '    name: "AERO / USDC",',
+    '    venue: "Aerodrome",',
+    '    detail: "Volatile pool",',
+    "    value: 3211.08,",
+    "    change: -1.8,",
+    "    tokens: [",
+    '      { symbol: "AERO", name: "Aerodrome", src: "https://assets.coingecko.com/coins/images/31745/large/token.png" },',
+    '      { symbol: "USDC", name: "USD Coin", src: "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png" },',
+    "    ],",
+    "  },",
+    "]",
+    "",
+    "export function PoolPositions() {",
+    "  return (",
+    '    <div className="grid w-full max-w-md gap-2">',
+    "      {pools.map((pool) => (",
+    "        <Card",
+    "          key={pool.name}",
+    '          size="sm"',
+    '          className="flex-row items-center justify-between gap-4 px-3"',
+    "        >",
+    '          <div className="flex min-w-0 items-center gap-3">',
+    "            <TokenStack tokens={pool.tokens} showTooltip />",
+    '            <div className="min-w-0">',
+    '              <div className="flex items-center gap-2">',
+    '                <p className="truncate text-sm font-medium leading-none">{pool.name}</p>',
+    '                <Badge variant="secondary">{pool.venue}</Badge>',
+    "              </div>",
+    '              <p className="mt-1 truncate text-xs text-muted-foreground">{pool.detail}</p>',
+    "            </div>",
+    "          </div>",
+    "          <TokenPrice",
+    "            value={pool.value}",
+    "            change={pool.change}",
+    '            className="shrink-0 justify-end"',
+    "          />",
+    "        </Card>",
+    "      ))}",
+    "    </div>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>

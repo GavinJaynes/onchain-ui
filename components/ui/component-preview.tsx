@@ -174,6 +174,18 @@ const demos: Record<string, DemoLoader> = {
     import("@/components/demos/asset-row-demo").then((m) => ({
       default: m.AssetRowDemoWatchlist,
     })),
+  "example-portfolio": () =>
+    import("@/components/demos/examples-demo").then((m) => ({
+      default: m.ExamplePortfolio,
+    })),
+  "example-wallet-header": () =>
+    import("@/components/demos/examples-demo").then((m) => ({
+      default: m.ExampleWalletHeader,
+    })),
+  "example-pool-positions": () =>
+    import("@/components/demos/examples-demo").then((m) => ({
+      default: m.ExamplePoolPositions,
+    })),
 };
 
 async function Demo({ name }: { name: string }) {

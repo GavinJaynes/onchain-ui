@@ -61,7 +61,16 @@ import { AddressIdentity } from "@/components/ui/address-identity"
 
 By default, `AddressIdentity` tries Base reverse resolution first, then ENS reverse resolution. If a name resolves, it also attempts to resolve the avatar record. If nothing resolves, it falls back to the truncated address.
 
-Results are cached in memory for the session, so many rows showing the same address resolve once.
+### Caching
+
+Lookups are cached in memory for the session, so many rows showing the same address resolve once — concurrent lookups for the same address share a single in-flight request. Two details worth knowing:
+
+- **Failures are not cached.** A lookup that fails (rate-limited or unreachable RPC) is retried on the next mount instead of pinning "no name" for the rest of the session. Only genuine results — including "this address has no name" — stay cached.
+- **Caches are scoped per resolver config.** Each distinct set of clients in `resolverOptions` gets its own cache, so results from different RPC endpoints never mix, and custom clients keep full request deduplication.
+
+Because the cache is scoped to the client instances, create clients once at module scope and reuse them. Building clients inline on every render still works, but each new instance starts with an empty cache.
+
+### Custom RPC endpoints
 
 <Callout type="warn">
 The default resolvers use each chain's public RPC endpoint, which is rate limited. Fine for demos and prototypes; in production, pass your own viem clients through `resolverOptions`.
@@ -71,6 +80,7 @@ The default resolvers use each chain's public RPC endpoint, which is rate limite
 import { createPublicClient, http } from "viem"
 import { base, mainnet } from "viem/chains"
 
+// Module scope: every component instance shares these clients and their cache.
 const resolverOptions = {
   mainnetClient: createPublicClient({
     chain: mainnet,
@@ -84,6 +94,8 @@ const resolverOptions = {
 
 <AddressIdentity address="0x..." resolverOptions={resolverOptions} />
 ```
+
+Both clients are optional — pass only `mainnetClient` to keep the default Base endpoint, or only `baseClient` to keep the default mainnet endpoint.
 
 ## Examples
 
