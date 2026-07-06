@@ -8,6 +8,8 @@ import {
 import { notFound } from "next/navigation";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import { ComponentPreview } from "@/components/ui/component-preview";
+import { InstallTabs } from "@/components/ui/install-tabs";
+import { OpenInV0 } from "@/components/ui/open-in-v0";
 
 export default async function Page({
   params,
@@ -25,7 +27,14 @@ export default async function Page({
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
-        <MDX components={{ ...defaultMdxComponents, ComponentPreview }} />
+        <MDX
+          components={{
+            ...defaultMdxComponents,
+            ComponentPreview,
+            InstallTabs,
+            OpenInV0,
+          }}
+        />
       </DocsBody>
     </DocsPage>
   );

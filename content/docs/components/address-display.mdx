@@ -20,9 +20,9 @@ Use `AddressDisplay` anywhere you need a compact wallet identity primitive in ta
 
 ## Installation
 
-```bash
-npx shadcn add https://onchain-ui.dev/r/address-display
-```
+<InstallTabs command="shadcn add https://onchain-ui.dev/r/address-display.json" />
+
+<OpenInV0 name="address-display" />
 
 ### Requirements
 
@@ -47,9 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 The registry item uses `viem`, `sonner`, and `lucide-react` by default.
 
-```bash
-npm install viem sonner lucide-react
-```
+<InstallTabs packages="viem sonner lucide-react" />
 
 The icons are replaceable. If your app uses another icon set, pass `copyIcon` and `explorerIcon` and keep the same component API.
 

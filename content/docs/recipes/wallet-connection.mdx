@@ -11,9 +11,7 @@ onchain-ui is EVM-first: components accept viem `Address` values and the resolve
 
 ## Setup
 
-```bash
-npm install wagmi@2 viem @tanstack/react-query
-```
+<InstallTabs packages="wagmi@2 viem @tanstack/react-query" />
 
 <Callout>
 These examples target wagmi v2. Wagmi v3 renamed the core hooks (`useAccount` → `useConnection`, mutate-style `useConnect`, wallet SDKs as separate peer dependencies) and the prebuilt modal kits still require v2, so v2 remains the ecosystem default for now.
@@ -63,9 +61,7 @@ Rolling your own connect button (below) keeps the bundle small and works with th
 
 `useAccount` feeds `AddressIdentity` directly — the chip resolves the connected wallet's Basename or ENS name and avatar, and falls back to the truncated address.
 
-```bash
-npx shadcn add button card https://onchain-ui.dev/r/address-identity
-```
+<InstallTabs command="shadcn add button card https://onchain-ui.dev/r/address-identity.json" />
 
 ```tsx
 "use client"

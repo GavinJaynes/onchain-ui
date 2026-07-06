@@ -9,10 +9,9 @@ description: Sortable markets tables and virtualized lists with TanStack Table a
 
 `TokenLogo` in the asset column, `TokenPrice` for price and change, shadcn's `Table` for the markup.
 
-```bash
-npm install @tanstack/react-table
-npx shadcn add table https://onchain-ui.dev/r/token-logo https://onchain-ui.dev/r/token-price
-```
+<InstallTabs packages="@tanstack/react-table" />
+
+<InstallTabs command="shadcn add table https://onchain-ui.dev/r/token-logo.json https://onchain-ui.dev/r/token-price.json" />
 
 ```tsx
 "use client"
@@ -134,10 +133,9 @@ Pair it with the [Data Fetching](/docs/recipes/data-fetching) recipe — the `ma
 
 Past a few hundred rows, rendering everything gets slow — token screeners and holder lists easily hit thousands. Add [TanStack Virtual](https://tanstack.com/virtual/latest) and render only what's on screen. For row-shaped data, skip the table markup entirely and virtualize a list of `AssetRow`s:
 
-```bash
-npm install @tanstack/react-virtual
-npx shadcn add https://onchain-ui.dev/r/asset-row
-```
+<InstallTabs packages="@tanstack/react-virtual" />
+
+<InstallTabs command="shadcn add https://onchain-ui.dev/r/asset-row.json" />
 
 ```tsx
 "use client"
