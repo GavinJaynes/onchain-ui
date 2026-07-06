@@ -4,10 +4,21 @@
   "type": "registry:ui",
   "title": "Token Balance",
   "description": "Displays a token amount with optional logo, fiat value, and change.",
-  "dependencies": ["lucide-react", "viem"],
+  "docs": "```tsx\nimport { TokenBalance } from \"@/components/ui/token-balance\"\n\n<TokenBalance amount={1.4321} symbol=\"ETH\" fiatValue={4982.11} />\n```",
+  "dependencies": [
+    "lucide-react",
+    "viem"
+  ],
   "devDependencies": [],
-  "registryDependencies": ["tooltip"],
+  "registryDependencies": [
+    "tooltip"
+  ],
   "files": [
+    {
+      "path": "registry/onchain-ui/token-balance.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/token-balance.tsx"
+    },
     {
       "path": "registry/onchain-ui/token-logo.tsx",
       "type": "registry:ui",
@@ -17,11 +28,6 @@
       "path": "registry/onchain-ui/token-price.tsx",
       "type": "registry:ui",
       "target": "components/ui/token-price.tsx"
-    },
-    {
-      "path": "registry/onchain-ui/token-balance.tsx",
-      "type": "registry:ui",
-      "target": "components/ui/token-balance.tsx"
     },
     {
       "path": "lib/onchain/format.ts",

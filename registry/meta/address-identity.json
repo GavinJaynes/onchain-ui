@@ -4,19 +4,26 @@
   "type": "registry:ui",
   "title": "Address Identity",
   "description": "Resolves an EVM address to an ENS or Base name with optional avatar, copy-to-clipboard, and explorer link.",
-  "dependencies": ["viem", "sonner", "lucide-react"],
+  "docs": "```tsx\nimport { AddressIdentity } from \"@/components/ui/address-identity\"\n\n<AddressIdentity address=\"0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045\" />\n```",
+  "dependencies": [
+    "viem",
+    "sonner",
+    "lucide-react"
+  ],
   "devDependencies": [],
-  "registryDependencies": ["sonner"],
+  "registryDependencies": [
+    "sonner"
+  ],
   "files": [
-    {
-      "path": "registry/onchain-ui/address-display.tsx",
-      "type": "registry:ui",
-      "target": "components/ui/address-display.tsx"
-    },
     {
       "path": "registry/onchain-ui/address-identity.tsx",
       "type": "registry:ui",
       "target": "components/ui/address-identity.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/address-display.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/address-display.tsx"
     },
     {
       "path": "lib/onchain/format.ts",

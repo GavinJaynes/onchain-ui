@@ -4,10 +4,21 @@
   "type": "registry:ui",
   "title": "Asset Row",
   "description": "Displays a practical portfolio or watchlist row from token identity, network, amount, value, and change.",
-  "dependencies": ["lucide-react", "viem"],
+  "docs": "```tsx\nimport { AssetRow } from \"@/components/ui/asset-row\"\n\n<AssetRow symbol=\"ETH\" name=\"Ethereum\" amount={1.2845} value={4163.91} change={2.41} chainId={1} />\n```",
+  "dependencies": [
+    "lucide-react",
+    "viem"
+  ],
   "devDependencies": [],
-  "registryDependencies": ["tooltip"],
+  "registryDependencies": [
+    "tooltip"
+  ],
   "files": [
+    {
+      "path": "registry/onchain-ui/asset-row.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/asset-row.tsx"
+    },
     {
       "path": "registry/onchain-ui/token-logo.tsx",
       "type": "registry:ui",
@@ -22,11 +33,6 @@
       "path": "registry/onchain-ui/token-price.tsx",
       "type": "registry:ui",
       "target": "components/ui/token-price.tsx"
-    },
-    {
-      "path": "registry/onchain-ui/asset-row.tsx",
-      "type": "registry:ui",
-      "target": "components/ui/asset-row.tsx"
     },
     {
       "path": "lib/onchain/format.ts",

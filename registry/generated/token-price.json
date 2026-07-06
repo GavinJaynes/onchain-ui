@@ -4,6 +4,7 @@
   "type": "registry:ui",
   "title": "Token Price",
   "description": "Formats token prices with optional positive, negative, or neutral change.",
+  "docs": "```tsx\nimport { TokenPrice } from \"@/components/ui/token-price\"\n\n<TokenPrice value={2456.78} change={2.34} />\n```",
   "dependencies": [
     "lucide-react"
   ],

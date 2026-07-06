@@ -44,14 +44,14 @@
       ],
       "files": [
         {
-          "path": "registry/onchain-ui/address-display.tsx",
-          "type": "registry:ui",
-          "target": "components/ui/address-display.tsx"
-        },
-        {
           "path": "registry/onchain-ui/address-identity.tsx",
           "type": "registry:ui",
           "target": "components/ui/address-identity.tsx"
+        },
+        {
+          "path": "registry/onchain-ui/address-display.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/address-display.tsx"
         },
         {
           "path": "lib/onchain/format.ts",
@@ -79,6 +79,11 @@
       ],
       "files": [
         {
+          "path": "registry/onchain-ui/asset-row.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/asset-row.tsx"
+        },
+        {
           "path": "registry/onchain-ui/token-logo.tsx",
           "type": "registry:ui",
           "target": "components/ui/token-logo.tsx"
@@ -92,11 +97,6 @@
           "path": "registry/onchain-ui/token-price.tsx",
           "type": "registry:ui",
           "target": "components/ui/token-price.tsx"
-        },
-        {
-          "path": "registry/onchain-ui/asset-row.tsx",
-          "type": "registry:ui",
-          "target": "components/ui/asset-row.tsx"
         },
         {
           "path": "lib/onchain/format.ts",
@@ -164,6 +164,11 @@
       ],
       "files": [
         {
+          "path": "registry/onchain-ui/token-balance.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/token-balance.tsx"
+        },
+        {
           "path": "registry/onchain-ui/token-logo.tsx",
           "type": "registry:ui",
           "target": "components/ui/token-logo.tsx"
@@ -172,11 +177,6 @@
           "path": "registry/onchain-ui/token-price.tsx",
           "type": "registry:ui",
           "target": "components/ui/token-price.tsx"
-        },
-        {
-          "path": "registry/onchain-ui/token-balance.tsx",
-          "type": "registry:ui",
-          "target": "components/ui/token-balance.tsx"
         },
         {
           "path": "lib/onchain/format.ts",
@@ -248,14 +248,14 @@
       ],
       "files": [
         {
-          "path": "registry/onchain-ui/token-logo.tsx",
-          "type": "registry:ui",
-          "target": "components/ui/token-logo.tsx"
-        },
-        {
           "path": "registry/onchain-ui/token-stack.tsx",
           "type": "registry:ui",
           "target": "components/ui/token-stack.tsx"
+        },
+        {
+          "path": "registry/onchain-ui/token-logo.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/token-logo.tsx"
         },
         {
           "path": "lib/onchain/crypto-icons.tsx",

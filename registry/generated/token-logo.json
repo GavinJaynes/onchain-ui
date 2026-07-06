@@ -4,6 +4,7 @@
   "type": "registry:ui",
   "title": "Token Logo",
   "description": "Displays a token image with resilient symbol, name, or address fallback.",
+  "docs": "```tsx\nimport { TokenLogo } from \"@/components/ui/token-logo\"\n\n<TokenLogo symbol=\"USDC\" name=\"USD Coin\" src=\"https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png\" />\n```",
   "dependencies": [
     "viem"
   ],

@@ -4,19 +4,24 @@
   "type": "registry:ui",
   "title": "Token Stack",
   "description": "Displays overlapping token logos for baskets, pools, routes, and portfolio rows.",
-  "dependencies": ["viem"],
+  "docs": "```tsx\nimport { TokenStack } from \"@/components/ui/token-stack\"\n\n<TokenStack tokens={[{ symbol: \"ETH\", name: \"Ethereum\" }, { symbol: \"USDC\", name: \"USD Coin\" }]} />\n```",
+  "dependencies": [
+    "viem"
+  ],
   "devDependencies": [],
-  "registryDependencies": ["tooltip"],
+  "registryDependencies": [
+    "tooltip"
+  ],
   "files": [
-    {
-      "path": "registry/onchain-ui/token-logo.tsx",
-      "type": "registry:ui",
-      "target": "components/ui/token-logo.tsx"
-    },
     {
       "path": "registry/onchain-ui/token-stack.tsx",
       "type": "registry:ui",
       "target": "components/ui/token-stack.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/token-logo.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/token-logo.tsx"
     },
     {
       "path": "lib/onchain/crypto-icons.tsx",

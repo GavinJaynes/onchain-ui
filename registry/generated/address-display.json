@@ -4,6 +4,7 @@
   "type": "registry:ui",
   "title": "Address Display",
   "description": "Displays an EVM wallet address with copy-to-clipboard and an optional block explorer link.",
+  "docs": "```tsx\nimport { AddressDisplay } from \"@/components/ui/address-display\"\n\n<AddressDisplay address=\"0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045\" />\n```",
   "dependencies": [
     "viem",
     "sonner",

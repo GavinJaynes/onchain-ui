@@ -4,6 +4,7 @@
   "type": "registry:ui",
   "title": "Network Logo",
   "description": "Displays a network or chain logo with known chain fallbacks.",
+  "docs": "```tsx\nimport { NetworkLogo } from \"@/components/ui/network-logo\"\n\n<NetworkLogo chainId={8453} name=\"Base\" />\n```",
   "dependencies": [
     "viem"
   ],
