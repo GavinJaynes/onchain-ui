@@ -42,3 +42,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local working notes
+ROADMAP.md
+
+# local AI tooling
+.claude/
+AGENTS.md
+CLAUDE.md
