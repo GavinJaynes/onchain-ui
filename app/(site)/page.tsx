@@ -101,7 +101,7 @@ export default function HomePage() {
     <main className="flex flex-1 flex-col">
       <section className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-6xl flex-col justify-center px-6 py-20">
         <div className="grid gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
-          <div className="space-y-8">
+          <div className="min-w-0 space-y-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/70 px-3 py-1 text-xs text-muted-foreground ring-1 ring-background/70 backdrop-blur-xl">
               <span className="relative flex size-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
@@ -166,7 +166,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative min-w-0">
             <div className="rounded-2xl border border-border bg-card/95 p-3 ring-1 ring-foreground/6 dark:border-white/14 dark:bg-[oklch(0.17_0.008_247)]">
               <div className="rounded-[calc(var(--radius-xl)-1px)]">
                 <div className="grid gap-2.5">
