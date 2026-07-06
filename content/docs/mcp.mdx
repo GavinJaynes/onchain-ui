@@ -1,0 +1,40 @@
+---
+title: MCP
+description: Use onchain-ui with AI assistants through the shadcn MCP server.
+---
+
+The onchain-ui registry is MCP-compatible: it serves an index at [`/r/registry.json`](https://onchain-ui.dev/r/registry.json), so AI assistants like Claude Code, Cursor, and Codex can browse, search, and install onchain-ui components through the [shadcn MCP server](https://ui.shadcn.com/docs/registry/mcp) — no manual copy-paste.
+
+## Setup
+
+Add the `@onchain-ui` namespace to your project's `components.json`:
+
+```json
+{
+  "registries": {
+    "@onchain-ui": "https://onchain-ui.dev/r/{name}.json"
+  }
+}
+```
+
+Then initialize the MCP server for your client:
+
+<InstallTabs command="shadcn mcp init --client claude" />
+
+Use `--client cursor`, `--client vscode`, or `--client codex` for other assistants. The MCP server reads your `components.json`, so every registry configured there — including `@onchain-ui` — becomes available to the assistant.
+
+## Usage
+
+With the MCP server connected, prompts like these work directly in your assistant:
+
+- "Show me the components available in the onchain-ui registry"
+- "Install the asset-row component from @onchain-ui"
+- "Build a portfolio card using @onchain-ui/asset-row and @onchain-ui/token-price"
+
+The namespace also works with the CLI directly:
+
+<InstallTabs command="shadcn add @onchain-ui/asset-row" />
+
+<Callout>
+Component descriptions, dependencies, and `registryDependencies` are all part of the registry items, so assistants can resolve the full install graph — installing `asset-row` automatically brings in its token components, the formatting lib, and the shadcn `tooltip` dependency.
+</Callout>
