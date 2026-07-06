@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "token-price-demo",
+  "type": "registry:component",
+  "title": "Token Price Demo",
+  "description": "Renders Token Price with sample data. Used by Open in v0.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "meta": {
+    "composes": "token-price"
+  },
+  "files": [
+    {
+      "path": "registry/onchain-ui/token-price-demo.tsx",
+      "type": "registry:component",
+      "target": "components/ui/token-price-demo.tsx"
+    }
+  ]
+}

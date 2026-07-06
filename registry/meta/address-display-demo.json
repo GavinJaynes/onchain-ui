@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "address-display-demo",
+  "type": "registry:component",
+  "title": "Address Display Demo",
+  "description": "Renders Address Display with sample data. Used by Open in v0.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "meta": {
+    "composes": "address-display"
+  },
+  "files": [
+    {
+      "path": "registry/onchain-ui/address-display-demo.tsx",
+      "type": "registry:component",
+      "target": "components/ui/address-display-demo.tsx"
+    }
+  ]
+}

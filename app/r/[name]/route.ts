@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 import registryIndex from "@/registry.json";
 import addressDisplay from "@/registry/generated/address-display.json";
+import addressDisplayDemo from "@/registry/generated/address-display-demo.json";
+import addressIdentityDemo from "@/registry/generated/address-identity-demo.json";
+import assetRowDemo from "@/registry/generated/asset-row-demo.json";
+import networkLogoDemo from "@/registry/generated/network-logo-demo.json";
+import tokenBalanceDemo from "@/registry/generated/token-balance-demo.json";
+import tokenLogoDemo from "@/registry/generated/token-logo-demo.json";
+import tokenPriceDemo from "@/registry/generated/token-price-demo.json";
+import tokenStackDemo from "@/registry/generated/token-stack-demo.json";
 import addressIdentity from "@/registry/generated/address-identity.json";
 import assetRow from "@/registry/generated/asset-row.json";
 import cryptoIcons from "@/registry/generated/crypto-icons.json";
@@ -26,6 +34,14 @@ type RegistryItem = {
 
 const registryItems = {
   "address-display": addressDisplay,
+  "address-display-demo": addressDisplayDemo,
+  "address-identity-demo": addressIdentityDemo,
+  "asset-row-demo": assetRowDemo,
+  "network-logo-demo": networkLogoDemo,
+  "token-balance-demo": tokenBalanceDemo,
+  "token-logo-demo": tokenLogoDemo,
+  "token-price-demo": tokenPriceDemo,
+  "token-stack-demo": tokenStackDemo,
   "address-identity": addressIdentity,
   "asset-row": assetRow,
   "crypto-icons": cryptoIcons,

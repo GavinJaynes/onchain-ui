@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "token-logo-demo",
+  "type": "registry:component",
+  "title": "Token Logo Demo",
+  "description": "Renders Token Logo with sample data. Used by Open in v0.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "meta": {
+    "composes": "token-logo"
+  },
+  "files": [
+    {
+      "path": "registry/onchain-ui/token-logo-demo.tsx",
+      "type": "registry:component",
+      "target": "components/ui/token-logo-demo.tsx"
+    }
+  ]
+}

@@ -37,22 +37,28 @@ async function getGeneratedItem(name) {
   return readJson(path.join(generatedDir, `${name}.json`));
 }
 
+function isDemoItem(item) {
+  return Boolean(item.meta?.composes);
+}
+
 test("registry index is in sync with registry metadata", async () => {
   const registry = await getRegistryIndex();
   const metaItems = await getMetaItems();
+  const indexedMeta = metaItems.filter(({ item }) => !isDemoItem(item));
 
   assert.equal(registry.name, "onchain-ui");
   assert.equal(registry.homepage, "https://onchain-ui.dev");
-  assert.equal(registry.items.length, metaItems.length);
+  // Demo items (Open in v0 targets) are served but never indexed.
+  assert.equal(registry.items.length, indexedMeta.length);
 
   const indexNames = registry.items.map((item) => item.name).sort();
-  const metaNames = metaItems.map(({ item }) => item.name).sort();
+  const metaNames = indexedMeta.map(({ item }) => item.name).sort();
 
   assert.deepEqual(indexNames, metaNames);
   assert.equal(new Set(indexNames).size, indexNames.length);
 });
 
-const allowedItemTypes = ["registry:ui", "registry:lib"];
+const allowedItemTypes = ["registry:ui", "registry:lib", "registry:component"];
 
 test("registry index entries follow the registry.json spec", async () => {
   const registry = await getRegistryIndex();
@@ -125,12 +131,26 @@ test("registry metadata files are valid and reference real source files", async 
 
 test("generated registry items include source file content", async () => {
   const metaItems = await getMetaItems();
+  const metaByName = new Map(metaItems.map(({ item }) => [item.name, item]));
 
   for (const { item } of metaItems) {
     const generated = await getGeneratedItem(item.name);
 
+    // Demo items compose their base item's files before their own, so the
+    // demo file stays last (Open in v0 default-imports the last file).
+    const base = isDemoItem(item) ? metaByName.get(item.meta.composes) : null;
+    if (isDemoItem(item)) {
+      assert.ok(base, `${item.name} composes unknown item ${item.meta.composes}`);
+    }
+    const expectedFiles = base
+      ? [...base.files, ...item.files]
+      : item.files;
+
     assert.equal(generated.name, item.name);
-    assert.equal(generated.files.length, item.files.length);
+    assert.deepEqual(
+      generated.files.map((file) => file.path),
+      expectedFiles.map((file) => file.path)
+    );
 
     for (const file of generated.files) {
       const sourceContent = await readFile(path.join(root, file.path), "utf-8");

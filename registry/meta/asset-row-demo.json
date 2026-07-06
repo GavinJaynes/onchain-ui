@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "asset-row-demo",
+  "type": "registry:component",
+  "title": "Asset Row Demo",
+  "description": "Renders Asset Row with sample data. Used by Open in v0.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "meta": {
+    "composes": "asset-row"
+  },
+  "files": [
+    {
+      "path": "registry/onchain-ui/asset-row-demo.tsx",
+      "type": "registry:component",
+      "target": "components/ui/asset-row-demo.tsx"
+    }
+  ]
+}

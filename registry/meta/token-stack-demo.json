@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "token-stack-demo",
+  "type": "registry:component",
+  "title": "Token Stack Demo",
+  "description": "Renders Token Stack with sample data. Used by Open in v0.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "meta": {
+    "composes": "token-stack"
+  },
+  "files": [
+    {
+      "path": "registry/onchain-ui/token-stack-demo.tsx",
+      "type": "registry:component",
+      "target": "components/ui/token-stack-demo.tsx"
+    }
+  ]
+}

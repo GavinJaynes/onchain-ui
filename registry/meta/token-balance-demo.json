@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "token-balance-demo",
+  "type": "registry:component",
+  "title": "Token Balance Demo",
+  "description": "Renders Token Balance with sample data. Used by Open in v0.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "meta": {
+    "composes": "token-balance"
+  },
+  "files": [
+    {
+      "path": "registry/onchain-ui/token-balance-demo.tsx",
+      "type": "registry:component",
+      "target": "components/ui/token-balance-demo.tsx"
+    }
+  ]
+}

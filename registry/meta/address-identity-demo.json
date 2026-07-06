@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "address-identity-demo",
+  "type": "registry:component",
+  "title": "Address Identity Demo",
+  "description": "Renders Address Identity with sample data. Used by Open in v0.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "meta": {
+    "composes": "address-identity"
+  },
+  "files": [
+    {
+      "path": "registry/onchain-ui/address-identity-demo.tsx",
+      "type": "registry:component",
+      "target": "components/ui/address-identity-demo.tsx"
+    }
+  ]
+}
