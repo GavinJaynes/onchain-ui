@@ -1,71 +1,75 @@
 # onchain-ui
 
+[![CI](https://github.com/GavinJaynes/onchain-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/GavinJaynes/onchain-ui/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![shadcn registry](https://img.shields.io/badge/shadcn-registry-black?logo=shadcnui&logoColor=white)](https://onchain-ui.dev)
+
 Copy-paste web3 UI components for shadcn apps.
 
-onchain-ui is an open source shadcn registry for product teams building onchain interfaces. The components are designed for wallet identity, token displays, chain context, balances, market values, and portfolio rows.
+onchain-ui is an open source [shadcn registry](https://ui.shadcn.com/docs/registry) for product teams building onchain interfaces: wallet identity, token displays, chain context, balances, market values, and portfolio rows. Components install into your app as source code — inspect them, restyle them, and wire them into your own data layer.
 
-The project is built with Next.js, Fumadocs, Tailwind CSS, shadcn, wagmi, and viem.
+**Docs, live examples, and recipes: [onchain-ui.dev](https://onchain-ui.dev)**
 
-## Status
+## Install
 
-This repo is early and moving quickly. The current focus is a small, useful registry of composable primitives rather than a broad component library.
+Add any component with the shadcn CLI:
 
-The registry currently includes:
+```bash
+npx shadcn add https://onchain-ui.dev/r/asset-row.json
+# or: pnpm dlx shadcn add … / bunx shadcn add …
+```
 
-| Component | Install |
+Or configure the registry namespace once in your `components.json`:
+
+```json
+{
+  "registries": {
+    "@onchain-ui": "https://onchain-ui.dev/r/{name}.json"
+  }
+}
+```
+
+```bash
+npx shadcn add @onchain-ui/asset-row
+```
+
+## Components
+
+| Component | Description |
 | --- | --- |
-| Address Display | `npx shadcn add https://onchain-ui.dev/r/address-display` |
-| Address Identity | `npx shadcn add https://onchain-ui.dev/r/address-identity` |
-| Token Logo | `npx shadcn add https://onchain-ui.dev/r/token-logo` |
-| Token Stack | `npx shadcn add https://onchain-ui.dev/r/token-stack` |
-| Token Price | `npx shadcn add https://onchain-ui.dev/r/token-price` |
-| Network Logo | `npx shadcn add https://onchain-ui.dev/r/network-logo` |
-| Token Balance | `npx shadcn add https://onchain-ui.dev/r/token-balance` |
-| Asset Row | `npx shadcn add https://onchain-ui.dev/r/asset-row` |
-| Crypto Icons (adapter) | `npx shadcn add https://onchain-ui.dev/r/crypto-icons` |
+| [Address Display](https://onchain-ui.dev/docs/components/address-display) | Truncated address with copy and block explorer link |
+| [Address Identity](https://onchain-ui.dev/docs/components/address-identity) | Live ENS / Basename resolution with avatar |
+| [Token Logo](https://onchain-ui.dev/docs/components/token-logo) | Token image with resilient fallbacks |
+| [Token Stack](https://onchain-ui.dev/docs/components/token-stack) | Overlapping logos for pools, baskets, and routes |
+| [Token Price](https://onchain-ui.dev/docs/components/token-price) | Price formatting with change and trend color |
+| [Network Logo](https://onchain-ui.dev/docs/components/network-logo) | Chain logo with known-chain fallbacks |
+| [Token Balance](https://onchain-ui.dev/docs/components/token-balance) | Amount with optional logo, fiat value, and change |
+| [Asset Row](https://onchain-ui.dev/docs/components/asset-row) | Composed portfolio / watchlist row |
+| [Crypto Icons](https://onchain-ui.dev/docs/standards/crypto-icons) | Swappable token/network icon adapter |
+
+See [Examples](https://onchain-ui.dev/docs/examples) for composed surfaces (portfolio card, wallet header, pool positions) and [Recipes](https://onchain-ui.dev/docs/recipes/wallet-connection) for wiring components to wagmi, TanStack Query, and TanStack Table.
+
+## Use with AI assistants
+
+The registry is MCP-compatible — its index is served at [`/r/registry.json`](https://onchain-ui.dev/r/registry.json), so assistants like Claude Code and Cursor can browse and install components through the [shadcn MCP server](https://onchain-ui.dev/docs/mcp). Items can also be opened directly in v0 from each docs page.
 
 ## Why
 
 Most crypto apps rebuild the same UI pieces: truncated addresses, ENS/Base name display, token icons, network badges, token amounts, price changes, and portfolio rows.
 
-onchain-ui packages those patterns as shadcn registry items so the code lands inside your app. You can inspect it, edit it, replace icons, change styling, and wire it into your own data layer.
+onchain-ui packages those patterns as shadcn registry items so the code lands inside your app — no wrapper library, no lock-in. Components are EVM-first and built on the same viem primitives as wagmi.
 
-## Usage
+## Status
 
-Install any component directly with the shadcn CLI:
-
-```bash
-npx shadcn add https://onchain-ui.dev/r/address-display
-```
-
-Registry items include their required component files and small helper utilities. Some components also depend on common packages such as `viem`, `sonner`, `lucide-react`, and `@base-ui/react`.
+Alpha. The current focus is a small, useful registry of composable primitives rather than a broad component library. APIs and registry URLs may change before a stable release.
 
 ## Local Development
 
-Install dependencies:
-
 ```bash
-npm install
-```
-
-Run the docs site:
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
-Build the site and registry routes:
-
-```bash
-npm run build
-```
-
-Run registry contract tests:
-
-```bash
-npm run test
+npm install     # install dependencies
+npm run dev     # docs site at http://localhost:3000
+npm run test    # registry contract tests
+npm run build   # registry + site build
 ```
 
 ## Project Structure
@@ -74,32 +78,20 @@ npm run test
 app/
   (site)/            Home page
   (docs)/            Documentation pages
-  r/[name]/route.ts  shadcn registry item endpoint
+  r/[name]/route.ts  Registry endpoints (/r/registry.json, /r/<name>.json)
 components/
   demos/             Live examples used in docs
   ui/                Local docs UI helpers
-content/docs/        MDX documentation
+content/docs/        MDX documentation (components, examples, recipes, standards)
 lib/onchain/         Shared onchain utilities
 registry/
-  meta/              Registry item metadata
+  meta/              Registry item metadata (source of truth)
   onchain-ui/        Source components distributed by the registry
+scripts/
+  build-registry.mjs Generates registry.json and registry/generated/
 ```
 
-## Registry
-
-The public registry index lives in `registry.json`.
-
-Individual registry item URLs follow this shape:
-
-```txt
-https://onchain-ui.dev/r/<component-name>
-```
-
-For local development, the same route is available at:
-
-```txt
-http://localhost:3000/r/<component-name>
-```
+`registry.json` and `registry/generated/` are build artifacts — edit `registry/meta/` and the source components, then run `npm run registry:build`.
 
 ## Contributing
 
