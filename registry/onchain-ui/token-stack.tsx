@@ -111,7 +111,7 @@ export function TokenStack({
           <span
             key={getTokenKey(token, index)}
             className={cn(
-              "relative inline-flex rounded-full ring-2 ring-background",
+              "relative inline-flex rounded-full ring-2 ring-background/70",
               "hover:z-10",
               itemClassName
             )}
@@ -156,7 +156,7 @@ export function TokenStack({
         const overflowItem = (
           <span
             className={cn(
-              "relative inline-flex shrink-0 items-center justify-center rounded-full border bg-muted font-medium text-muted-foreground ring-2 ring-background",
+              "relative inline-flex shrink-0 items-center justify-center rounded-full border bg-muted font-medium text-muted-foreground ring-2 ring-background/70",
               overflowSizeClasses[size],
               overflowClassName
             )}

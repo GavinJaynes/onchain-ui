@@ -43,7 +43,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <RootProvider>
+        <RootProvider theme={{ defaultTheme: "dark" }}>
           <TooltipProvider>
             <AlphaBanner />
             {children}

@@ -222,9 +222,9 @@ export async function ComponentPreview({
   });
 
   return (
-    <div className="my-6 overflow-hidden rounded-xl border border-border">
+    <div className="my-6 overflow-hidden rounded-xl border border-border/70 bg-card/70 ring-1 ring-background/70">
       {/* Preview */}
-      <div className="flex min-h-40 items-center justify-center bg-background p-10">
+      <div className="flex min-h-40 items-center justify-center bg-background/70 p-10">
         <Suspense
           fallback={
             <span className="text-xs text-muted-foreground animate-pulse">
