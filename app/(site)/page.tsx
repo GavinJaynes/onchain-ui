@@ -187,7 +187,7 @@ export default function HomePage() {
                 </span>
               </div>
               <pre className="overflow-x-auto p-4 text-left font-mono text-sm">
-                <code>npx shadcn add https://onchain-ui.dev/r/token-stack</code>
+                <code>npx shadcn add https://onchain-ui.dev/r/token-stack.json</code>
               </pre>
             </div>
           </div>

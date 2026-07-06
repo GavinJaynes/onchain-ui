@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import registryIndex from "@/registry.json";
 import addressDisplay from "@/registry/generated/address-display.json";
 import addressIdentity from "@/registry/generated/address-identity.json";
 import assetRow from "@/registry/generated/asset-row.json";
@@ -36,14 +37,31 @@ const registryItems = {
 } satisfies Record<string, RegistryItem>;
 
 export function generateStaticParams() {
-  return Object.keys(registryItems).map((name) => ({ name }));
+  // Every item is reachable with and without a .json suffix, plus the
+  // registry index itself — MCP clients and namespaced registry configs
+  // request /r/registry.json and /r/{name}.json.
+  return ["registry", ...Object.keys(registryItems)].flatMap((name) => [
+    { name },
+    { name: `${name}.json` },
+  ]);
 }
+
+const responseHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+};
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ name: string }> }
 ) {
-  const { name } = await params;
+  const { name: rawName } = await params;
+  const name = rawName.replace(/\.json$/, "");
+
+  if (name === "registry") {
+    return NextResponse.json(registryIndex, { headers: responseHeaders });
+  }
+
   const meta = registryItems[name as keyof typeof registryItems];
 
   if (!meta) {
@@ -53,13 +71,5 @@ export async function GET(
     );
   }
 
-  return NextResponse.json(
-    meta,
-    {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
-      },
-    }
-  );
+  return NextResponse.json(meta, { headers: responseHeaders });
 }

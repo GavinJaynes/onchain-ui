@@ -54,17 +54,34 @@ test("registry index is in sync with registry metadata", async () => {
 
 const allowedItemTypes = ["registry:ui", "registry:lib"];
 
-test("registry index entries point at public registry item routes", async () => {
+test("registry index entries follow the registry.json spec", async () => {
   const registry = await getRegistryIndex();
+
+  assert.equal(registry.$schema, "https://ui.shadcn.com/schema/registry.json");
 
   for (const item of registry.items) {
     assert.ok(
       allowedItemTypes.includes(item.type),
       `${item.name} has unexpected type ${item.type}`
     );
-    assert.equal(item.url, `https://onchain-ui.dev/r/${item.name}`);
     assert.ok(item.title, `${item.name} is missing a title`);
     assert.ok(item.description, `${item.name} is missing a description`);
+    assert.ok(
+      Array.isArray(item.files) && item.files.length > 0,
+      `${item.name} must list its files in the index`
+    );
+
+    for (const file of item.files) {
+      assert.ok(file.path, `${item.name} has an index file without a path`);
+      assert.ok(file.type, `${item.name} has an index file without a type`);
+      assert.ok(file.target, `${item.name} has an index file without a target`);
+      // The shadcn directory requires index items to omit file content.
+      assert.equal(
+        file.content,
+        undefined,
+        `${item.name} index files must not inline content`
+      );
+    }
   }
 });
 
@@ -140,4 +157,21 @@ test("registry route statically imports every generated registry item", async ()
       `route.ts does not include ${item.name} in registryItems`
     );
   }
+});
+
+test("registry route serves the index and .json suffixed names", async () => {
+  const routeSource = await readFile(registryRoutePath, "utf-8");
+
+  assert.ok(
+    routeSource.includes('@/registry.json'),
+    "route.ts does not import the registry index"
+  );
+  assert.ok(
+    routeSource.includes('name === "registry"'),
+    "route.ts does not serve the registry index endpoint"
+  );
+  assert.ok(
+    routeSource.includes('replace(/\\.json$/, "")'),
+    "route.ts does not strip .json suffixes"
+  );
 });
