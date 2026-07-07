@@ -107,7 +107,7 @@ export default function HomePage() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
                 <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
               </span>
-              Alpha / open source / shadcn registry / wagmi + viem
+              v0.1.0 / open source / shadcn registry / wagmi + viem
             </div>
 
             <div className="space-y-5">

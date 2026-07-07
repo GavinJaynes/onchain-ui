@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { RootProvider } from "fumadocs-ui/provider/next";
-import { AlphaBanner } from "@/components/alpha-banner";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
@@ -44,10 +43,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <RootProvider theme={{ defaultTheme: "dark" }}>
-          <TooltipProvider>
-            <AlphaBanner />
-            {children}
-          </TooltipProvider>
+          <TooltipProvider>{children}</TooltipProvider>
         </RootProvider>
         <Toaster />
       </body>

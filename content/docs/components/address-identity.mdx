@@ -95,6 +95,69 @@ const resolverOptions = {
 
 Both clients are optional — pass only `mainnetClient` to keep the default Base endpoint, or only `baseClient` to keep the default mainnet endpoint.
 
+### Server-side resolution
+
+By default, resolution happens in the browser after mount, so the first paint shows the truncated address until the lookup lands. To render the resolved name from the first byte — no flash, no layout shift — resolve on the server and pass the result in. The resolvers only depend on viem, so they run in any server context.
+
+Pass `resolveIdentity={false}` alongside the resolved values so the component skips client-side lookups entirely.
+
+In a Next.js server component:
+
+```tsx
+import { AddressIdentity } from "@/components/ui/address-identity"
+import { resolveOnchainIdentity } from "@/lib/onchain/resolvers"
+import type { Address } from "viem"
+
+export default async function ProfilePage({
+  params,
+}: {
+  params: Promise<{ address: Address }>
+}) {
+  const { address } = await params
+  const identity = await resolveOnchainIdentity(address)
+
+  return (
+    <AddressIdentity
+      address={address}
+      name={identity.name}
+      avatarUrl={identity.avatar}
+      resolveIdentity={false}
+    />
+  )
+}
+```
+
+In a TanStack Start route loader:
+
+```tsx
+import { createFileRoute } from "@tanstack/react-router"
+import { AddressIdentity } from "@/components/ui/address-identity"
+import { resolveOnchainIdentity } from "@/lib/onchain/resolvers"
+import type { Address } from "viem"
+
+export const Route = createFileRoute("/profile/$address")({
+  loader: ({ params }) => resolveOnchainIdentity(params.address as Address),
+  component: Profile,
+})
+
+function Profile() {
+  const identity = Route.useLoaderData()
+
+  return (
+    <AddressIdentity
+      address={identity.address}
+      name={identity.name}
+      avatarUrl={identity.avatar}
+      resolveIdentity={false}
+    />
+  )
+}
+```
+
+<Callout>
+The session cache is per server process, so hot addresses resolve once per deployment instance rather than once per request. For high-traffic pages, wrap the loader call in your framework's request-level cache or a TanStack Query prefetch with a long `staleTime` — see [Data Fetching](/docs/recipes/data-fetching).
+</Callout>
+
 ## Examples
 
 ### Resolved Name

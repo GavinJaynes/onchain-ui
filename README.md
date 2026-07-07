@@ -61,7 +61,7 @@ onchain-ui packages those patterns as shadcn registry items so the code lands in
 
 ## Status
 
-Alpha. The current focus is a small, useful registry of composable primitives rather than a broad component library. APIs and registry URLs may change before a stable release.
+Early and actively developed. The focus is a small, useful registry of composable primitives rather than a broad component library. Registry URLs (`/r/{name}.json`) are stable; component APIs may still evolve between minor versions while the project is pre-1.0.
 
 ## Local Development
 
