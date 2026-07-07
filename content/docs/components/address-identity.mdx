@@ -71,7 +71,7 @@ Because the cache is scoped to the client instances, create clients once at modu
 ### Custom RPC endpoints
 
 <Callout type="warn">
-The default resolvers use each chain's public RPC endpoint, which is rate limited. Fine for demos and prototypes; in production, pass your own viem clients through `resolverOptions`.
+The default resolvers use each chain's public RPC endpoint with an automatic fallback to a second public endpoint, since some public RPCs aggressively rate limit. Fine for demos and prototypes; in production, pass your own viem clients through `resolverOptions`.
 </Callout>
 
 ```tsx

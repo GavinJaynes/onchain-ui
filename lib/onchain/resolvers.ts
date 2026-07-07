@@ -1,6 +1,7 @@
 import {
   createPublicClient,
   encodePacked,
+  fallback,
   http,
   isAddress,
   keccak256,
@@ -57,15 +58,26 @@ export interface OnchainIdentity {
   source: "ens" | "basename" | null;
 }
 
-// The default clients use each chain's public RPC endpoint. Public endpoints
-// are rate limited and fine for demos; pass your own clients through
+// The default clients use each chain's public RPC endpoint, with a fallback:
+// viem's default mainnet endpoint (eth.merkle.io) aggressively rate limits
+// some IPs, which would otherwise silently break name resolution. Public
+// endpoints are fine for demos; pass your own clients through
 // `OnchainResolverOptions` in production.
 function createDefaultMainnetClient() {
-  return createPublicClient({ chain: mainnet, transport: http() });
+  return createPublicClient({
+    chain: mainnet,
+    transport: fallback([
+      http(),
+      http("https://ethereum-rpc.publicnode.com"),
+    ]),
+  });
 }
 
 function createDefaultBaseClient() {
-  return createPublicClient({ chain: base, transport: http() });
+  return createPublicClient({
+    chain: base,
+    transport: fallback([http(), http("https://base-rpc.publicnode.com")]),
+  });
 }
 
 let defaultMainnetClient:
