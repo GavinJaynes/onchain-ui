@@ -126,6 +126,13 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    /* Thin, theme-tinted scrollbars so Windows doesn't render chunky default
+       chrome on code blocks and the docs sidebar. scrollbar-color is honored
+       by Chromium and Firefox; Safari ignores both and keeps its overlay
+       scrollbars, which already look fine. */
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--muted-foreground) 35%, transparent)
+      transparent;
   }
   body {
     @apply bg-background text-foreground;
