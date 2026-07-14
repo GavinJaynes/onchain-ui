@@ -6,6 +6,18 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "registry-test",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "C:/Users/User/AppData/Local/Temp/claude/C--projects-onchain-ui/b7f7f3f4-cd12-434e-b706-8b35fc2ca1f2/scratchpad/registry-test"
+      ],
+      "port": 3100,
+      "autoPort": true
     }
   ]
 }

@@ -99,14 +99,12 @@ const components = [
 export default function HomePage() {
   return (
     <main className="flex flex-1 flex-col">
-      <section className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-6xl flex-col justify-center px-6 py-20">
+      {/* 3.5rem offset matches the h-14 fumadocs home nav */}
+      <section className="mx-auto flex min-h-[calc(100svh-3.5rem)] w-full max-w-6xl flex-col justify-center px-6 py-20">
         <div className="grid gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
           <div className="min-w-0 space-y-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/70 px-3 py-1 text-xs text-muted-foreground ring-1 ring-background/70 backdrop-blur-xl">
-              <span className="relative flex size-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-                <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
-              </span>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs font-medium text-muted-foreground">
+              <span className="inline-flex size-1.5 rounded-full bg-emerald-500" />
               v0.1.0 / open source / shadcn registry / wagmi + viem
             </div>
 
@@ -120,11 +118,11 @@ export default function HomePage() {
                 className="size-14 rounded-xl ring-1 ring-border/70 dark:invert"
               />
 
-              <h1 className="max-w-3xl bg-linear-to-b from-foreground via-foreground to-foreground/62 bg-clip-text text-5xl font-semibold tracking-tight text-balance text-transparent md:text-6xl xl:text-7xl">
-                Copy-paste web3 components for shadcn apps.
+              <h1 className="max-w-3xl text-4xl font-medium leading-[1.06] tracking-[-0.022em] text-balance text-foreground md:text-5xl xl:text-6xl">
+                Copy&#8209;paste web3 components for shadcn apps.
               </h1>
 
-              <p className="max-w-2xl text-lg leading-8 text-muted-foreground md:text-xl">
+              <p className="max-w-xl text-base leading-7 text-muted-foreground md:text-lg">
                 Wallet identity, token logos, chain context, icon stacks, and
                 market UI primitives built for teams shipping onchain products.
               </p>
@@ -133,7 +131,7 @@ export default function HomePage() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/docs"
-                className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground ring-1 ring-primary/10 transition-all hover:-translate-y-px hover:bg-primary/92 hover:ring-primary/20"
+                className="inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 Browse components
               </Link>
@@ -141,55 +139,51 @@ export default function HomePage() {
                 href="https://github.com/GavinJaynes/onchain-ui"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-card/60 px-5 text-sm font-medium ring-1 ring-background/70 backdrop-blur-xl transition-all hover:-translate-y-px hover:border-ring/40 hover:bg-accent/70 hover:text-accent-foreground"
+                className="inline-flex h-10 items-center justify-center rounded-full border border-border bg-secondary/50 px-5 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary"
               >
                 GitHub
               </a>
             </div>
 
-            <div className="max-w-xl overflow-hidden rounded-lg border border-border/70 bg-card/70 ring-1 ring-background/70 backdrop-blur-xl">
-              <div className="overflow-hidden rounded-[calc(var(--radius)-1px)]">
-                <div className="flex items-center justify-between border-b border-border/70 bg-muted/25 px-4 py-2">
-                  <span className="font-mono text-xs text-muted-foreground">
-                    install
-                  </span>
-                  <span className="text-xs text-muted-foreground/80">
-                    registry item
-                  </span>
-                </div>
-                <pre className="overflow-x-auto p-4 text-left font-mono text-sm text-foreground/90">
-                  <code>
-                    npx shadcn add https://onchain-ui.dev/r/token-stack.json
-                  </code>
-                </pre>
+            <div className="max-w-xl overflow-hidden rounded-lg border border-border bg-card">
+              <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-4 py-2">
+                <span className="font-mono text-xs text-muted-foreground">
+                  install
+                </span>
+                <span className="text-xs text-muted-foreground/80">
+                  registry item
+                </span>
               </div>
+              <pre className="overflow-x-auto p-4 text-left font-mono text-sm text-foreground/90">
+                <code>
+                  npx shadcn add https://onchain-ui.dev/r/token-stack.json
+                </code>
+              </pre>
             </div>
           </div>
 
           <div className="relative min-w-0">
-            <div className="rounded-2xl border border-border bg-card/95 p-3 ring-1 ring-foreground/6 dark:border-white/14 dark:bg-[oklch(0.17_0.008_247)]">
-              <div className="rounded-[calc(var(--radius-xl)-1px)]">
-                <div className="grid gap-2.5">
-                  {components.map((component) => (
-                    <Link
-                      key={component.name}
-                      href={component.href}
-                      className="group grid min-h-18 gap-4 rounded-md border border-border/85 bg-background/96 p-4 ring-1 ring-foreground/4 transition-all hover:-translate-y-0.5 hover:border-ring/45 hover:bg-card hover:ring-ring/20 dark:border-white/10 dark:bg-[oklch(0.205_0.01_247)] dark:hover:bg-[oklch(0.225_0.012_247)] sm:grid-cols-[1fr_auto] sm:items-center"
-                    >
-                      <div className="min-w-0">
-                        <p className="font-mono text-sm font-semibold leading-5 text-foreground">
-                          {component.name}
-                        </p>
-                        <p className="text-xs leading-5 text-muted-foreground">
-                          {component.description}
-                        </p>
-                      </div>
-                      <div className="flex min-h-10 items-center text-foreground transition-opacity group-hover:opacity-100 sm:justify-end">
-                        {component.preview}
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+            <div className="rounded-xl border border-border bg-card p-2.5">
+              <div className="grid gap-2">
+                {components.map((component) => (
+                  <Link
+                    key={component.name}
+                    href={component.href}
+                    className="group grid min-h-18 gap-4 rounded-lg border border-border/70 bg-background/50 p-4 transition-colors hover:border-border hover:bg-secondary/50 sm:grid-cols-[1fr_auto] sm:items-center"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-mono text-sm font-medium leading-5 text-foreground">
+                        {component.name}
+                      </p>
+                      <p className="text-xs leading-5 text-muted-foreground">
+                        {component.description}
+                      </p>
+                    </div>
+                    <div className="flex min-h-10 items-center text-foreground sm:justify-end">
+                      {component.preview}
+                    </div>
+                  </Link>
+                ))}
               </div>
             </div>
           </div>

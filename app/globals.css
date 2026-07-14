@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+/* fumadocs with shadcn token mapping (instead of fumadocs-ui/style.css, whose
+   neutral palette would override our --background et al on site/docs layouts) */
+@import "fumadocs-ui/css/shadcn.css";
+@import "fumadocs-ui/css/preset.css";
 
 /* ─── Code block ─────────────────────────────────────────────────────────────
    Scoped to .not-fumadocs-codeblock so fumadocs skips these elements.
@@ -13,8 +17,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -54,73 +58,75 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Linear-inspired palette: near-black neutrals, four-step text hierarchy,
+   translucent hairline borders, indigo brand accent. */
 :root {
-  --background: oklch(0.985 0.003 247);
-  --foreground: oklch(0.145 0.006 247);
-  --card: oklch(1 0 0 / 86%);
-  --card-foreground: oklch(0.145 0.006 247);
-  --popover: oklch(1 0 0 / 94%);
-  --popover-foreground: oklch(0.145 0.006 247);
-  --primary: oklch(0.18 0.012 247);
-  --primary-foreground: oklch(0.985 0.003 247);
-  --secondary: oklch(0.955 0.005 247);
-  --secondary-foreground: oklch(0.22 0.01 247);
-  --muted: oklch(0.95 0.004 247);
-  --muted-foreground: oklch(0.48 0.012 247);
-  --accent: oklch(0.94 0.018 182);
-  --accent-foreground: oklch(0.19 0.018 210);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.26 0.01 270);
+  --card: oklch(0.99 0.001 270);
+  --card-foreground: oklch(0.26 0.01 270);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.26 0.01 270);
+  --primary: oklch(0.24 0.01 270);
+  --primary-foreground: oklch(0.985 0.002 250);
+  --secondary: oklch(0.962 0.003 270);
+  --secondary-foreground: oklch(0.32 0.01 270);
+  --muted: oklch(0.955 0.003 270);
+  --muted-foreground: oklch(0.51 0.012 260);
+  --accent: oklch(0.93 0.025 276);
+  --accent-foreground: oklch(0.42 0.14 276);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.875 0.008 247);
-  --input: oklch(0.875 0.008 247);
-  --ring: oklch(0.66 0.085 190);
+  --border: oklch(0.915 0.004 270);
+  --input: oklch(0.915 0.004 270);
+  --ring: oklch(0.585 0.15 276);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.975 0.003 247);
-  --sidebar-foreground: oklch(0.145 0.006 247);
-  --sidebar-primary: oklch(0.18 0.012 247);
-  --sidebar-primary-foreground: oklch(0.985 0.003 247);
-  --sidebar-accent: oklch(0.94 0.018 182);
-  --sidebar-accent-foreground: oklch(0.19 0.018 210);
-  --sidebar-border: oklch(0.875 0.008 247);
-  --sidebar-ring: oklch(0.66 0.085 190);
+  --radius: 0.5rem;
+  --sidebar: oklch(0.985 0.002 270);
+  --sidebar-foreground: oklch(0.26 0.01 270);
+  --sidebar-primary: oklch(0.24 0.01 270);
+  --sidebar-primary-foreground: oklch(0.985 0.002 250);
+  --sidebar-accent: oklch(0.93 0.025 276);
+  --sidebar-accent-foreground: oklch(0.42 0.14 276);
+  --sidebar-border: oklch(0.915 0.004 270);
+  --sidebar-ring: oklch(0.585 0.15 276);
 }
 
 .dark {
-  --background: oklch(0.12 0.006 247);
-  --foreground: oklch(0.965 0.004 247);
-  --card: oklch(0.17 0.008 247 / 84%);
-  --card-foreground: oklch(0.965 0.004 247);
-  --popover: oklch(0.17 0.008 247 / 94%);
-  --popover-foreground: oklch(0.965 0.004 247);
-  --primary: oklch(0.95 0.004 247);
-  --primary-foreground: oklch(0.13 0.006 247);
-  --secondary: oklch(0.23 0.01 247);
-  --secondary-foreground: oklch(0.965 0.004 247);
-  --muted: oklch(0.22 0.009 247);
-  --muted-foreground: oklch(0.7 0.012 247);
-  --accent: oklch(0.24 0.04 190);
-  --accent-foreground: oklch(0.93 0.035 178);
+  --background: oklch(0.141 0.005 285);
+  --foreground: oklch(0.973 0.002 250);
+  --card: oklch(0.174 0.005 285);
+  --card-foreground: oklch(0.973 0.002 250);
+  --popover: oklch(0.19 0.006 285);
+  --popover-foreground: oklch(0.973 0.002 250);
+  --primary: oklch(0.92 0.003 250);
+  --primary-foreground: oklch(0.141 0.005 285);
+  --secondary: oklch(0.21 0.006 285);
+  --secondary-foreground: oklch(0.87 0.007 255);
+  --muted: oklch(0.21 0.006 285);
+  --muted-foreground: oklch(0.64 0.012 255);
+  --accent: oklch(0.25 0.035 276);
+  --accent-foreground: oklch(0.79 0.1 276);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 11%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.72 0.09 190);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.585 0.15 276);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.15 0.007 247);
-  --sidebar-foreground: oklch(0.965 0.004 247);
-  --sidebar-primary: oklch(0.95 0.004 247);
-  --sidebar-primary-foreground: oklch(0.13 0.006 247);
-  --sidebar-accent: oklch(0.24 0.04 190);
-  --sidebar-accent-foreground: oklch(0.93 0.035 178);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar: oklch(0.155 0.005 285);
+  --sidebar-foreground: oklch(0.973 0.002 250);
+  --sidebar-primary: oklch(0.92 0.003 250);
+  --sidebar-primary-foreground: oklch(0.141 0.005 285);
+  --sidebar-accent: oklch(0.25 0.035 276);
+  --sidebar-accent-foreground: oklch(0.79 0.1 276);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.585 0.15 276);
 }
 
 @layer base {
@@ -136,28 +142,40 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-image:
-      linear-gradient(
-        180deg,
-        color-mix(in oklab, var(--muted) 46%, transparent) 0%,
-        transparent 18rem
-      ),
-      linear-gradient(
-        90deg,
-        color-mix(in oklab, var(--border) 38%, transparent) 1px,
-        transparent 1px
-      ),
-      linear-gradient(
-        180deg,
-        color-mix(in oklab, var(--border) 30%, transparent) 1px,
-        transparent 1px
-      );
-    background-size: auto, 48px 48px, 48px 48px;
-    background-attachment: fixed;
   }
   html {
     @apply font-sans;
   }
+}
+
+/* ── Home nav: logo left, links right ─────────────────────────────────────────
+   fumadocs' home header pins primary links next to the logo and lets the
+   search container flex-grow. Overriding via the stable #nd-nav id (same
+   pattern fumadocs' own shadcn.css uses for #nd-sidebar): push the links to
+   the right, stop the search container stretching, and draw a hairline
+   separator between links and search.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+#nd-nav nav > ul {
+  margin-inline-start: auto;
+  padding-inline: 0;
+}
+
+#nd-nav nav > div.max-lg\:hidden {
+  flex: 0 0 auto;
+}
+
+/* The content-sized container above would otherwise squish the theme toggle */
+#nd-nav [data-theme-toggle] {
+  flex-shrink: 0;
+}
+
+#nd-nav nav > div.max-lg\:hidden::before {
+  content: "";
+  width: 1px;
+  height: 1rem;
+  margin-inline: 0.625rem;
+  background-color: var(--border);
 }
 
 /* ── Code block: line numbers + token colours ─────────────────────────────────
