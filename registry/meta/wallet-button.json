@@ -1,0 +1,60 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "wallet-button",
+  "type": "registry:ui",
+  "title": "Wallet Button",
+  "description": "The connected-wallet pill: resolved identity, network mark, and a disclosure chevron.",
+  "docs": "```tsx\nimport { WalletButton } from \"@/components/ui/wallet-button\"\n\n<WalletButton address={address} chainId={chainId} onClick={openMenu} />\n```",
+  "dependencies": [
+    "viem",
+    "sonner",
+    "lucide-react"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [
+    "sonner",
+    "tooltip"
+  ],
+  "files": [
+    {
+      "path": "registry/onchain-ui/wallet-button.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/wallet-button.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/address-identity.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/address-identity.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/address-display.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/address-display.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/network-logo.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/network-logo.tsx"
+    },
+    {
+      "path": "lib/onchain/format.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/format.ts"
+    },
+    {
+      "path": "lib/onchain/resolvers.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/resolvers.ts"
+    },
+    {
+      "path": "lib/onchain/crypto-icons.tsx",
+      "type": "registry:lib",
+      "target": "lib/onchain/crypto-icons.tsx"
+    },
+    {
+      "path": "lib/onchain/config.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/config.ts"
+    }
+  ]
+}

@@ -22,6 +22,11 @@
       "path": "lib/onchain/crypto-icons.tsx",
       "type": "registry:lib",
       "target": "lib/onchain/crypto-icons.tsx"
+    },
+    {
+      "path": "lib/onchain/config.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/config.ts"
     }
   ]
 }

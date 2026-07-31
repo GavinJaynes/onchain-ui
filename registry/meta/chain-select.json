@@ -1,0 +1,38 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chain-select",
+  "type": "registry:ui",
+  "title": "Chain Select",
+  "description": "Network switcher with a first-class unsupported-chain state.",
+  "docs": "```tsx\nimport { ChainSelect } from \"@/components/ui/chain-select\"\n\n<ChainSelect chains={chains} value={chainId} onSelect={switchChain} />\n```",
+  "dependencies": [
+    "viem"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [
+    "dropdown-menu",
+    "tooltip"
+  ],
+  "files": [
+    {
+      "path": "registry/onchain-ui/chain-select.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/chain-select.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/network-logo.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/network-logo.tsx"
+    },
+    {
+      "path": "lib/onchain/crypto-icons.tsx",
+      "type": "registry:lib",
+      "target": "lib/onchain/crypto-icons.tsx"
+    },
+    {
+      "path": "lib/onchain/config.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/config.ts"
+    }
+  ]
+}

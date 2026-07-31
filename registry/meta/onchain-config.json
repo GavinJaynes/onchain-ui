@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "onchain-config",
+  "type": "registry:lib",
+  "title": "Onchain Config",
+  "description": "One file for app-wide chain settings: explorers, network names, and read clients.",
+  "docs": "```ts\n// lib/onchain/config.ts\nimport { wagmiConfig } from \"@/lib/onchain/wagmi\"\n\nexport const onchainConfig: OnchainUIConfig = {\n  chains: wagmiConfig.chains,\n}\n```",
+  "dependencies": [
+    "viem"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "lib/onchain/config.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/config.ts"
+    }
+  ]
+}

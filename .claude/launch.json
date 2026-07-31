@@ -4,8 +4,23 @@
     {
       "name": "docs",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "runtimeArgs": ["run", "dev", "--", "--port", "3002"],
+      "port": 3002
+    },
+    {
+      "name": "dogfood",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--dir",
+        "C:/projects/test-onchain-ui",
+        "exec",
+        "vite",
+        "dev",
+        "--port",
+        "3001"
+      ],
+      "port": 3001,
+      "autoPort": false
     },
     {
       "name": "registry-test",

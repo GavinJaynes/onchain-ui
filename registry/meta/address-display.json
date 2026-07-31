@@ -24,6 +24,11 @@
       "path": "lib/onchain/format.ts",
       "type": "registry:lib",
       "target": "lib/onchain/format.ts"
+    },
+    {
+      "path": "lib/onchain/config.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/config.ts"
     }
   ]
 }

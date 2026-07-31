@@ -7,6 +7,8 @@
     "token-stack",
     "token-price",
     "network-logo",
+    "chain-select",
+    "connect-wallet",
     "token-balance",
     "asset-row"
   ]

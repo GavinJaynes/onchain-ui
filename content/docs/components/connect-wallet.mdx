@@ -1,0 +1,187 @@
+---
+title: Connect Wallet
+description: A complete connect, identity, and disconnect surface wired to wagmi.
+---
+
+`ConnectWallet` is the whole wallet surface in one component: it probes for wallets the browser actually has, connects, shows the resolved identity, and disconnects. It is the only item in the registry that calls wagmi — the pieces it composes stay presentational.
+
+<ComponentPreview
+  name="connect-wallet"
+  code={[
+    'import { ConnectWallet } from "@/components/ui/connect-wallet"',
+    "",
+    "export function Header() {",
+    "  return <ConnectWallet />",
+    "}",
+  ].join("\n")}
+/>
+
+<Callout type="info">
+The preview above runs against wagmi's `mock` connector, since the docs site has no wallet extension. Connecting it signs nothing. In your app the same component lists the real wallets the browser announces.
+</Callout>
+
+## Installation
+
+<InstallTabs command="shadcn add https://onchain-ui.dev/r/connect-wallet.json" />
+
+### Requirements
+
+Targets **wagmi 3**. `ConnectWallet` needs a `WagmiProvider` and a TanStack `QueryClientProvider` above it — see [Wallet Connection](/docs/recipes/wallet-connection) for the config. The menu composes the standard shadcn [dropdown-menu](https://ui.shadcn.com/docs/components/dropdown-menu).
+
+Scope is deliberately narrow: `injected()` plus EIP-6963 discovery. That covers browser extension wallets with no extra SDKs and no project id. For QR codes and mobile deep links you need a connector with its own SDK, which wagmi 3 ships as separate optional peer dependencies.
+
+## Usage
+
+```tsx
+import { ConnectWallet } from "@/components/ui/connect-wallet"
+
+<ConnectWallet />
+```
+
+With one wallet installed the trigger connects directly — a menu of one is a worse click. With several, it opens the picker. While probing, it stays disabled rather than offering a list it is about to change.
+
+## The pieces
+
+`ConnectWallet` is a thin wiring layer. If it does not fit your design, take the parts:
+
+| Item | Type | What it does |
+|------|------|--------------|
+| `connector-list` | `registry:ui` | The wallet picker. Plain data in, id out |
+| `wallet-button` | `registry:ui` | The connected pill. Plain data in |
+| `use-available-connectors` | `registry:hook` | EIP-6963 probing. Returns wagmi connectors |
+| `connect-wallet` | `registry:block` | The three above, wired |
+
+Only the hook and the block import wagmi. That is the boundary: swap the wallet library, keep the UI.
+
+### Connector List
+
+Takes `{ id, name, icon, description }` — map wagmi connectors, or your own list.
+
+<ComponentPreview
+  name="connector-list"
+  codeOpen={false}
+  code={[
+    'import { ConnectorList } from "@/components/ui/connector-list"',
+    "",
+    "export function Wallets() {",
+    "  return (",
+    "    <ConnectorList",
+    "      connectors={wallets}",
+    "      pendingId={pendingId}",
+    "      onSelect={setPendingId}",
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+An empty list is a real state, not an error — a browser with no wallet installed. It says so instead of rendering nothing.
+
+<ComponentPreview
+  name="connector-list-empty"
+  codeOpen={false}
+  code={[
+    'import { ConnectorList } from "@/components/ui/connector-list"',
+    "",
+    "export function NoWallets() {",
+    "  return <ConnectorList connectors={[]} onSelect={connect} />",
+    "}",
+  ].join("\n")}
+/>
+
+### Wallet Button
+
+<ComponentPreview
+  name="wallet-button"
+  codeOpen={false}
+  code={[
+    'import { WalletButton } from "@/components/ui/wallet-button"',
+    "",
+    "export function Account() {",
+    "  return (",
+    "    <WalletButton",
+    '      address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"',
+    "      chainId={1}",
+    "      onClick={openMenu}",
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+It renders a plain button and forwards every prop, so it works as a menu trigger:
+
+```tsx
+<DropdownMenuTrigger render={<WalletButton address={address} chainId={chainId} />} />
+```
+
+<ComponentPreview
+  name="wallet-button-states"
+  codeOpen={false}
+  code={[
+    'import { WalletButton } from "@/components/ui/wallet-button"',
+    "",
+    "export function WalletButtonStates() {",
+    "  return (",
+    '    <div className="flex items-center gap-3">',
+    '      <WalletButton address={address} chainId={8453} size="sm" />',
+    "      <WalletButton address={address} chainId={8453} />",
+    "      <WalletButton address={address} showNetwork={false} />",
+    "      <WalletButton address={address} chainId={1} isPending />",
+    "    </div>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### useAvailableConnectors
+
+wagmi's `useConnectors()` always includes the generic `injected()` fallback, even in a browser with no wallet at all — connecting with it throws `ProviderNotFoundError` after the user clicks. The only reliable check is probing `getProvider()`, which is async.
+
+```tsx
+import { useAvailableConnectors } from "@/hooks/use-available-connectors"
+
+const { connectors, isProbing } = useAvailableConnectors()
+```
+
+It also drops the generic "Injected" entry when a named wallet announces itself over EIP-6963, since both point at the same provider and listing them twice is confusing.
+
+## Props
+
+### ConnectWallet
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | `"Connect wallet"` | Label for the disconnected trigger |
+| `showNetwork` | `boolean` | `true` | Show the network mark on the connected pill |
+| `size` | `"sm" \| "default"` | `"default"` | Visual size |
+| `onError` | `(error: Error) => void` | - | Called when a connection attempt fails |
+| `className` | `string` | - | Applied to the trigger |
+| `contentClassName` | `string` | - | Applied to the menu |
+
+### ConnectorList
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `connectors` | `ConnectorOption[]` | - | Wallets the user can pick from |
+| `onSelect` | `(id: string) => void` | - | Called with the id of the wallet picked |
+| `pendingId` | `string \| null` | - | Connector being connected. Blocks selection |
+| `disabled` | `boolean` | `false` | Disable every row |
+| `emptyMessage` | `ReactNode` | No-wallet copy | Shown when `connectors` is empty |
+| `className` | `string` | - | Applied to the list wrapper |
+| `itemClassName` | `string` | - | Applied to each row |
+
+### WalletButton
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `address` | `Address` | - | Connected wallet address |
+| `chainId` | `number \| null` | - | Connected chain id |
+| `name` | `string \| null` | Resolved | Name override, skips resolution |
+| `avatarUrl` | `string \| null` | Resolved | Avatar override |
+| `isPending` | `boolean` | `false` | Spinner in place of the chevron |
+| `showNetwork` | `boolean` | `true` | Show the network mark |
+| `showChevron` | `boolean` | `true` | Show the trailing chevron |
+| `size` | `"sm" \| "default"` | `"default"` | Visual size |
+
+Every other prop is forwarded to the underlying `button`.

@@ -26,6 +26,11 @@
           "path": "lib/onchain/format.ts",
           "type": "registry:lib",
           "target": "lib/onchain/format.ts"
+        },
+        {
+          "path": "lib/onchain/config.ts",
+          "type": "registry:lib",
+          "target": "lib/onchain/config.ts"
         }
       ]
     },
@@ -62,6 +67,11 @@
           "path": "lib/onchain/resolvers.ts",
           "type": "registry:lib",
           "target": "lib/onchain/resolvers.ts"
+        },
+        {
+          "path": "lib/onchain/config.ts",
+          "type": "registry:lib",
+          "target": "lib/onchain/config.ts"
         }
       ]
     },
@@ -107,6 +117,136 @@
           "path": "lib/onchain/crypto-icons.tsx",
           "type": "registry:lib",
           "target": "lib/onchain/crypto-icons.tsx"
+        },
+        {
+          "path": "lib/onchain/config.ts",
+          "type": "registry:lib",
+          "target": "lib/onchain/config.ts"
+        }
+      ]
+    },
+    {
+      "name": "chain-select",
+      "type": "registry:ui",
+      "title": "Chain Select",
+      "description": "Network switcher with a first-class unsupported-chain state.",
+      "dependencies": [
+        "viem"
+      ],
+      "registryDependencies": [
+        "dropdown-menu",
+        "tooltip"
+      ],
+      "files": [
+        {
+          "path": "registry/onchain-ui/chain-select.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/chain-select.tsx"
+        },
+        {
+          "path": "registry/onchain-ui/network-logo.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/network-logo.tsx"
+        },
+        {
+          "path": "lib/onchain/crypto-icons.tsx",
+          "type": "registry:lib",
+          "target": "lib/onchain/crypto-icons.tsx"
+        },
+        {
+          "path": "lib/onchain/config.ts",
+          "type": "registry:lib",
+          "target": "lib/onchain/config.ts"
+        }
+      ]
+    },
+    {
+      "name": "connect-wallet",
+      "type": "registry:block",
+      "title": "Connect Wallet",
+      "description": "A complete connect, identity, and disconnect surface wired to wagmi.",
+      "dependencies": [
+        "wagmi",
+        "viem",
+        "sonner",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "sonner",
+        "tooltip",
+        "dropdown-menu"
+      ],
+      "files": [
+        {
+          "path": "registry/onchain-ui/connect-wallet.tsx",
+          "type": "registry:block",
+          "target": "components/ui/connect-wallet.tsx"
+        },
+        {
+          "path": "registry/onchain-ui/wallet-button.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/wallet-button.tsx"
+        },
+        {
+          "path": "registry/onchain-ui/connector-list.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/connector-list.tsx"
+        },
+        {
+          "path": "registry/onchain-ui/address-identity.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/address-identity.tsx"
+        },
+        {
+          "path": "registry/onchain-ui/address-display.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/address-display.tsx"
+        },
+        {
+          "path": "registry/onchain-ui/network-logo.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/network-logo.tsx"
+        },
+        {
+          "path": "hooks/use-available-connectors.ts",
+          "type": "registry:hook",
+          "target": "hooks/use-available-connectors.ts"
+        },
+        {
+          "path": "lib/onchain/format.ts",
+          "type": "registry:lib",
+          "target": "lib/onchain/format.ts"
+        },
+        {
+          "path": "lib/onchain/resolvers.ts",
+          "type": "registry:lib",
+          "target": "lib/onchain/resolvers.ts"
+        },
+        {
+          "path": "lib/onchain/crypto-icons.tsx",
+          "type": "registry:lib",
+          "target": "lib/onchain/crypto-icons.tsx"
+        },
+        {
+          "path": "lib/onchain/config.ts",
+          "type": "registry:lib",
+          "target": "lib/onchain/config.ts"
+        }
+      ]
+    },
+    {
+      "name": "connector-list",
+      "type": "registry:ui",
+      "title": "Connector List",
+      "description": "A wallet picker list with icons, pending state, and a no-wallet-detected fallback.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/onchain-ui/connector-list.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/connector-list.tsx"
         }
       ]
     },
@@ -147,6 +287,27 @@
           "path": "lib/onchain/crypto-icons.tsx",
           "type": "registry:lib",
           "target": "lib/onchain/crypto-icons.tsx"
+        },
+        {
+          "path": "lib/onchain/config.ts",
+          "type": "registry:lib",
+          "target": "lib/onchain/config.ts"
+        }
+      ]
+    },
+    {
+      "name": "onchain-config",
+      "type": "registry:lib",
+      "title": "Onchain Config",
+      "description": "One file for app-wide chain settings: explorers, network names, and read clients.",
+      "dependencies": [
+        "viem"
+      ],
+      "files": [
+        {
+          "path": "lib/onchain/config.ts",
+          "type": "registry:lib",
+          "target": "lib/onchain/config.ts"
         }
       ]
     },
@@ -261,6 +422,79 @@
           "path": "lib/onchain/crypto-icons.tsx",
           "type": "registry:lib",
           "target": "lib/onchain/crypto-icons.tsx"
+        }
+      ]
+    },
+    {
+      "name": "use-available-connectors",
+      "type": "registry:hook",
+      "title": "useAvailableConnectors",
+      "description": "Filters wagmi connectors down to wallets actually present in the browser, via EIP-6963 probing.",
+      "dependencies": [
+        "wagmi"
+      ],
+      "files": [
+        {
+          "path": "hooks/use-available-connectors.ts",
+          "type": "registry:hook",
+          "target": "hooks/use-available-connectors.ts"
+        }
+      ]
+    },
+    {
+      "name": "wallet-button",
+      "type": "registry:ui",
+      "title": "Wallet Button",
+      "description": "The connected-wallet pill: resolved identity, network mark, and a disclosure chevron.",
+      "dependencies": [
+        "viem",
+        "sonner",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "sonner",
+        "tooltip"
+      ],
+      "files": [
+        {
+          "path": "registry/onchain-ui/wallet-button.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/wallet-button.tsx"
+        },
+        {
+          "path": "registry/onchain-ui/address-identity.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/address-identity.tsx"
+        },
+        {
+          "path": "registry/onchain-ui/address-display.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/address-display.tsx"
+        },
+        {
+          "path": "registry/onchain-ui/network-logo.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/network-logo.tsx"
+        },
+        {
+          "path": "lib/onchain/format.ts",
+          "type": "registry:lib",
+          "target": "lib/onchain/format.ts"
+        },
+        {
+          "path": "lib/onchain/resolvers.ts",
+          "type": "registry:lib",
+          "target": "lib/onchain/resolvers.ts"
+        },
+        {
+          "path": "lib/onchain/crypto-icons.tsx",
+          "type": "registry:lib",
+          "target": "lib/onchain/crypto-icons.tsx"
+        },
+        {
+          "path": "lib/onchain/config.ts",
+          "type": "registry:lib",
+          "target": "lib/onchain/config.ts"
         }
       ]
     }

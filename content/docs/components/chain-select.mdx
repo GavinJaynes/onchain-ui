@@ -1,0 +1,202 @@
+---
+title: Chain Select
+description: Network switcher with a first-class unsupported-chain state.
+---
+
+Use `ChainSelect` wherever a user picks a network: an app header, a bridge form, or a token filter. It takes the chains you support as props and reports the id you picked — the wallet connection and the switch call stay in your app.
+
+<ComponentPreview
+  name="chain-select"
+  code={[
+    'import { ChainSelect } from "@/components/ui/chain-select"',
+    "",
+    "const chains = [",
+    '  { id: 1, name: "Ethereum" },',
+    '  { id: 8453, name: "Base" },',
+    '  { id: 42161, name: "Arbitrum One" },',
+    '  { id: 10, name: "Optimism" },',
+    '  { id: 137, name: "Polygon" },',
+    "]",
+    "",
+    "export function ChainSelectDemo() {",
+    "  const [chainId, setChainId] = useState<number | null>(8453)",
+    "",
+    "  return (",
+    "    <ChainSelect chains={chains} value={chainId} onSelect={setChainId} />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+## Installation
+
+<InstallTabs command="shadcn add https://onchain-ui.dev/r/chain-select.json" />
+
+<OpenInV0 name="chain-select-demo" />
+
+### Requirements
+
+The menu composes the standard shadcn [dropdown-menu](https://ui.shadcn.com/docs/components/dropdown-menu). The install adds it if your app does not already have `components/ui/dropdown-menu.tsx`; if you do, your existing (possibly customized) menu is used as-is. `NetworkLogo` comes along for the chain marks.
+
+## Usage
+
+```tsx
+import { ChainSelect } from "@/components/ui/chain-select"
+
+<ChainSelect chains={chains} value={chainId} onSelect={setChainId} />
+```
+
+`ChainSelect` holds no connection state and performs no network calls. It renders the chains you hand it and calls `onSelect` — which makes it testable with plain data and keeps your wallet library out of the component.
+
+## Wiring with wagmi
+
+Your configured chains are already the right list, so the wiring is a mapping:
+
+```tsx
+"use client"
+
+import { useChains, useConnection, useSwitchChain } from "wagmi"
+import { ChainSelect } from "@/components/ui/chain-select"
+
+export function ChainSwitcher() {
+  const { chainId } = useConnection()
+  const chains = useChains()
+  const switchChain = useSwitchChain()
+
+  return (
+    <ChainSelect
+      chains={chains.map((chain) => ({
+        id: chain.id,
+        name: chain.name,
+        badge: chain.testnet ? "Testnet" : undefined,
+      }))}
+      value={chainId ?? null}
+      pendingChainId={switchChain.isPending ? switchChain.variables?.chainId : null}
+      onSelect={(id) => switchChain.mutate({ chainId: id })}
+    />
+  )
+}
+```
+
+<Callout type="info">
+The snippet targets wagmi 3. On wagmi 2, read `chainId` from `useAccount()`, take the list from `useSwitchChain().chains` rather than `useChains()`, and call `switchChain({ chainId })` instead of `switchChain.mutate(...)`. The component itself is identical either way — it never imports wagmi.
+</Callout>
+
+## Unsupported networks
+
+A wallet can sit on any network, including ones your app was never configured for. When `value` is set but absent from `chains`, the trigger switches to a warning treatment and names the problem, and the menu still offers every supported chain so the user can get out.
+
+<ComponentPreview
+  name="chain-select-unsupported"
+  codeOpen={false}
+  code={[
+    'import { ChainSelect } from "@/components/ui/chain-select"',
+    "",
+    "export function ChainSelectUnsupported() {",
+    "  // The wallet is on a chain this app does not support.",
+    "  const [chainId, setChainId] = useState<number | null>(5315)",
+    "",
+    "  return (",
+    "    <ChainSelect chains={chains} value={chainId} onSelect={setChainId} />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+Without this state the chain id leaks into the UI as a bare number, which reads as a bug rather than as something the user can fix. Pass `unsupportedLabel` to reword it.
+
+## Examples
+
+### Disconnected
+
+`value={null}` renders the placeholder with a dashed logo slot, so the control keeps its footprint before a wallet connects.
+
+<ComponentPreview
+  name="chain-select-disconnected"
+  codeOpen={false}
+  code={[
+    'import { ChainSelect } from "@/components/ui/chain-select"',
+    "",
+    "export function ChainSelectDisconnected() {",
+    "  const [chainId, setChainId] = useState<number | null>(null)",
+    "",
+    "  return (",
+    "    <ChainSelect chains={chains} value={chainId} onSelect={setChainId} />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Switching
+
+`pendingChainId` marks the chain being switched to and locks the control while the wallet prompt is open.
+
+<ComponentPreview
+  name="chain-select-pending"
+  codeOpen={false}
+  code={[
+    'import { ChainSelect } from "@/components/ui/chain-select"',
+    "",
+    "export function ChainSelectPending() {",
+    "  return (",
+    "    <ChainSelect",
+    "      chains={chains}",
+    "      value={8453}",
+    "      pendingChainId={42161}",
+    "      onSelect={switchChain}",
+    "    />",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Sizes
+
+Use `showLabel={false}` for a logo-only trigger in tight headers. The accessible name falls back to the network name.
+
+<ComponentPreview
+  name="chain-select-sizes"
+  codeOpen={false}
+  code={[
+    'import { ChainSelect } from "@/components/ui/chain-select"',
+    "",
+    "export function ChainSelectSizes() {",
+    "  return (",
+    '    <div className="flex items-center gap-3">',
+    '      <ChainSelect chains={chains} value={chainId} onSelect={setChainId} size="sm" />',
+    "      <ChainSelect chains={chains} value={chainId} onSelect={setChainId} />",
+    "      <ChainSelect chains={chains} value={chainId} onSelect={setChainId} showLabel={false} />",
+    "    </div>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `chains` | `ChainSelectOption[]` | - | Selectable chains, usually the ones your app is configured for |
+| `value` | `number \| null` | - | Currently connected chain id |
+| `onSelect` | `(chainId: number) => void` | - | Called with the chain id the user picked |
+| `pendingChainId` | `number \| null` | - | Chain being switched to. Blocks further selection |
+| `disabled` | `boolean` | `false` | Disable the whole control |
+| `placeholder` | `string` | `"Select network"` | Trigger label when `value` is null |
+| `unsupportedLabel` | `string` | `"Unsupported network"` | Trigger label when `value` is missing from `chains` |
+| `menuLabel` | `ReactNode` | `"Switch network"` | Heading above the menu items |
+| `showLabel` | `boolean` | `true` | Show the network name in the trigger |
+| `size` | `"sm" \| "default"` | `"default"` | Visual size |
+| `align` | `"start" \| "center" \| "end"` | `"start"` | Menu alignment against the trigger |
+| `className` | `string` | - | Applied to the trigger |
+| `contentClassName` | `string` | - | Applied to the menu |
+
+### ChainSelectOption
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `number` | - | EVM chain id |
+| `name` | `string \| null` | Built-in network name | Display name |
+| `logoSrc` | `string \| null` | Built-in chain logo | Network image URL override |
+| `symbol` | `string \| null` | Built-in network symbol | Short symbol for the logo fallback |
+| `disabled` | `boolean` | `false` | Render but do not allow selection |
+| `badge` | `ReactNode` | - | Rendered after the name, e.g. a "Testnet" badge |

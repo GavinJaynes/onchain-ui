@@ -73,7 +73,11 @@ import { AddressDisplay } from "@/components/ui/address-display"
 <AddressDisplay address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" />
 ```
 
-Pass `chainId` to link to a known chain's explorer: Ethereum (1), Optimism (10), Polygon (137), Base (8453), and Arbitrum (42161). Without a `chainId`, explorer links point to Etherscan. For other chains, pass a full `explorerUrl`.
+Pass `chainId` to link to a known chain's explorer: Ethereum (1), Optimism (10), Polygon (137), Base (8453), and Arbitrum (42161). Without a `chainId`, explorer links point to Etherscan.
+
+Explorer URLs come from the chains in [Configuration](/docs/configuration), read straight off viem's chain objects. Add a chain there — or point the config at your wagmi chains — and its explorer works here with no further setup.
+
+For a one-off, pass a full `explorerUrl`. If you pass a `chainId` that is in neither the config nor the built-ins, and no `explorerUrl`, the explorer link is omitted rather than pointing at Etherscan — an address on an unrecognised chain does not live in mainnet's address space, so that link would be about a different account.
 
 ## Examples
 
@@ -151,7 +155,7 @@ Hide the explorer link when you just need clipboard copy.
 | `truncateChars` | `number` | `4` | Characters shown at each end when truncated |
 | `showCopy` | `boolean` | `true` | Show copy-to-clipboard button |
 | `showExplorer` | `boolean` | `true` | Show block explorer link |
-| `chainId` | `number \| null` | `1` | EVM chain id used to pick a known block explorer |
+| `chainId` | `number \| null` | `1` | EVM chain id used to pick a known block explorer. An unrecognised id omits the link |
 | `explorerUrl` | `string` | Derived from `chainId` | Full explorer URL override for this address |
 | `copyIcon` | `ReactNode` | Lucide copy icon | Icon rendered before the address when copy is enabled |
 | `explorerIcon` | `ReactNode` | Lucide external link icon | Icon rendered for the explorer link |

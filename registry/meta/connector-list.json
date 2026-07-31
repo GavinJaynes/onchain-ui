@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "connector-list",
+  "type": "registry:ui",
+  "title": "Connector List",
+  "description": "A wallet picker list with icons, pending state, and a no-wallet-detected fallback.",
+  "docs": "```tsx\nimport { ConnectorList } from \"@/components/ui/connector-list\"\n\n<ConnectorList connectors={wallets} onSelect={connect} />\n```",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/onchain-ui/connector-list.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/connector-list.tsx"
+    }
+  ]
+}

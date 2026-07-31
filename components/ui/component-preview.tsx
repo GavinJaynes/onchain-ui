@@ -134,6 +134,46 @@ const demos: Record<string, DemoLoader> = {
     import("@/components/demos/token-price-demo").then((m) => ({
       default: m.TokenPriceDemoCustom,
     })),
+  "connect-wallet": () =>
+    import("@/components/demos/connect-wallet-demo").then((m) => ({
+      default: m.ConnectWalletDemo,
+    })),
+  "connector-list": () =>
+    import("@/components/demos/connect-wallet-demo").then((m) => ({
+      default: m.ConnectorListDemo,
+    })),
+  "connector-list-empty": () =>
+    import("@/components/demos/connect-wallet-demo").then((m) => ({
+      default: m.ConnectorListDemoEmpty,
+    })),
+  "wallet-button": () =>
+    import("@/components/demos/connect-wallet-demo").then((m) => ({
+      default: m.WalletButtonDemo,
+    })),
+  "wallet-button-states": () =>
+    import("@/components/demos/connect-wallet-demo").then((m) => ({
+      default: m.WalletButtonDemoStates,
+    })),
+  "chain-select": () =>
+    import("@/components/demos/chain-select-demo").then((m) => ({
+      default: m.ChainSelectDemo,
+    })),
+  "chain-select-unsupported": () =>
+    import("@/components/demos/chain-select-demo").then((m) => ({
+      default: m.ChainSelectDemoUnsupported,
+    })),
+  "chain-select-disconnected": () =>
+    import("@/components/demos/chain-select-demo").then((m) => ({
+      default: m.ChainSelectDemoDisconnected,
+    })),
+  "chain-select-pending": () =>
+    import("@/components/demos/chain-select-demo").then((m) => ({
+      default: m.ChainSelectDemoPending,
+    })),
+  "chain-select-sizes": () =>
+    import("@/components/demos/chain-select-demo").then((m) => ({
+      default: m.ChainSelectDemoSizes,
+    })),
   "network-logo": () =>
     import("@/components/demos/network-logo-demo").then((m) => ({
       default: m.NetworkLogoDemo,
@@ -145,6 +185,10 @@ const demos: Record<string, DemoLoader> = {
   "network-logo-sizes": () =>
     import("@/components/demos/network-logo-demo").then((m) => ({
       default: m.NetworkLogoDemoSizes,
+    })),
+  "network-logo-unknown": () =>
+    import("@/components/demos/network-logo-demo").then((m) => ({
+      default: m.NetworkLogoDemoUnknown,
     })),
   "network-logo-custom": () =>
     import("@/components/demos/network-logo-demo").then((m) => ({

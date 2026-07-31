@@ -5,6 +5,7 @@ import addressDisplay from "@/registry/generated/address-display.json";
 import addressDisplayDemo from "@/registry/generated/address-display-demo.json";
 import addressIdentityDemo from "@/registry/generated/address-identity-demo.json";
 import assetRowDemo from "@/registry/generated/asset-row-demo.json";
+import chainSelectDemo from "@/registry/generated/chain-select-demo.json";
 import networkLogoDemo from "@/registry/generated/network-logo-demo.json";
 import tokenBalanceDemo from "@/registry/generated/token-balance-demo.json";
 import tokenLogoDemo from "@/registry/generated/token-logo-demo.json";
@@ -12,8 +13,14 @@ import tokenPriceDemo from "@/registry/generated/token-price-demo.json";
 import tokenStackDemo from "@/registry/generated/token-stack-demo.json";
 import addressIdentity from "@/registry/generated/address-identity.json";
 import assetRow from "@/registry/generated/asset-row.json";
+import chainSelect from "@/registry/generated/chain-select.json";
+import connectWallet from "@/registry/generated/connect-wallet.json";
+import connectorList from "@/registry/generated/connector-list.json";
 import cryptoIcons from "@/registry/generated/crypto-icons.json";
 import networkLogo from "@/registry/generated/network-logo.json";
+import onchainConfig from "@/registry/generated/onchain-config.json";
+import useAvailableConnectors from "@/registry/generated/use-available-connectors.json";
+import walletButton from "@/registry/generated/wallet-button.json";
 import tokenBalance from "@/registry/generated/token-balance.json";
 import tokenLogo from "@/registry/generated/token-logo.json";
 import tokenPrice from "@/registry/generated/token-price.json";
@@ -37,6 +44,7 @@ const registryItems = {
   "address-display-demo": addressDisplayDemo,
   "address-identity-demo": addressIdentityDemo,
   "asset-row-demo": assetRowDemo,
+  "chain-select-demo": chainSelectDemo,
   "network-logo-demo": networkLogoDemo,
   "token-balance-demo": tokenBalanceDemo,
   "token-logo-demo": tokenLogoDemo,
@@ -44,8 +52,14 @@ const registryItems = {
   "token-stack-demo": tokenStackDemo,
   "address-identity": addressIdentity,
   "asset-row": assetRow,
+  "chain-select": chainSelect,
+  "connect-wallet": connectWallet,
+  "connector-list": connectorList,
   "crypto-icons": cryptoIcons,
   "network-logo": networkLogo,
+  "onchain-config": onchainConfig,
+  "use-available-connectors": useAvailableConnectors,
+  "wallet-button": walletButton,
   "token-balance": tokenBalance,
   "token-logo": tokenLogo,
   "token-price": tokenPrice,

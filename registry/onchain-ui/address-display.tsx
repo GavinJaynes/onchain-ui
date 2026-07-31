@@ -4,16 +4,9 @@ import { toast } from "sonner";
 import { CopyIcon, ExternalLinkIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { truncateAddress } from "@/lib/onchain/format";
+import { getExplorerUrl } from "@/lib/onchain/config";
 import type { Address } from "viem";
 import type { ReactNode } from "react";
-
-const knownExplorers: Record<number, string> = {
-  1: "https://etherscan.io",
-  10: "https://optimistic.etherscan.io",
-  137: "https://polygonscan.com",
-  8453: "https://basescan.org",
-  42161: "https://arbiscan.io",
-};
 
 export interface AddressDisplayProps {
   /** EVM wallet address */
@@ -65,9 +58,14 @@ export function AddressDisplay({
     }
   };
 
-  const explorerBase =
-    (chainId != null ? knownExplorers[chainId] : undefined) ?? knownExplorers[1];
-  const href = explorerUrl ?? `${explorerBase}/address/${address}`;
+  // No chain id means "assume mainnet", the documented default. A chain id we
+  // do not recognise is different: linking it to Etherscan would point at a
+  // page about a different chain's address space. Drop the link instead and
+  // let `explorerUrl` cover the long tail.
+  const explorerBase = getExplorerUrl(chainId ?? 1);
+  const href =
+    explorerUrl ??
+    (explorerBase ? `${explorerBase}/address/${address}` : null);
   const displayLabel =
     label ?? (truncate ? truncateAddress(address, truncateChars) : address);
   const labelClassName = truncate ? "whitespace-nowrap" : "break-all";
@@ -100,7 +98,7 @@ export function AddressDisplay({
         </span>
       )}
 
-      {showExplorer && (
+      {showExplorer && href && (
         <a
           href={href}
           target="_blank"

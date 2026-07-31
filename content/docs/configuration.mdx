@@ -1,0 +1,84 @@
+---
+title: Configuration
+description: One file for app-wide chain settings, with no provider to wrap your app in.
+---
+
+Most onchain-ui components take everything they need as props. A few things are app-wide rather than per-instance — which chains you support, where their block explorers live, which RPC endpoints identity resolution should use — and those live in one file.
+
+<InstallTabs command="shadcn add https://onchain-ui.dev/r/onchain-config.json" />
+
+It arrives with the components that read it, so you usually do not install it directly.
+
+## No provider
+
+There is no `OnchainUIProvider`. `lib/onchain/config.ts` is a plain module that components import, which means it works the same in a client component, a server component, a test, or a script — and there is no wrapper to add, no context to thread, and nothing to remember when you render a component somewhere new.
+
+You own the file. Configuring onchain-ui means editing it.
+
+```ts
+// lib/onchain/config.ts
+export const onchainConfig: OnchainUIConfig = {
+  chains: [mainnet, base, arbitrum, optimism, polygon],
+}
+```
+
+## Define your chains once
+
+If you use wagmi, you already wrote this list. Point at it instead of repeating it:
+
+```ts
+// lib/onchain/config.ts
+import { wagmiConfig } from "@/lib/onchain/wagmi"
+
+export const onchainConfig: OnchainUIConfig = {
+  chains: wagmiConfig.chains,
+}
+```
+
+That one line gives every component your chains. Explorer URLs come from viem's chain objects — `chain.blockExplorers` — so adding a chain to your wagmi config is enough for `AddressDisplay` to link to the right explorer. There is no second map of explorer URLs to maintain.
+
+<Callout type="info">
+Not using wagmi? Nothing changes. The default list covers the common EVM networks, and the components behave exactly as before.
+</Callout>
+
+## Share your RPC endpoints
+
+ENS and Basename resolution happen outside React's render — `AddressIdentity` resolves a name whether or not a wallet is connected — so they need a client of their own. By default that is a public endpoint.
+
+If you have already configured transports, hand them over rather than configuring RPC twice:
+
+```ts
+// lib/onchain/config.ts
+import { getPublicClient } from "@wagmi/core"
+import { wagmiConfig } from "@/lib/onchain/wagmi"
+
+export const onchainConfig: OnchainUIConfig = {
+  chains: wagmiConfig.chains,
+  getClient: (chainId) => getPublicClient(wagmiConfig, { chainId }),
+}
+```
+
+Now identity lookups go through your paid endpoint, your rate limits, and your fallbacks, with no provider and no hooks involved.
+
+## Precedence
+
+Three levels, most specific first:
+
+1. **Props** — `<NetworkLogo name="Zora" />`, `<AddressDisplay explorerUrl="…" />`, `resolverOptions` on `AddressIdentity`.
+2. **This file** — app-wide chains and clients.
+3. **Built-in defaults** — curated names and symbols for common networks, public RPC endpoints.
+
+A component never reaches past a level you have set, so a one-off override is always a prop and never a reason to change the config.
+
+## What is not here
+
+Token and network **icons** have their own seam, `lib/onchain/crypto-icons.tsx`, because the default implementation ships inline SVG marks and a token-list URL builder — hundreds of lines you would not want in a config file. See [Icon Resolution](/docs/standards/icon-resolution).
+
+**Balances, prices, and token lists** are not configured here and never will be. Those have no single correct source — a multicall over a curated list and an indexer API are both right answers for different apps — so they stay explicit at the call site. See [Data Fetching](/docs/recipes/data-fetching).
+
+## Reference
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `chains` | `readonly Chain[]` | Common EVM networks | Supplies explorer URLs and names for networks with no built-in entry |
+| `getClient` | `(chainId: number) => PublicClient \| undefined` | - | Read client for identity resolution. Return `undefined` to fall back |

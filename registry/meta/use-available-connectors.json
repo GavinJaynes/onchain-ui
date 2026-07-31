@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-available-connectors",
+  "type": "registry:hook",
+  "title": "useAvailableConnectors",
+  "description": "Filters wagmi connectors down to wallets actually present in the browser, via EIP-6963 probing.",
+  "docs": "```tsx\nimport { useAvailableConnectors } from \"@/hooks/use-available-connectors\"\n\nconst { connectors, isProbing } = useAvailableConnectors()\n```",
+  "dependencies": [
+    "wagmi"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-available-connectors.ts",
+      "type": "registry:hook",
+      "target": "hooks/use-available-connectors.ts"
+    }
+  ]
+}

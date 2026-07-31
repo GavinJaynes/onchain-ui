@@ -3,6 +3,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { getNetworkIcon } from "@/lib/onchain/crypto-icons";
+import { getNetworkMeta } from "@/lib/onchain/config";
 import {
   Tooltip,
   TooltipContent,
@@ -15,14 +16,6 @@ const sizeClasses = {
   md: "size-8 text-[10px]",
   lg: "size-10 text-xs",
   xl: "size-12 text-sm",
-} as const;
-
-const knownNetworks = {
-  1: { name: "Ethereum", symbol: "ETH" },
-  10: { name: "Optimism", symbol: "OP" },
-  137: { name: "Polygon", symbol: "POL" },
-  8453: { name: "Base", symbol: "BASE" },
-  42161: { name: "Arbitrum", symbol: "ARB" },
 } as const;
 
 export interface NetworkLogoProps {
@@ -50,19 +43,34 @@ export interface NetworkLogoProps {
   fallbackClassName?: string;
 }
 
-function getKnownNetwork(chainId?: number | null) {
-  if (!chainId) return null;
-  return knownNetworks[chainId as keyof typeof knownNetworks] ?? null;
-}
+// How many characters fit inside the circle at each size, measured rather than
+// derived: the font and the circle do not grow in step, so the limit is not a
+// constant ratio. Values leave ~20% slack so glyphs never touch the border.
+const fallbackMaxChars = {
+  xs: 3,
+  sm: 3,
+  md: 4,
+  lg: 4,
+  xl: 4,
+} as const;
 
 function getFallbackText({
   chainId,
   name,
   symbol,
-}: Pick<NetworkLogoProps, "chainId" | "name" | "symbol">) {
-  if (symbol) return symbol.slice(0, 4).toUpperCase();
+  maxChars,
+}: Pick<NetworkLogoProps, "chainId" | "name" | "symbol"> & {
+  maxChars: number;
+}) {
+  if (symbol) return symbol.slice(0, Math.min(4, maxChars)).toUpperCase();
   if (name) return name.slice(0, 2).toUpperCase();
-  if (chainId) return String(chainId);
+  // A chain id is only shown when it fits whole. Truncating one produces a
+  // different, real-looking chain id, which is worse than admitting we do not
+  // recognise the network — the full id stays in `alt` and the tooltip.
+  if (chainId != null) {
+    const id = String(chainId);
+    if (id.length <= maxChars) return id;
+  }
   return "?";
 }
 
@@ -80,7 +88,7 @@ export function NetworkLogo({
   fallbackClassName,
 }: NetworkLogoProps) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
-  const knownNetwork = getKnownNetwork(chainId);
+  const knownNetwork = getNetworkMeta(chainId);
 
   // Explicit src wins; otherwise ask the crypto-icons adapter.
   const adapterIcon = src ? null : getNetworkIcon(chainId);
@@ -90,8 +98,8 @@ export function NetworkLogo({
     adapterIcon != null && typeof adapterIcon !== "string"
       ? adapterIcon
       : null;
-  const displayName = name ?? knownNetwork?.name ?? null;
-  const displaySymbol = symbol ?? knownNetwork?.symbol ?? null;
+  const displayName = name ?? knownNetwork.name;
+  const displaySymbol = symbol ?? knownNetwork.symbol;
   const shouldShowImage = Boolean(resolvedSrc) && failedSrc !== resolvedSrc;
 
   const alt = useMemo(() => {
@@ -128,6 +136,7 @@ export function NetworkLogo({
               chainId,
               name: displayName,
               symbol: displaySymbol,
+              maxChars: fallbackMaxChars[size],
             })}
         </span>
       )}

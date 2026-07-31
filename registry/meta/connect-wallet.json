@@ -1,0 +1,77 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "connect-wallet",
+  "type": "registry:block",
+  "title": "Connect Wallet",
+  "description": "A complete connect, identity, and disconnect surface wired to wagmi.",
+  "docs": "```tsx\nimport { ConnectWallet } from \"@/components/ui/connect-wallet\"\n\n<ConnectWallet />\n```\n\nRequires a `WagmiProvider` and a TanStack `QueryClientProvider` above it.",
+  "dependencies": [
+    "wagmi",
+    "viem",
+    "sonner",
+    "lucide-react"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [
+    "sonner",
+    "tooltip",
+    "dropdown-menu"
+  ],
+  "files": [
+    {
+      "path": "registry/onchain-ui/connect-wallet.tsx",
+      "type": "registry:block",
+      "target": "components/ui/connect-wallet.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/wallet-button.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/wallet-button.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/connector-list.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/connector-list.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/address-identity.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/address-identity.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/address-display.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/address-display.tsx"
+    },
+    {
+      "path": "registry/onchain-ui/network-logo.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/network-logo.tsx"
+    },
+    {
+      "path": "hooks/use-available-connectors.ts",
+      "type": "registry:hook",
+      "target": "hooks/use-available-connectors.ts"
+    },
+    {
+      "path": "lib/onchain/format.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/format.ts"
+    },
+    {
+      "path": "lib/onchain/resolvers.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/resolvers.ts"
+    },
+    {
+      "path": "lib/onchain/crypto-icons.tsx",
+      "type": "registry:lib",
+      "target": "lib/onchain/crypto-icons.tsx"
+    },
+    {
+      "path": "lib/onchain/config.ts",
+      "type": "registry:lib",
+      "target": "lib/onchain/config.ts"
+    }
+  ]
+}

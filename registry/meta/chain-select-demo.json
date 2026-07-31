@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chain-select-demo",
+  "type": "registry:component",
+  "title": "Chain Select Demo",
+  "description": "Renders Chain Select with sample data. Used by Open in v0.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "meta": {
+    "composes": "chain-select"
+  },
+  "files": [
+    {
+      "path": "registry/onchain-ui/chain-select-demo.tsx",
+      "type": "registry:component",
+      "target": "components/ui/chain-select-demo.tsx"
+    }
+  ]
+}

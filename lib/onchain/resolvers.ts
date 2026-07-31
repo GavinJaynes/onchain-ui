@@ -13,6 +13,7 @@ import {
 } from "viem";
 import { normalize, parseAvatarRecord } from "viem/ens";
 import { base, mainnet } from "viem/chains";
+import { getConfiguredClient } from "./config";
 
 export const BASENAME_L2_RESOLVER_ADDRESS =
   "0xC6d566A56A1aFf6508b41f6c90ff131615583BCD";
@@ -85,14 +86,25 @@ let defaultMainnetClient:
   | undefined;
 let defaultBaseClient: ReturnType<typeof createDefaultBaseClient> | undefined;
 
+// Precedence is per-instance, then app-wide, then the public fallback above.
+// The middle step is what stops an app that already configured RPC endpoints
+// (in wagmi, say) from having to configure them a second time here.
 function getMainnetClient(options?: OnchainResolverOptions) {
   if (options?.mainnetClient) return options.mainnetClient;
+
+  const configured = getConfiguredClient(mainnet.id);
+  if (configured) return configured;
+
   if (!defaultMainnetClient) defaultMainnetClient = createDefaultMainnetClient();
   return defaultMainnetClient;
 }
 
 function getBaseClient(options?: OnchainResolverOptions) {
   if (options?.baseClient) return options.baseClient;
+
+  const configured = getConfiguredClient(base.id);
+  if (configured) return configured;
+
   if (!defaultBaseClient) defaultBaseClient = createDefaultBaseClient();
   return defaultBaseClient;
 }

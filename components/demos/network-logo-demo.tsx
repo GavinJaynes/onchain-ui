@@ -28,6 +28,18 @@ export function NetworkLogoDemoSizes() {
   );
 }
 
+export function NetworkLogoDemoUnknown() {
+  return (
+    <div className="flex items-center gap-3">
+      <NetworkLogo chainId={5315} size="xs" />
+      <NetworkLogo chainId={5315} size="sm" />
+      <NetworkLogo chainId={5315} size="md" />
+      <NetworkLogo chainId={42220} size="md" />
+      <NetworkLogo chainId={42220} size="xl" />
+    </div>
+  );
+}
+
 export function NetworkLogoDemoCustom() {
   return (
     <NetworkLogo

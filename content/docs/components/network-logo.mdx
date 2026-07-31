@@ -36,6 +36,10 @@ import { NetworkLogo } from "@/components/ui/network-logo"
 
 `NetworkLogo` ships with built-in logos for common EVM networks. Use `src` only when you need to override a logo or support a chain that is not built in yet.
 
+For a chain with no built-in logo, the fallback is the symbol, then the name, then the chain id — but only when the chain id fits inside the circle whole (3 characters at `xs` and `sm`, 4 from `md` up). A longer id renders `?` instead: a truncated chain id reads as a different, real chain, which is worse than admitting the network is unrecognised. Pass `fallback` for a mark of your own, or `showTooltip` to surface the full id on hover.
+
+Names and symbols for common networks are built in. Anything else comes from the chains in [Configuration](/docs/configuration), so a chain you added to your wagmi config renders with its name here too.
+
 See [Icon Resolution](/docs/standards/icon-resolution) for the full network and token icon strategy.
 
 ## Supported Chains
@@ -88,6 +92,30 @@ See [Icon Resolution](/docs/standards/icon-resolution) for the full network and 
     '      <NetworkLogo chainId={8453} size="md" />',
     '      <NetworkLogo chainId={8453} size="lg" />',
     '      <NetworkLogo chainId={8453} size="xl" />',
+    "    </div>",
+    "  )",
+    "}",
+  ].join("\n")}
+/>
+
+### Unknown Networks
+
+A wallet can report any chain id. Four digits fit from `md` up; five never fit, at any size. Rather than clip the text against the border, the id is dropped.
+
+<ComponentPreview
+  name="network-logo-unknown"
+  codeOpen={false}
+  code={[
+    'import { NetworkLogo } from "@/components/ui/network-logo"',
+    "",
+    "export function NetworkLogoUnknown() {",
+    "  return (",
+    '    <div className="flex items-center gap-3">',
+    '      <NetworkLogo chainId={5315} size="xs" />',
+    '      <NetworkLogo chainId={5315} size="sm" />',
+    '      <NetworkLogo chainId={5315} size="md" />',
+    '      <NetworkLogo chainId={42220} size="md" />',
+    '      <NetworkLogo chainId={42220} size="xl" />',
     "    </div>",
     "  )",
     "}",

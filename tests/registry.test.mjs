@@ -58,7 +58,13 @@ test("registry index is in sync with registry metadata", async () => {
   assert.equal(new Set(indexNames).size, indexNames.length);
 });
 
-const allowedItemTypes = ["registry:ui", "registry:lib", "registry:component"];
+const allowedItemTypes = [
+  "registry:ui",
+  "registry:lib",
+  "registry:component",
+  "registry:hook",
+  "registry:block",
+];
 
 test("registry index entries follow the registry.json spec", async () => {
   const registry = await getRegistryIndex();
