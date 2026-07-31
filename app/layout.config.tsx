@@ -10,7 +10,7 @@ export const baseOptions: BaseLayoutProps = {
           alt=""
           width={22}
           height={22}
-          className="size-[22px] dark:invert"
+          className="size-5.5 dark:invert"
         />
         onchain-ui
       </span>
