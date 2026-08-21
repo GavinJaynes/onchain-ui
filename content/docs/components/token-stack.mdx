@@ -43,6 +43,8 @@ import { TokenStack } from "@/components/ui/token-stack"
 
 `TokenStack` composes `TokenLogo` by default and supports a `renderToken` escape hatch for curated icon libraries, chain badge overlays, or app-specific token treatments.
 
+Each token may set `isNative` when its address is wrapped-token metadata but its visual identity is the chain's native currency.
+
 ## Examples
 
 ### Overflow
@@ -146,3 +148,18 @@ Use `renderToken` when you want to render Cryptocons, chain overlays, or a brand
 | `className` | `string` | - | Applied to the root wrapper |
 | `itemClassName` | `string` | - | Applied to each token wrapper |
 | `overflowClassName` | `string` | - | Applied to the overflow item |
+
+### TokenStackItem
+
+Each token accepts the identity props forwarded to `TokenLogo`:
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `string` | - | Stable identity override for repeated or addressless tokens |
+| `address` | `string \| null` | - | Token contract address used for icon inference |
+| `chainId` | `number \| null` | - | EVM chain id used for icon inference |
+| `isNative` | `boolean` | `false` | Use the chain's native-currency icon instead of the token contract icon |
+| `src` | `string \| null` | - | Explicit token image URL |
+| `symbol` | `string \| null` | - | Token symbol and fallback text |
+| `name` | `string \| null` | - | Token name and accessible label |
+| `fallback` | `ReactNode` | - | Custom fallback content |

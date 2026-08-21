@@ -56,7 +56,10 @@ export function AddressIdentity({
     key: string;
     identity: OnchainIdentity;
   } | null>(null);
-  const [failedAvatarSrc, setFailedAvatarSrc] = useState<string | null>(null);
+  const [avatarFailure, setAvatarFailure] = useState<{
+    src: string;
+    attempts: number;
+  } | null>(null);
 
   // Read resolver options through a ref so inline object literals don't
   // retrigger resolution on every render.
@@ -97,7 +100,8 @@ export function AddressIdentity({
   const displayName = name ?? activeIdentity?.name ?? null;
   const resolvedAvatar = avatarUrl ?? activeIdentity?.avatar ?? null;
   const displayAvatar =
-    resolvedAvatar !== null && resolvedAvatar !== failedAvatarSrc
+    resolvedAvatar !== null &&
+    !(avatarFailure?.src === resolvedAvatar && avatarFailure.attempts >= 2)
       ? resolvedAvatar
       : null;
   const isLoading =
@@ -125,11 +129,18 @@ export function AddressIdentity({
         >
           {displayAvatar ? (
             <img
+              key={`${displayAvatar}:${avatarFailure?.src === displayAvatar ? avatarFailure.attempts : 0}`}
               src={displayAvatar}
               alt=""
               className="size-full object-cover"
               referrerPolicy="no-referrer"
-              onError={() => setFailedAvatarSrc(displayAvatar)}
+              onError={() =>
+                setAvatarFailure((failure) => ({
+                  src: displayAvatar,
+                  attempts:
+                    failure?.src === displayAvatar ? failure.attempts + 1 : 1,
+                }))
+              }
             />
           ) : (
             avatarFallback

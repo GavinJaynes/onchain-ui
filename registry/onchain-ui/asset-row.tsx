@@ -19,6 +19,8 @@ export interface AssetRowProps {
   src?: string | null;
   /** Token contract address */
   address?: string | null;
+  /** Whether the asset is the chain's native currency */
+  isNative?: boolean;
   /** Token amount held by the user */
   amount?: AmountValue;
   /** Fiat value for the position */
@@ -31,7 +33,7 @@ export interface AssetRowProps {
   networkName?: string | null;
   /** Optional network image URL for the logo badge */
   networkSrc?: string | null;
-  /** Secondary metadata shown under the token name */
+  /** Secondary metadata shown beside the token name */
   subtitle?: ReactNode;
   /** Hide the right-side amount. Default: false */
   hideAmount?: boolean;
@@ -72,6 +74,7 @@ export function AssetRow({
   name,
   src,
   address,
+  isNative = false,
   amount,
   value,
   change,
@@ -92,21 +95,28 @@ export function AssetRow({
   const parsedAmount = parseNumericValue(amount);
   const hasNetwork = Boolean(chainId || networkName || networkSrc);
   const hasValue = value !== null && value !== undefined && value !== "";
+  const hasChange = typeof change === "number" && Number.isFinite(change);
 
   return (
     <div
       className={cn(
-        "flex w-full items-center justify-between gap-4 rounded-lg border bg-card p-3",
+        "flex w-full min-w-0 items-center justify-between gap-4 rounded-lg px-1 py-3",
         className
       )}
     >
-      <div className={cn("flex min-w-0 items-center gap-3", identityClassName)}>
+      <div
+        className={cn(
+          "flex min-w-0 flex-1 items-center gap-3",
+          identityClassName
+        )}
+      >
         <span className="relative shrink-0">
           <TokenLogo
             address={address}
             chainId={chainId}
+            isNative={isNative}
             name={name}
-            size="lg"
+            size="xl"
             src={src}
             symbol={symbol}
             {...logoProps}
@@ -114,7 +124,7 @@ export function AssetRow({
           {hasNetwork && (
             <NetworkLogo
               chainId={chainId}
-              className="absolute -bottom-1 -right-1 ring-2 ring-card"
+              className="absolute -bottom-1 -right-1 ring-2 ring-background"
               name={networkName}
               size="xs"
               src={networkSrc}
@@ -123,17 +133,27 @@ export function AssetRow({
           )}
         </span>
 
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <p className="truncate font-medium leading-none">{symbol}</p>
-            {name && (
-              <p className="truncate text-sm text-muted-foreground">{name}</p>
+        <div className="min-w-0 flex-1">
+          <div className="flex min-w-0 items-baseline gap-2">
+            <p className="truncate text-base font-medium leading-tight">
+              {name ?? symbol}
+            </p>
+            {subtitle && (
+              <span className="truncate text-sm text-muted-foreground">
+                {subtitle}
+              </span>
             )}
           </div>
-          {subtitle && (
-            <div className="mt-1 truncate text-xs text-muted-foreground">
-              {subtitle}
-            </div>
+          {hasChange && (
+            <TokenPrice
+              {...priceProps}
+              value={null}
+              fallback={null}
+              change={change}
+              className="mt-1 gap-0"
+              priceClassName="hidden"
+              changeClassName={cn("text-sm", priceProps?.changeClassName)}
+            />
           )}
         </div>
       </div>
@@ -141,14 +161,15 @@ export function AssetRow({
       <div className={cn("grid shrink-0 gap-1 text-right", valueClassName)}>
         {hasValue && (
           <TokenPrice
-            value={value}
-            change={change}
-            className="justify-end"
             {...priceProps}
+            value={value}
+            change={null}
+            className={cn("justify-end text-base", priceProps?.className)}
+            priceClassName={cn("font-semibold", priceProps?.priceClassName)}
           />
         )}
         {!hideAmount && parsedAmount !== null && (
-          <p className="font-mono text-xs text-muted-foreground tabular-nums">
+          <p className="font-mono text-sm text-muted-foreground tabular-nums">
             {formatAmount({ locale, maximumFractionDigits, value: parsedAmount })}{" "}
             {symbol}
           </p>

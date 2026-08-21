@@ -26,6 +26,8 @@ export interface TokenIconQuery {
   address?: string | null;
   /** Token symbol. Unused by the default adapter: symbols are not canonical */
   symbol?: string | null;
+  /** Whether this is the chain's native currency rather than an ERC-20 */
+  isNative?: boolean;
 }
 
 // Chain folder names in the Trust Wallet assets repo.
@@ -47,7 +49,10 @@ const trustWalletChainFolders: Record<number, string> = {
  * CDN.
  */
 export function getTokenIcon(query: TokenIconQuery): CryptoIcon {
-  const { chainId, address } = query;
+  const { chainId, address, isNative, symbol } = query;
+  if (isNative && symbol?.toUpperCase() === "ETH") {
+    return <EthereumMark className="size-full" />;
+  }
   if (chainId == null || !address) return null;
 
   const chainFolder = trustWalletChainFolders[chainId];

@@ -81,4 +81,4 @@ Token and network **icons** have their own seam, `lib/onchain/crypto-icons.tsx`,
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `chains` | `readonly Chain[]` | Common EVM networks | Supplies explorer URLs and names for networks with no built-in entry |
-| `getClient` | `(chainId: number) => PublicClient \| undefined` | - | Read client for identity resolution. Return `undefined` to fall back |
+| `getClient` | `(chainId: number) => OnchainReadClient \| undefined` | - | Read client for identity resolution. Return `undefined` to fall back |

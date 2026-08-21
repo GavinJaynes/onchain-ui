@@ -3,7 +3,7 @@
   "name": "chain-select",
   "type": "registry:ui",
   "title": "Chain Select",
-  "description": "Network switcher with a first-class unsupported-chain state.",
+  "description": "Network selector for wallet switching or filtering, with optional all-networks and unsupported-chain states.",
   "docs": "```tsx\nimport { ChainSelect } from \"@/components/ui/chain-select\"\n\n<ChainSelect chains={chains} value={chainId} onSelect={switchChain} />\n```",
   "dependencies": [
     "viem"

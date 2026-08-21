@@ -12,7 +12,13 @@ import type { ReactNode } from "react";
 export interface TokenStackItem
   extends Pick<
     TokenLogoProps,
-    "address" | "chainId" | "fallback" | "name" | "src" | "symbol"
+    | "address"
+    | "chainId"
+    | "fallback"
+    | "isNative"
+    | "name"
+    | "src"
+    | "symbol"
   > {
   id?: string;
 }
@@ -129,6 +135,7 @@ export function TokenStack({
                 address={token.address}
                 chainId={token.chainId}
                 fallback={token.fallback}
+                isNative={token.isNative}
                 name={token.name}
                 size={size}
                 src={token.src}

@@ -100,6 +100,7 @@ import { TokenBalance } from "@/components/ui/token-balance"
 | `src` | `string \| null` | - | Token image URL |
 | `address` | `string \| null` | - | Token contract address, used for icon inference and as a fallback label |
 | `chainId` | `number \| null` | - | EVM chain id, used with `address` to infer a token icon |
+| `isNative` | `boolean` | `false` | Use the chain's native-currency icon instead of the token contract icon |
 | `fiatValue` | `TokenPriceProps["value"]` | - | Fiat value for the balance |
 | `change` | `number \| null` | - | Fiat value percentage change |
 | `showLogo` | `boolean` | `true` | Show the token logo |

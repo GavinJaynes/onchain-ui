@@ -111,13 +111,14 @@ Hide the amount to use the same row shape for market and watchlist views.
 | `name` | `string \| null` | - | Token name |
 | `src` | `string \| null` | - | Token image URL |
 | `address` | `string \| null` | - | Token contract address, used for icon inference and as a fallback label |
+| `isNative` | `boolean` | `false` | Use the chain's native-currency icon instead of treating `address` as a token contract |
 | `amount` | `number \| string \| null \| undefined` | - | Token amount held by the user |
 | `value` | `TokenPriceProps["value"]` | - | Fiat value for the position |
 | `change` | `number \| null` | - | Price or position change percentage |
 | `chainId` | `number \| null` | - | Network chain id for the logo badge |
 | `networkName` | `string \| null` | - | Network name for the logo badge |
 | `networkSrc` | `string \| null` | - | Network image URL for the logo badge |
-| `subtitle` | `ReactNode` | - | Secondary metadata under the token name |
+| `subtitle` | `ReactNode` | - | Secondary metadata shown beside the token name |
 | `hideAmount` | `boolean` | `false` | Hide the right-side token amount |
 | `locale` | `string` | Browser/default locale | Locale passed to `Intl.NumberFormat` |
 | `maximumFractionDigits` | `number` | `4` | Maximum fraction digits for token amount |

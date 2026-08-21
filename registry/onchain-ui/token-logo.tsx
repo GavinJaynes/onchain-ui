@@ -28,6 +28,8 @@ export interface TokenLogoProps {
   address?: string | null;
   /** EVM chain id, used with address to infer an icon via the crypto-icons adapter */
   chainId?: number | null;
+  /** Use the native-currency icon rather than the wrapped token at `address` */
+  isNative?: boolean;
   /** Visual size. Default: md */
   size?: keyof typeof sizeClasses;
   /** Custom fallback content when the image is missing or fails */
@@ -61,6 +63,7 @@ export function TokenLogo({
   name,
   address,
   chainId,
+  isNative = false,
   size = "md",
   fallback,
   showTooltip = false,
@@ -73,8 +76,9 @@ export function TokenLogo({
 
   // Explicit src wins; otherwise ask the crypto-icons adapter.
   const inferredIcon = useMemo(
-    () => (src ? null : getTokenIcon({ chainId, address, symbol })),
-    [address, chainId, src, symbol]
+    () =>
+      src ? null : getTokenIcon({ chainId, address, isNative, symbol }),
+    [address, chainId, isNative, src, symbol]
   );
   const resolvedSrc =
     src ?? (typeof inferredIcon === "string" ? inferredIcon : null);

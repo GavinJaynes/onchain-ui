@@ -1,6 +1,12 @@
 import { arbitrum, base, mainnet, optimism, polygon } from "viem/chains";
 import type { Chain, PublicClient } from "viem";
 
+/** The small client surface identity resolution actually consumes. */
+export type OnchainReadClient = Pick<
+  PublicClient,
+  "getEnsAddress" | "getEnsAvatar" | "getEnsName" | "readContract"
+>;
+
 /**
  * The single place onchain-ui components look for app-wide settings.
  *
@@ -39,7 +45,7 @@ export interface OnchainUIConfig {
    * getClient: (chainId) => getPublicClient(wagmiConfig, { chainId }),
    * ```
    */
-  getClient?: (chainId: number) => PublicClient | undefined;
+  getClient?: (chainId: number) => OnchainReadClient | undefined;
 }
 
 export const onchainConfig: OnchainUIConfig = {
@@ -54,7 +60,9 @@ export const onchainConfig: OnchainUIConfig = {
  * gives "ETH" for Base, Optimism, and Arbitrum alike, which is useless as a
  * network mark. Chains absent here fall back to the configured chain's name.
  */
-const knownNetworks: Record<number, { name: string; symbol: string }> = {
+const knownNetworks: Partial<
+  Record<number, { name: string; symbol: string }>
+> = {
   1: { name: "Ethereum", symbol: "ETH" },
   10: { name: "Optimism", symbol: "OP" },
   137: { name: "Polygon", symbol: "POL" },
@@ -96,6 +104,8 @@ export function getExplorerUrl(chainId?: number | null): string | null {
 }
 
 /** A read client for `chainId`, if the app configured one. */
-export function getConfiguredClient(chainId: number): PublicClient | undefined {
+export function getConfiguredClient(
+  chainId: number
+): OnchainReadClient | undefined {
   return onchainConfig.getClient?.(chainId);
 }

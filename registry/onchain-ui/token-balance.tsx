@@ -22,6 +22,8 @@ export interface TokenBalanceProps {
   address?: string | null;
   /** EVM chain id, used with address to infer a token icon */
   chainId?: number | null;
+  /** Whether the asset is the chain's native currency */
+  isNative?: boolean;
   /** Fiat value for the token balance */
   fiatValue?: TokenPriceProps["value"];
   /** Fiat value percentage change */
@@ -78,6 +80,7 @@ export function TokenBalance({
   src,
   address,
   chainId,
+  isNative = false,
   fiatValue,
   change,
   showLogo = true,
@@ -102,6 +105,7 @@ export function TokenBalance({
         <TokenLogo
           address={address}
           chainId={chainId}
+          isNative={isNative}
           name={name}
           src={src}
           symbol={symbol}

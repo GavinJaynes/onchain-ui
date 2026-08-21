@@ -1,6 +1,6 @@
 ---
 title: Chain Select
-description: Network switcher with a first-class unsupported-chain state.
+description: Network selector for wallet switching or filtering, with optional all-networks and unsupported-chain states.
 ---
 
 Use `ChainSelect` wherever a user picks a network: an app header, a bridge form, or a token filter. It takes the chains you support as props and reports the id you picked — the wallet connection and the switch call stay in your app.
@@ -48,6 +48,22 @@ import { ChainSelect } from "@/components/ui/chain-select"
 
 `ChainSelect` holds no connection state and performs no network calls. It renders the chains you hand it and calls `onSelect` — which makes it testable with plain data and keeps your wallet library out of the component.
 
+For filters rather than wallet switching, add an all-networks item and keep
+`null` as the unfiltered state:
+
+```tsx
+const [chainId, setChainId] = useState<number | null>(null)
+
+<ChainSelect
+  chains={chains}
+  value={chainId}
+  allLabel="All networks"
+  menuLabel="Filter by network"
+  onClear={() => setChainId(null)}
+  onSelect={setChainId}
+/>
+```
+
 ## Wiring with wagmi
 
 Your configured chains are already the right list, so the wiring is a mapping:
@@ -72,11 +88,21 @@ export function ChainSwitcher() {
       }))}
       value={chainId ?? null}
       pendingChainId={switchChain.isPending ? switchChain.variables?.chainId : null}
-      onSelect={(id) => switchChain.mutate({ chainId: id })}
+      onSelect={(id) => {
+        const next = chains.find((chain) => chain.id === id)
+        if (next) switchChain.mutate({ chainId: next.id })
+      }}
     />
   )
 }
 ```
+
+<Callout type="info">
+`onSelect` hands you a `number`, but if you augment wagmi's `Register` type,
+`switchChain` expects your config's literal chain-id union — so passing the id
+straight through fails to compile. Looking the chain back up, as above, keeps it
+type-safe without a cast.
+</Callout>
 
 <Callout type="info">
 The snippet targets wagmi 3. On wagmi 2, read `chainId` from `useAccount()`, take the list from `useSwitchChain().chains` rather than `useChains()`, and call `switchChain({ chainId })` instead of `switchChain.mutate(...)`. The component itself is identical either way — it never imports wagmi.
@@ -179,6 +205,8 @@ Use `showLabel={false}` for a logo-only trigger in tight headers. The accessible
 | `chains` | `ChainSelectOption[]` | - | Selectable chains, usually the ones your app is configured for |
 | `value` | `number \| null` | - | Currently connected chain id |
 | `onSelect` | `(chainId: number) => void` | - | Called with the chain id the user picked |
+| `onClear` | `() => void` | - | Called when the optional all-networks item is picked |
+| `allLabel` | `string` | - | Adds an item that clears the selected chain |
 | `pendingChainId` | `number \| null` | - | Chain being switched to. Blocks further selection |
 | `disabled` | `boolean` | `false` | Disable the whole control |
 | `placeholder` | `string` | `"Select network"` | Trigger label when `value` is null |

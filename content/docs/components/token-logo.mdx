@@ -46,6 +46,8 @@ import { TokenLogo } from "@/components/ui/token-logo"
 
 `TokenLogo` uses a plain `img` element for portability. It does not require Next.js image configuration and works with arbitrary token image URLs from APIs, indexers, and token lists.
 
+Set `isNative` for native currencies such as ETH. This prevents a wrapped-token address used for balance reads from being mistaken for the asset's visual identity.
+
 See [Icon Resolution](/docs/standards/icon-resolution) for the full network and token icon strategy.
 
 ## Examples
@@ -173,6 +175,7 @@ Enable an animated tooltip when the logo appears without nearby token text.
 | `size` | `"xs" \| "sm" \| "md" \| "lg" \| "xl"` | `"md"` | Visual size |
 | `fallback` | `ReactNode` | Symbol/name/address fallback | Custom fallback content |
 | `chainId` | `number \| null` | - | EVM chain id, used with `address` to infer an icon |
+| `isNative` | `boolean` | `false` | Use the native-currency icon instead of the token contract icon |
 | `showTooltip` | `boolean` | `false` | Show an animated tooltip |
 | `tooltipContent` | `ReactNode` | Name, symbol, then address | Tooltip content |
 | `className` | `string` | - | Applied to the root wrapper |

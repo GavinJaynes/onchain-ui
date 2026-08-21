@@ -13,7 +13,7 @@ import {
 } from "viem";
 import { normalize, parseAvatarRecord } from "viem/ens";
 import { base, mainnet } from "viem/chains";
-import { getConfiguredClient } from "./config";
+import { getConfiguredClient, type OnchainReadClient } from "./config";
 
 export const BASENAME_L2_RESOLVER_ADDRESS =
   "0xC6d566A56A1aFf6508b41f6c90ff131615583BCD";
@@ -46,8 +46,8 @@ const baseNamesAbi = [
 ] as const;
 
 export interface OnchainResolverOptions {
-  mainnetClient?: PublicClient;
-  baseClient?: PublicClient;
+  mainnetClient?: OnchainReadClient;
+  baseClient?: OnchainReadClient;
   basenameResolverAddress?: Address;
   reverseLookupOrder?: Array<"ens" | "basename">;
 }
@@ -235,7 +235,19 @@ export async function resolveNameAvatar(
   name: string,
   options?: OnchainResolverOptions
 ) {
-  return (await lookupNameAvatarCached(name, options)).value;
+  return (await lookupNameAvatarWithRetry(name, options)).value;
+}
+
+/** Retry one transient RPC failure before exposing the avatar as unavailable. */
+async function lookupNameAvatarWithRetry(
+  name: string,
+  options?: OnchainResolverOptions
+): Promise<LookupResult<string | null>> {
+  const first = await lookupNameAvatarCached(name, options);
+  if (!first.failed) return first;
+
+  // Failed cached lookups evict themselves, so this is a fresh RPC attempt.
+  return lookupNameAvatarCached(name, options);
 }
 
 async function lookupNameAvatarCached(
@@ -273,7 +285,12 @@ async function lookupNameAvatar(
       });
 
       if (!record) return { value: null, failed: false };
-      return { value: await parseAvatarRecord(client, { record }), failed: false };
+      return {
+        // parseAvatarRecord only consumes read actions, but viem types it as a
+        // full client. The configured seam deliberately accepts less.
+        value: await parseAvatarRecord(client as PublicClient, { record }),
+        failed: false,
+      };
     }
 
     const avatar = await getMainnetClient(options).getEnsAvatar({ name });
@@ -352,7 +369,7 @@ async function lookupOnchainIdentity(
     if (name.failed) failed = true;
 
     if (name.value) {
-      const avatar = await lookupNameAvatarCached(name.value, options);
+      const avatar = await lookupNameAvatarWithRetry(name.value, options);
 
       return {
         value: {

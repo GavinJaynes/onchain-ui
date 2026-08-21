@@ -1,9 +1,15 @@
 "use client";
 
 import { useMemo, type ReactNode } from "react";
-import { ChevronDownIcon, LoaderCircleIcon, TriangleAlertIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  EarthIcon,
+  LoaderCircleIcon,
+  TriangleAlertIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NetworkLogo } from "./network-logo";
+import { getNetworkMeta } from "@/lib/onchain/config";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,10 +37,14 @@ export interface ChainSelectOption {
 export interface ChainSelectProps {
   /** Selectable chains, usually the ones your app is configured for */
   chains: Array<ChainSelectOption>;
-  /** Currently connected chain id. Null when nothing is connected */
+  /** Selected chain id. Null when disconnected or showing all networks */
   value?: number | null;
   /** Called with the chain id the user picked */
   onSelect: (chainId: number) => void;
+  /** Called when the optional all-networks item is picked */
+  onClear?: () => void;
+  /** Renders an item that clears the selected chain, e.g. "All networks" */
+  allLabel?: string;
   /** Chain id currently being switched to. Blocks further selection */
   pendingChainId?: number | null;
   /** Disable the whole control */
@@ -74,6 +84,8 @@ export function ChainSelect({
   chains,
   value,
   onSelect,
+  onClear,
+  allLabel,
   pendingChainId,
   disabled = false,
   placeholder = "Select network",
@@ -97,9 +109,17 @@ export function ChainSelect({
   const isPending = pendingChainId != null;
   const logoSize = logoSizes[size];
 
+  // Explicit name wins, then the curated network name, then the placeholder.
+  // Falling back through the config means a caller can pass bare chain ids and
+  // still get "Optimism" rather than viem's "OP Mainnet".
+  const chainLabel = (chain: ChainSelectOption) =>
+    chain.name ?? getNetworkMeta(chain.id).name ?? `Chain ${chain.id}`;
+
   const triggerLabel = isUnsupported
     ? unsupportedLabel
-    : (selected?.name ?? placeholder);
+    : selected
+      ? chainLabel(selected)
+      : (allLabel ?? placeholder);
 
   return (
     <DropdownMenu>
@@ -120,6 +140,11 @@ export function ChainSelect({
         {isPending ? (
           <LoaderCircleIcon
             className={cn("animate-spin", size === "sm" ? "size-3.5" : "size-4")}
+            aria-hidden="true"
+          />
+        ) : value == null && allLabel ? (
+          <EarthIcon
+            className={cn(size === "sm" ? "size-5" : "size-6")}
             aria-hidden="true"
           />
         ) : value == null ? (
@@ -166,11 +191,29 @@ export function ChainSelect({
       <DropdownMenuContent align={align} className={cn("w-52", contentClassName)}>
         <DropdownMenuRadioGroup
           value={value ?? null}
-          onValueChange={(next) => onSelect(next as number)}
+          onValueChange={(next) => {
+            if (next == null) {
+              onClear?.();
+              return;
+            }
+            onSelect(next as number);
+          }}
         >
           {/* GroupLabel reads its group from context, so it has to live inside
               the radio group rather than above it. */}
           {menuLabel && <DropdownMenuLabel>{menuLabel}</DropdownMenuLabel>}
+
+          {allLabel && onClear && (
+            <DropdownMenuRadioItem
+              value={null}
+              disabled={isPending}
+              closeOnClick
+              className="gap-2 py-1.5"
+            >
+              <EarthIcon className="size-5" aria-hidden="true" />
+              <span className="min-w-0 truncate">{allLabel}</span>
+            </DropdownMenuRadioItem>
+          )}
 
           {chains.map((chain) => (
             <DropdownMenuRadioItem
@@ -190,7 +233,7 @@ export function ChainSelect({
                 size="xs"
               />
               <span className="min-w-0 truncate">
-                {chain.name ?? `Chain ${chain.id}`}
+                {chainLabel(chain)}
               </span>
               {chain.badge}
               {pendingChainId === chain.id && (
