@@ -53,7 +53,7 @@ export function ConnectorList({
   onSelect,
   pendingId,
   disabled = false,
-  emptyMessage = "No wallet detected. Install a browser wallet, then reload this page.",
+  emptyMessage = "No compatible wallet connection is available on this device.",
   className,
   itemClassName,
 }: ConnectorListProps) {

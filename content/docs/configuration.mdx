@@ -55,18 +55,24 @@ import { wagmiConfig } from "@/lib/onchain/wagmi"
 export const onchainConfig: OnchainUIConfig = {
   chains: wagmiConfig.chains,
   getClient: (chainId) => getPublicClient(wagmiConfig, { chainId }),
+  avatarGatewayUrls: {
+    ipfs: "https://gateway.pinata.cloud",
+    arweave: "https://arweave.net",
+  },
 }
 ```
 
 Now identity lookups go through your paid endpoint, your rate limits, and your fallbacks, with no provider and no hooks involved.
+
+Avatar text records often contain `ipfs://` or `ar://` URLs. The gateway options turn those records into URLs the browser can load. The bundled public gateways are suitable for demos; use your own gateway when availability and rate limits matter.
 
 ## Precedence
 
 Three levels, most specific first:
 
 1. **Props** — `<NetworkLogo name="Zora" />`, `<AddressDisplay explorerUrl="…" />`, `resolverOptions` on `AddressIdentity`.
-2. **This file** — app-wide chains and clients.
-3. **Built-in defaults** — curated names and symbols for common networks, public RPC endpoints.
+2. **This file** — app-wide chains, clients, and avatar gateways.
+3. **Built-in defaults** — curated names and symbols, public RPC endpoints, and public asset gateways.
 
 A component never reaches past a level you have set, so a one-off override is always a prop and never a reason to change the config.
 
@@ -82,3 +88,4 @@ Token and network **icons** have their own seam, `lib/onchain/crypto-icons.tsx`,
 |--------|------|---------|-------------|
 | `chains` | `readonly Chain[]` | Common EVM networks | Supplies explorer URLs and names for networks with no built-in entry |
 | `getClient` | `(chainId: number) => OnchainReadClient \| undefined` | - | Read client for identity resolution. Return `undefined` to fall back |
+| `avatarGatewayUrls` | `{ ipfs?: string; arweave?: string }` | Public gateways | Converts decentralized avatar records into browser-loadable URLs |

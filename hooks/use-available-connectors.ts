@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import { useConnectors } from "wagmi";
 
 /**
- * Filters the configured connectors down to the ones that can actually connect.
+ * Filters injected connectors down to wallets present in the browser while
+ * preserving remote connectors such as MetaMask Connect and WalletConnect.
  *
  * `useConnectors()` always includes the generic `injected()` fallback even when
  * no wallet is installed, and connecting with it throws ProviderNotFoundError.
- * Probing `getProvider()` is the only reliable way to know before the user
- * clicks, and it is async, hence the state rather than a plain filter.
+ * Only injected connectors should be probed: remote connectors create their
+ * provider as part of connecting and are essential for mobile app deep links.
  *
  * The return type is inferred on purpose. Apps that augment wagmi's `Register`
  * get `useConnectors()` narrowed to their own connector union, which is not
@@ -32,6 +33,8 @@ export function useAvailableConnectors() {
 
     Promise.all(
       connectors.map(async (connector) => {
+        if (connector.type !== "injected") return connector;
+
         try {
           return (await connector.getProvider()) ? connector : null;
         } catch {
@@ -43,13 +46,18 @@ export function useAvailableConnectors() {
 
       const found = results.filter((connector) => connector !== null);
 
-      // EIP-6963 announces wallets by name; the generic "Injected" fallback
-      // points at the same provider, so drop it when a named one exists.
-      const named = found.filter((connector) => connector.id !== "injected");
+      // EIP-6963 announces injected wallets by name; the generic "Injected"
+      // fallback points at the same provider, so drop only that duplicate.
+      const hasNamedInjected = found.some(
+        (connector) =>
+          connector.type === "injected" && connector.id !== "injected"
+      );
 
       setProbed({
         key: connectorKey,
-        connectors: named.length > 0 ? named : found,
+        connectors: hasNamedInjected
+          ? found.filter((connector) => connector.id !== "injected")
+          : found,
       });
     });
 

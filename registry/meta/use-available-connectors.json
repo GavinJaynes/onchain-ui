@@ -3,8 +3,8 @@
   "name": "use-available-connectors",
   "type": "registry:hook",
   "title": "useAvailableConnectors",
-  "description": "Filters wagmi connectors down to wallets actually present in the browser, via EIP-6963 probing.",
-  "docs": "```tsx\nimport { useAvailableConnectors } from \"@/hooks/use-available-connectors\"\n\nconst { connectors, isProbing } = useAvailableConnectors()\n```",
+  "description": "Filters unavailable injected wallets while preserving mobile and remote wagmi connectors.",
+  "docs": "```tsx\nimport { useAvailableConnectors } from \"@/hooks/use-available-connectors\"\n\nconst { connectors, isProbing } = useAvailableConnectors()\n```\n\nInjected connectors are probed for an announced browser provider. Remote connectors such as `metaMask()` and `walletConnect()` remain available so they can open a wallet app or display their connection UI.",
   "dependencies": [
     "wagmi"
   ],

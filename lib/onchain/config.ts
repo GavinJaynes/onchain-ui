@@ -1,5 +1,5 @@
 import { arbitrum, base, mainnet, optimism, polygon } from "viem/chains";
-import type { Chain, PublicClient } from "viem";
+import type { AssetGatewayUrls, Chain, PublicClient } from "viem";
 
 /** The small client surface identity resolution actually consumes. */
 export type OnchainReadClient = Pick<
@@ -46,10 +46,21 @@ export interface OnchainUIConfig {
    * ```
    */
   getClient?: (chainId: number) => OnchainReadClient | undefined;
+
+  /**
+   * Public gateways used to turn IPFS and Arweave avatar records into URLs.
+   * Replace these with your own gateway in production when reliability or
+   * rate limits matter.
+   */
+  avatarGatewayUrls?: AssetGatewayUrls;
 }
 
 export const onchainConfig: OnchainUIConfig = {
   chains: [mainnet, base, arbitrum, optimism, polygon],
+  avatarGatewayUrls: {
+    ipfs: "https://gateway.pinata.cloud",
+    arweave: "https://arweave.net",
+  },
 };
 
 /**
@@ -108,4 +119,9 @@ export function getConfiguredClient(
   chainId: number
 ): OnchainReadClient | undefined {
   return onchainConfig.getClient?.(chainId);
+}
+
+/** App-wide gateways for ENS and Basename avatar assets, if configured. */
+export function getConfiguredAvatarGatewayUrls(): AssetGatewayUrls | undefined {
+  return onchainConfig.avatarGatewayUrls;
 }

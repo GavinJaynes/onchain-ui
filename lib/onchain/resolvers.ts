@@ -8,12 +8,17 @@ import {
   namehash,
   zeroAddress,
   type Address,
+  type AssetGatewayUrls,
   type Hex,
   type PublicClient,
 } from "viem";
 import { normalize, parseAvatarRecord } from "viem/ens";
 import { base, mainnet } from "viem/chains";
-import { getConfiguredClient, type OnchainReadClient } from "./config";
+import {
+  getConfiguredAvatarGatewayUrls,
+  getConfiguredClient,
+  type OnchainReadClient,
+} from "./config";
 
 export const BASENAME_L2_RESOLVER_ADDRESS =
   "0xC6d566A56A1aFf6508b41f6c90ff131615583BCD";
@@ -49,6 +54,7 @@ export interface OnchainResolverOptions {
   mainnetClient?: OnchainReadClient;
   baseClient?: OnchainReadClient;
   basenameResolverAddress?: Address;
+  avatarGatewayUrls?: AssetGatewayUrls;
   reverseLookupOrder?: Array<"ens" | "basename">;
 }
 
@@ -111,6 +117,16 @@ function getBaseClient(options?: OnchainResolverOptions) {
 
 function getBasenameResolverAddress(options?: OnchainResolverOptions) {
   return options?.basenameResolverAddress ?? BASENAME_L2_RESOLVER_ADDRESS;
+}
+
+function getAvatarGatewayUrls(options?: OnchainResolverOptions) {
+  return (
+    options?.avatarGatewayUrls ??
+    getConfiguredAvatarGatewayUrls() ?? {
+      ipfs: "https://gateway.pinata.cloud",
+      arweave: "https://arweave.net",
+    }
+  );
 }
 
 export function convertChainIdToCoinType(chainId: number): string {
@@ -209,6 +225,12 @@ function getResolverCaches(options?: OnchainResolverOptions): ResolverCaches {
   const mainnetScope = options?.mainnetClient ?? defaultMainnetScope;
   const baseScope = options?.baseClient ?? defaultBaseScope;
   const resolverAddress = getBasenameResolverAddress(options).toLowerCase();
+  const gatewayUrls = getAvatarGatewayUrls(options);
+  const resolverConfigKey = [
+    resolverAddress,
+    gatewayUrls.ipfs ?? "",
+    gatewayUrls.arweave ?? "",
+  ].join(":");
 
   let baseScopes = cacheScopes.get(mainnetScope);
   if (!baseScopes) {
@@ -222,10 +244,10 @@ function getResolverCaches(options?: OnchainResolverOptions): ResolverCaches {
     baseScopes.set(baseScope, resolverScopes);
   }
 
-  let caches = resolverScopes.get(resolverAddress);
+  let caches = resolverScopes.get(resolverConfigKey);
   if (!caches) {
     caches = { avatar: new Map(), identity: new Map() };
-    resolverScopes.set(resolverAddress, caches);
+    resolverScopes.set(resolverConfigKey, caches);
   }
 
   return caches;
@@ -288,12 +310,18 @@ async function lookupNameAvatar(
       return {
         // parseAvatarRecord only consumes read actions, but viem types it as a
         // full client. The configured seam deliberately accepts less.
-        value: await parseAvatarRecord(client as PublicClient, { record }),
+        value: await parseAvatarRecord(client as PublicClient, {
+          record,
+          gatewayUrls: getAvatarGatewayUrls(options),
+        }),
         failed: false,
       };
     }
 
-    const avatar = await getMainnetClient(options).getEnsAvatar({ name });
+    const avatar = await getMainnetClient(options).getEnsAvatar({
+      name,
+      assetGatewayUrls: getAvatarGatewayUrls(options),
+    });
     return { value: avatar, failed: false };
   } catch {
     return { value: null, failed: true };

@@ -299,7 +299,7 @@
       "name": "onchain-config",
       "type": "registry:lib",
       "title": "Onchain Config",
-      "description": "One file for app-wide chain settings: explorers, network names, and read clients.",
+      "description": "One file for app-wide chain settings: explorers, network names, read clients, and avatar gateways.",
       "dependencies": [
         "viem"
       ],
@@ -429,7 +429,7 @@
       "name": "use-available-connectors",
       "type": "registry:hook",
       "title": "useAvailableConnectors",
-      "description": "Filters wagmi connectors down to wallets actually present in the browser, via EIP-6963 probing.",
+      "description": "Filters unavailable injected wallets while preserving mobile and remote wagmi connectors.",
       "dependencies": [
         "wagmi"
       ],
