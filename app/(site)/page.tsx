@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CopyButton } from "@/components/ui/copy-button";
+
 import { AddressDisplay } from "@/registry/onchain-ui/address-display";
 import { AddressIdentity } from "@/registry/onchain-ui/address-identity";
 import { NetworkLogo } from "@/registry/onchain-ui/network-logo";
@@ -96,6 +99,14 @@ const components = [
   },
 ];
 
+const INSTALL_COMMAND = "shadcn add @onchain-ui/token-stack";
+
+const installVariants = [
+  { id: "npm", text: `npx ${INSTALL_COMMAND}` },
+  { id: "pnpm", text: `pnpm dlx ${INSTALL_COMMAND}` },
+  { id: "bun", text: `bunx ${INSTALL_COMMAND}` },
+];
+
 export default function HomePage() {
   return (
     <main className="flex flex-1 flex-col">
@@ -145,21 +156,40 @@ export default function HomePage() {
               </a>
             </div>
 
-            <div className="max-w-xl overflow-hidden rounded-lg border border-border bg-card">
-              <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-4 py-2">
+            <Tabs
+              defaultValue="npm"
+              className="max-w-xl gap-0 overflow-hidden rounded-lg border border-border bg-card"
+            >
+              <div className="flex items-center justify-between border-b border-border bg-secondary/40 py-1.5 pr-2 pl-4">
                 <span className="font-mono text-xs text-muted-foreground">
                   install
                 </span>
-                <span className="text-xs text-muted-foreground/80">
-                  registry item
-                </span>
+                <TabsList className="h-7 bg-transparent p-0">
+                  {installVariants.map((variant) => (
+                    <TabsTrigger
+                      key={variant.id}
+                      value={variant.id}
+                      className="px-2.5 text-xs"
+                    >
+                      {variant.id}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
               </div>
-              <pre className="overflow-x-auto p-4 text-left font-mono text-sm text-foreground/90">
-                <code>
-                  npx shadcn add https://onchain-ui.dev/r/token-stack.json
-                </code>
-              </pre>
-            </div>
+              {installVariants.map((variant) => (
+                <TabsContent key={variant.id} value={variant.id}>
+                  <div className="flex items-center justify-between gap-3 py-1 pr-1 pl-4">
+                    <pre className="overflow-x-auto py-2 text-left font-mono text-sm text-foreground/90">
+                      <code>{variant.text}</code>
+                    </pre>
+                    <CopyButton
+                      code={variant.text}
+                      className="shrink-0 text-muted-foreground hover:text-foreground"
+                    />
+                  </div>
+                </TabsContent>
+              ))}
+            </Tabs>
           </div>
 
           <div className="relative min-w-0">
