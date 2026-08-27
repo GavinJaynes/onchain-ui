@@ -33,10 +33,11 @@ export function useAvailableConnectors() {
 
     Promise.all(
       connectors.map(async (connector) => {
-        if (connector.type !== "injected") return connector;
+        if (connector.type !== "injected") return { connector, provider: null };
 
         try {
-          return (await connector.getProvider()) ? connector : null;
+          const provider = await connector.getProvider();
+          return provider ? { connector, provider } : null;
         } catch {
           return null;
         }
@@ -44,20 +45,39 @@ export function useAvailableConnectors() {
     ).then((results) => {
       if (cancelled) return;
 
-      const found = results.filter((connector) => connector !== null);
+      const found = results.filter((result) => result !== null);
 
       // EIP-6963 announces injected wallets by name; the generic "Injected"
-      // fallback points at the same provider, so drop only that duplicate.
+      // fallback points at the same provider, so it is only kept when it is
+      // the sole way to reach that wallet.
       const hasNamedInjected = found.some(
-        (connector) =>
+        ({ connector }) =>
           connector.type === "injected" && connector.id !== "injected"
       );
 
+      // The MetaMask SDK connector replaces the extension's EIP-6963
+      // announcement, so no named injected wallet is left to trigger the
+      // dedupe above — yet the fallback still finds MetaMask's provider and
+      // would list the same wallet twice.
+      const hasMetaMaskConnector = found.some(
+        ({ connector }) => connector.type === "metaMask"
+      );
+
+      const isDuplicateFallback = ({
+        connector,
+        provider,
+      }: (typeof found)[number]) =>
+        connector.id === "injected" &&
+        (hasNamedInjected ||
+          (hasMetaMaskConnector &&
+            (provider as { isMetaMask?: boolean } | null)?.isMetaMask ===
+              true));
+
       setProbed({
         key: connectorKey,
-        connectors: hasNamedInjected
-          ? found.filter((connector) => connector.id !== "injected")
-          : found,
+        connectors: found
+          .filter((result) => !isDuplicateFallback(result))
+          .map(({ connector }) => connector),
       });
     });
 

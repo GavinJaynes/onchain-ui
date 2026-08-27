@@ -45,7 +45,9 @@ const triggerSizes = {
 function toOption(connector: ProbedConnector) {
   return {
     id: connector.uid,
-    name: connector.name,
+    // wagmi names the legacy window.ethereum fallback "Injected" — wallet
+    // plumbing jargon nobody picks a wallet by.
+    name: connector.id === "injected" ? "Browser wallet" : connector.name,
     icon: connector.icon,
   };
 }

@@ -144,7 +144,9 @@ import { useAvailableConnectors } from "@/hooks/use-available-connectors"
 const { connectors, isProbing } = useAvailableConnectors()
 ```
 
-It also drops the generic "Injected" entry when a named wallet announces itself over EIP-6963, since both point at the same provider and listing them twice is confusing.
+It also handles wagmi's legacy `injected()` fallback — "whatever wallet put a provider at `window.ethereum`". The fallback is dropped when it would duplicate a wallet already in the list: when a named wallet announces itself over EIP-6963, and when the MetaMask SDK connector is present and the fallback's provider is MetaMask (the SDK replaces MetaMask's EIP-6963 announcement, so the named-wallet rule alone would miss it).
+
+When the fallback survives — a wallet injected a provider but never announced itself, common in in-app mobile browsers — `ConnectWallet` lists it as **"Browser wallet"** rather than wagmi's "Injected", which is plumbing jargon nobody picks a wallet by.
 
 ## Props
 
