@@ -11,7 +11,7 @@
   ],
   "devDependencies": [],
   "registryDependencies": [
-    "sonner"
+    "@onchain-ui/sonner"
   ],
   "meta": {
     "composes": "address-display"

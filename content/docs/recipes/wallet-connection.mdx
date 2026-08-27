@@ -52,7 +52,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 Install [Connect Wallet](/docs/components/connect-wallet) and the connect, identity, and disconnect flow is done:
 
-<InstallTabs command="shadcn add https://onchain-ui.dev/r/connect-wallet.json" />
+<InstallTabs command="shadcn add @onchain-ui/connect-wallet" />
 
 ```tsx
 "use client"
@@ -78,7 +78,7 @@ Full modal kits (Reown AppKit, RainbowKit, Privy, Dynamic) bring their own conne
 
 Prefer a hand-rolled chip? `useConnection` feeds `AddressIdentity` directly — it resolves the connected wallet's Basename or ENS name and avatar, and falls back to the truncated address.
 
-<InstallTabs command="shadcn add button card https://onchain-ui.dev/r/address-identity.json" />
+<InstallTabs command="shadcn add button card @onchain-ui/address-identity" />
 
 ```tsx
 "use client"

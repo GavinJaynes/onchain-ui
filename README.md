@@ -12,26 +12,20 @@ onchain-ui is an open source [shadcn registry](https://ui.shadcn.com/docs/regist
 
 ## Install
 
-Add any component with the shadcn CLI:
-
-```bash
-npx shadcn add https://onchain-ui.dev/r/asset-row.json
-# or: pnpm dlx shadcn add … / bunx shadcn add …
-```
-
-Or configure the registry namespace once in your `components.json`:
-
-```json
-{
-  "registries": {
-    "@onchain-ui": "https://onchain-ui.dev/r/{name}.json"
-  }
-}
-```
+onchain-ui is listed in the [shadcn registry directory](https://ui.shadcn.com/registries), so the `@onchain-ui` namespace works out of the box — add any component with the shadcn CLI:
 
 ```bash
 npx shadcn add @onchain-ui/asset-row
+# or: pnpm dlx shadcn add … / bunx shadcn add …
 ```
+
+To register the namespace in your project up front (it also persists automatically on first add):
+
+```bash
+npx shadcn registry add @onchain-ui
+```
+
+Direct item URLs work too: `npx shadcn add https://onchain-ui.dev/r/asset-row.json`.
 
 ## Components
 
@@ -45,6 +39,8 @@ npx shadcn add @onchain-ui/asset-row
 | [Network Logo](https://onchain-ui.dev/docs/components/network-logo) | Chain logo with known-chain fallbacks |
 | [Token Balance](https://onchain-ui.dev/docs/components/token-balance) | Amount with optional logo, fiat value, and change |
 | [Asset Row](https://onchain-ui.dev/docs/components/asset-row) | Composed portfolio / watchlist row |
+| [Chain Select](https://onchain-ui.dev/docs/components/chain-select) | Network selector for wallet switching or filtering |
+| [Connect Wallet](https://onchain-ui.dev/docs/components/connect-wallet) | Complete connect, identity, and disconnect surface |
 | [Crypto Icons](https://onchain-ui.dev/docs/standards/crypto-icons) | Swappable token/network icon adapter |
 
 See [Examples](https://onchain-ui.dev/docs/examples) for composed surfaces (portfolio card, wallet header, pool positions) and [Recipes](https://onchain-ui.dev/docs/recipes/wallet-connection) for wiring components to wagmi, TanStack Query, and TanStack Table.

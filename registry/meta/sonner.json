@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sonner",
+  "type": "registry:ui",
+  "title": "Sonner",
+  "description": "Toast notifications themed by your app's CSS tokens. A framework-agnostic Toaster with no next-themes dependency.",
+  "docs": "```tsx\nimport { Toaster } from \"@/components/ui/sonner\"\n\n// Render once near the root of your app\n<Toaster />\n```",
+  "dependencies": [
+    "sonner",
+    "lucide-react"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/onchain-ui/sonner.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/sonner.tsx"
+    }
+  ]
+}

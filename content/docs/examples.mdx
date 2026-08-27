@@ -9,7 +9,7 @@ Each component is useful alone, but they are designed to compose — with each o
 
 The classic wallet view: a shadcn `Card` wrapping an `AssetRow` per holding, with `TokenPrice` rendering the daily change next to the total. Network badges, fiat values, and amount formatting all come from the row's props.
 
-<InstallTabs command="shadcn add card https://onchain-ui.dev/r/asset-row.json https://onchain-ui.dev/r/token-price.json" />
+<InstallTabs command="shadcn add card @onchain-ui/asset-row @onchain-ui/token-price" />
 
 <ComponentPreview
   name="example-portfolio"
@@ -85,7 +85,7 @@ The classic wallet view: a shadcn `Card` wrapping an `AssetRow` per holding, wit
 
 An account chip for a dapp navbar: `AddressIdentity` resolves the connected wallet to its Basename or ENS name (with avatar) live, while `TokenBalance` shows the gas balance — laid out in a horizontal `Card`. Copy and explorer actions come along for free.
 
-<InstallTabs command="shadcn add card https://onchain-ui.dev/r/address-identity.json https://onchain-ui.dev/r/token-balance.json" />
+<InstallTabs command="shadcn add card @onchain-ui/address-identity @onchain-ui/token-balance" />
 
 <ComponentPreview
   name="example-wallet-header"
@@ -125,7 +125,7 @@ The preview above performs a real reverse lookup against Base mainnet. See [Addr
 
 Liquidity positions and pair rows: `TokenStack` overlaps the pool's tokens (hover for tooltips), a shadcn `Badge` tags the venue, and `TokenPrice` renders the position value with its change.
 
-<InstallTabs command="shadcn add card badge https://onchain-ui.dev/r/token-stack.json https://onchain-ui.dev/r/token-price.json" />
+<InstallTabs command="shadcn add card badge @onchain-ui/token-stack @onchain-ui/token-price" />
 
 <ComponentPreview
   name="example-pool-positions"

@@ -14,7 +14,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "sonner"
+        "@onchain-ui/sonner"
       ],
       "files": [
         {
@@ -45,7 +45,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "sonner"
+        "@onchain-ui/sonner"
       ],
       "files": [
         {
@@ -172,7 +172,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "sonner",
+        "@onchain-ui/sonner",
         "tooltip",
         "dropdown-menu"
       ],
@@ -308,6 +308,23 @@
           "path": "lib/onchain/config.ts",
           "type": "registry:lib",
           "target": "lib/onchain/config.ts"
+        }
+      ]
+    },
+    {
+      "name": "sonner",
+      "type": "registry:ui",
+      "title": "Sonner",
+      "description": "Toast notifications themed by your app's CSS tokens. A framework-agnostic Toaster with no next-themes dependency.",
+      "dependencies": [
+        "sonner",
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/onchain-ui/sonner.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/sonner.tsx"
         }
       ]
     },
@@ -452,7 +469,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "sonner",
+        "@onchain-ui/sonner",
         "tooltip"
       ],
       "files": [

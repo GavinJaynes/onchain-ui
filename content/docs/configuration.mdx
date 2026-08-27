@@ -5,7 +5,7 @@ description: One file for app-wide chain settings, with no provider to wrap your
 
 Most onchain-ui components take everything they need as props. A few things are app-wide rather than per-instance — which chains you support, where their block explorers live, which RPC endpoints identity resolution should use — and those live in one file.
 
-<InstallTabs command="shadcn add https://onchain-ui.dev/r/onchain-config.json" />
+<InstallTabs command="shadcn add @onchain-ui/onchain-config" />
 
 It arrives with the components that read it, so you usually do not install it directly.
 
@@ -65,6 +65,16 @@ export const onchainConfig: OnchainUIConfig = {
 Now identity lookups go through your paid endpoint, your rate limits, and your fallbacks, with no provider and no hooks involved.
 
 Avatar text records often contain `ipfs://` or `ar://` URLs. The gateway options turn those records into URLs the browser can load. The bundled public gateways are suitable for demos; use your own gateway when availability and rate limits matter.
+
+## Re-installing and `--overwrite`
+
+Because `lib/onchain/config.ts` ships inside every component item, it arrives with whichever component you install first — and every later install carries a copy too. By default the CLI prompts before touching a file that already exists, so keep declining and your customized config survives any number of installs.
+
+`shadcn add --overwrite` skips that prompt and resets every file in the item to stock, **including this one**: your chains, `getClient`, and gateway settings go back to the defaults. The same applies to the other file you own, the icon seam `lib/onchain/crypto-icons.tsx`.
+
+<Callout type="warn">
+Use `--overwrite` only when you mean to reset a component to its published source, and expect to re-apply your `config.ts` edits afterwards. Committing the file before updating keeps recovery one `git diff` away.
+</Callout>
 
 ## Precedence
 

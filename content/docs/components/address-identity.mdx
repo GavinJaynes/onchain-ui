@@ -20,13 +20,13 @@ Use `AddressIdentity` when an address should feel like a person or account, not 
 
 ## Installation
 
-<InstallTabs command="shadcn add https://onchain-ui.dev/r/address-identity.json" />
+<InstallTabs command="shadcn add @onchain-ui/address-identity" />
 
 <OpenInV0 name="address-identity-demo" />
 
 ### Requirements
 
-Add `<Toaster />` from [sonner](https://ui.shadcn.com/docs/components/sonner) to your root layout so copy feedback can show a toast.
+Add `<Toaster />` to your root layout so copy feedback can show a toast. The install brings `@onchain-ui/sonner` — a framework-agnostic Toaster themed by your app's CSS tokens, with no `next-themes` dependency — unless your app already has a `components/ui/sonner.tsx`, in which case yours is used as-is.
 
 ```tsx
 import { Toaster } from "@/components/ui/sonner"

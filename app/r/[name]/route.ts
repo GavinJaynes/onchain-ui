@@ -19,6 +19,7 @@ import connectorList from "@/registry/generated/connector-list.json";
 import cryptoIcons from "@/registry/generated/crypto-icons.json";
 import networkLogo from "@/registry/generated/network-logo.json";
 import onchainConfig from "@/registry/generated/onchain-config.json";
+import sonner from "@/registry/generated/sonner.json";
 import useAvailableConnectors from "@/registry/generated/use-available-connectors.json";
 import walletButton from "@/registry/generated/wallet-button.json";
 import tokenBalance from "@/registry/generated/token-balance.json";
@@ -58,6 +59,7 @@ const registryItems = {
   "crypto-icons": cryptoIcons,
   "network-logo": networkLogo,
   "onchain-config": onchainConfig,
+  "sonner": sonner,
   "use-available-connectors": useAvailableConnectors,
   "wallet-button": walletButton,
   "token-balance": tokenBalance,
