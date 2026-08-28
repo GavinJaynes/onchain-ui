@@ -6,7 +6,7 @@
   "description": "Displays overlapping token logos for baskets, pools, routes, and portfolio rows.",
   "docs": "```tsx\nimport { TokenStack } from \"@/components/ui/token-stack\"\n\n<TokenStack tokens={[{ symbol: \"ETH\", name: \"Ethereum\" }, { symbol: \"USDC\", name: \"USD Coin\" }]} />\n```",
   "dependencies": [
-    "viem"
+    "viem@2.55.19"
   ],
   "devDependencies": [],
   "registryDependencies": [

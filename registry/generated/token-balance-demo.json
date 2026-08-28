@@ -6,7 +6,7 @@
   "description": "Renders Token Balance with sample data. Used by Open in v0.",
   "dependencies": [
     "lucide-react",
-    "viem"
+    "viem@2.55.19"
   ],
   "devDependencies": [],
   "registryDependencies": [

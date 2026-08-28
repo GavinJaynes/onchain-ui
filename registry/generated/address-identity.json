@@ -6,7 +6,7 @@
   "description": "Resolves an EVM address to an ENS or Base name with optional avatar, copy-to-clipboard, and explorer link.",
   "docs": "```tsx\nimport { AddressIdentity } from \"@/components/ui/address-identity\"\n\n<AddressIdentity address=\"0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045\" />\n```",
   "dependencies": [
-    "viem",
+    "viem@2.55.19",
     "sonner",
     "lucide-react"
   ],

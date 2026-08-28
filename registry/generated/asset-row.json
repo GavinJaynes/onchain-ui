@@ -7,7 +7,7 @@
   "docs": "```tsx\nimport { AssetRow } from \"@/components/ui/asset-row\"\n\n<AssetRow symbol=\"ETH\" name=\"Ethereum\" amount={1.2845} value={4163.91} change={2.41} chainId={1} />\n```",
   "dependencies": [
     "lucide-react",
-    "viem"
+    "viem@2.55.19"
   ],
   "devDependencies": [],
   "registryDependencies": [

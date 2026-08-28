@@ -6,7 +6,7 @@
   "description": "The connected-wallet pill: resolved identity, network mark, and a disclosure chevron.",
   "docs": "```tsx\nimport { WalletButton } from \"@/components/ui/wallet-button\"\n\n<WalletButton address={address} chainId={chainId} onClick={openMenu} />\n```",
   "dependencies": [
-    "viem",
+    "viem@2.55.19",
     "sonner",
     "lucide-react"
   ],

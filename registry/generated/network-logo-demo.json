@@ -5,7 +5,7 @@
   "title": "Network Logo Demo",
   "description": "Renders Network Logo with sample data. Used by Open in v0.",
   "dependencies": [
-    "viem"
+    "viem@2.55.19"
   ],
   "devDependencies": [],
   "registryDependencies": [

@@ -8,6 +8,7 @@ const registryIndexPath = path.join(root, "registry.json");
 const metaDir = path.join(root, "registry", "meta");
 const generatedDir = path.join(root, "registry", "generated");
 const registryRoutePath = path.join(root, "app", "r", "[name]", "route.ts");
+const packageJsonPath = path.join(root, "package.json");
 
 async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, "utf-8"));
@@ -131,6 +132,39 @@ test("registry metadata files are valid and reference real source files", async 
 
       assert.ok(sourceStat.isFile(), `${sourceFile.path} is not a file`);
       assert.ok(content.trim().length > 0, `${sourceFile.path} is empty`);
+    }
+  }
+});
+
+test("registry web3 dependencies match the app's exact compatibility pins", async () => {
+  const packageJson = await readJson(packageJsonPath);
+  const expectedPins = new Map(
+    ["accounts", "viem", "wagmi"].map((dependency) => {
+      const version = packageJson.dependencies[dependency];
+
+      assert.match(
+        version,
+        /^\d+\.\d+\.\d+$/,
+        `${dependency} must use an exact version in package.json`
+      );
+
+      return [dependency, `${dependency}@${version}`];
+    })
+  );
+  const metaItems = await getMetaItems();
+
+  for (const { item } of metaItems) {
+    for (const dependency of item.dependencies) {
+      const packageName = dependency.split("@")[0];
+      const expected = expectedPins.get(packageName);
+
+      if (expected) {
+        assert.equal(
+          dependency,
+          expected,
+          `${item.name} must use the tested ${packageName} pin`
+        );
+      }
     }
   }
 });

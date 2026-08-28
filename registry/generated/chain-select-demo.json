@@ -5,7 +5,7 @@
   "title": "Chain Select Demo",
   "description": "Renders Chain Select with sample data. Used by Open in v0.",
   "dependencies": [
-    "viem"
+    "viem@2.55.19"
   ],
   "devDependencies": [],
   "registryDependencies": [

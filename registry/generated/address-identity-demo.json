@@ -5,7 +5,7 @@
   "title": "Address Identity Demo",
   "description": "Renders Address Identity with sample data. Used by Open in v0.",
   "dependencies": [
-    "viem",
+    "viem@2.55.19",
     "sonner",
     "lucide-react"
   ],

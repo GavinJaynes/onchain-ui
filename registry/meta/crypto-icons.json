@@ -6,7 +6,7 @@
   "description": "Swappable adapter that resolves token and network icons for onchain-ui components.",
   "docs": "Icon resolution adapter consumed by onchain-ui components like TokenLogo and NetworkLogo. Swap the implementation to change icon sources app-wide.\n\n```tsx\nimport { getTokenIcon, getNetworkIcon } from \"@/lib/onchain/crypto-icons\"\n```",
   "dependencies": [
-    "viem"
+    "viem@2.55.19"
   ],
   "devDependencies": [],
   "registryDependencies": [],

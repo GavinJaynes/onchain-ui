@@ -9,7 +9,7 @@
       "title": "Address Display",
       "description": "Displays an EVM wallet address with copy-to-clipboard and an optional block explorer link.",
       "dependencies": [
-        "viem",
+        "viem@2.55.19",
         "sonner",
         "lucide-react"
       ],
@@ -40,7 +40,7 @@
       "title": "Address Identity",
       "description": "Resolves an EVM address to an ENS or Base name with optional avatar, copy-to-clipboard, and explorer link.",
       "dependencies": [
-        "viem",
+        "viem@2.55.19",
         "sonner",
         "lucide-react"
       ],
@@ -82,7 +82,7 @@
       "description": "Displays a practical portfolio or watchlist row from token identity, network, amount, value, and change.",
       "dependencies": [
         "lucide-react",
-        "viem"
+        "viem@2.55.19"
       ],
       "registryDependencies": [
         "tooltip"
@@ -131,7 +131,7 @@
       "title": "Chain Select",
       "description": "Network selector for wallet switching or filtering, with optional all-networks and unsupported-chain states.",
       "dependencies": [
-        "viem"
+        "viem@2.55.19"
       ],
       "registryDependencies": [
         "dropdown-menu",
@@ -166,8 +166,9 @@
       "title": "Connect Wallet",
       "description": "A complete connect, identity, and disconnect surface wired to wagmi.",
       "dependencies": [
-        "wagmi",
-        "viem",
+        "accounts@0.14.0",
+        "wagmi@3.7.6",
+        "viem@2.55.19",
         "sonner",
         "lucide-react"
       ],
@@ -256,7 +257,7 @@
       "title": "Crypto Icons",
       "description": "Swappable adapter that resolves token and network icons for onchain-ui components.",
       "dependencies": [
-        "viem"
+        "viem@2.55.19"
       ],
       "files": [
         {
@@ -272,7 +273,7 @@
       "title": "Network Logo",
       "description": "Displays a network or chain logo with known chain fallbacks.",
       "dependencies": [
-        "viem"
+        "viem@2.55.19"
       ],
       "registryDependencies": [
         "tooltip"
@@ -301,7 +302,7 @@
       "title": "Onchain Config",
       "description": "One file for app-wide chain settings: explorers, network names, read clients, and avatar gateways.",
       "dependencies": [
-        "viem"
+        "viem@2.55.19"
       ],
       "files": [
         {
@@ -335,7 +336,7 @@
       "description": "Displays a token amount with optional logo, fiat value, and change.",
       "dependencies": [
         "lucide-react",
-        "viem"
+        "viem@2.55.19"
       ],
       "registryDependencies": [
         "tooltip"
@@ -374,7 +375,7 @@
       "title": "Token Logo",
       "description": "Displays a token image with resilient symbol, name, or address fallback.",
       "dependencies": [
-        "viem"
+        "viem@2.55.19"
       ],
       "registryDependencies": [
         "tooltip"
@@ -419,7 +420,7 @@
       "title": "Token Stack",
       "description": "Displays overlapping token logos for baskets, pools, routes, and portfolio rows.",
       "dependencies": [
-        "viem"
+        "viem@2.55.19"
       ],
       "registryDependencies": [
         "tooltip"
@@ -448,7 +449,7 @@
       "title": "useAvailableConnectors",
       "description": "Filters unavailable injected wallets while preserving mobile and remote wagmi connectors.",
       "dependencies": [
-        "wagmi"
+        "wagmi@3.7.6"
       ],
       "files": [
         {
@@ -464,7 +465,7 @@
       "title": "Wallet Button",
       "description": "The connected-wallet pill: resolved identity, network mark, and a disclosure chevron.",
       "dependencies": [
-        "viem",
+        "viem@2.55.19",
         "sonner",
         "lucide-react"
       ],

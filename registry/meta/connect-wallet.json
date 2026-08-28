@@ -6,8 +6,9 @@
   "description": "A complete connect, identity, and disconnect surface wired to wagmi.",
   "docs": "```tsx\nimport { ConnectWallet } from \"@/components/ui/connect-wallet\"\n\n<ConnectWallet />\n```\n\nRequires a `WagmiProvider` and a TanStack `QueryClientProvider` above it. The component renders the connectors configured in wagmi. For mobile browsers, configure a remote connector such as wagmi's `metaMask()` or `walletConnect()`; `injected()` alone only works when the current browser exposes a wallet provider.",
   "dependencies": [
-    "wagmi",
-    "viem",
+    "accounts@0.14.0",
+    "wagmi@3.7.6",
+    "viem@2.55.19",
     "sonner",
     "lucide-react"
   ],

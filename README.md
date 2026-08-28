@@ -68,6 +68,20 @@ npm run test    # registry contract tests
 npm run build   # registry + site build
 ```
 
+### wagmi, viem, and Tempo Accounts compatibility
+
+The docs app and published registry items pin wagmi, viem, and the Tempo Accounts peer to the exact stack tested in CI. Their Tempo APIs can change across minor releases, so do not upgrade these dependencies in isolation or replace the exact versions with ranges.
+
+Current tested stack: `wagmi@3.7.6`, `viem@2.55.19`, and `accounts@0.14.0`.
+
+Check the stack monthly and before each release:
+
+1. Read all three changelogs, paying particular attention to Tempo and connector changes.
+2. Update the stack together with `npm install --save-exact wagmi@<version> viem@<version> accounts@<version>`.
+3. Update the matching dependency pins in `registry/meta/`; the registry contract tests enforce that they match `package.json`.
+4. Run `npm run lint`, `npm run typecheck`, `npm run test`, and `npm run build`.
+5. Smoke-test `shadcn add @onchain-ui/connect-wallet` in a newly initialized shadcn app before publishing.
+
 ## Project Structure
 
 ```txt

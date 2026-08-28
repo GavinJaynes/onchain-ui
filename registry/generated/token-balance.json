@@ -7,7 +7,7 @@
   "docs": "```tsx\nimport { TokenBalance } from \"@/components/ui/token-balance\"\n\n<TokenBalance amount={1.4321} symbol=\"ETH\" fiatValue={4982.11} />\n```",
   "dependencies": [
     "lucide-react",
-    "viem"
+    "viem@2.55.19"
   ],
   "devDependencies": [],
   "registryDependencies": [
