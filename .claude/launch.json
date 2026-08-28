@@ -23,6 +23,20 @@
       "autoPort": false
     },
     {
+      "name": "portfolio",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--dir",
+        "C:/projects/gavin-jaynes",
+        "exec",
+        "vite",
+        "--port",
+        "5180"
+      ],
+      "port": 5180,
+      "autoPort": false
+    },
+    {
       "name": "registry-test",
       "runtimeExecutable": "npm",
       "runtimeArgs": [
