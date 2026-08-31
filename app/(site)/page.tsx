@@ -123,14 +123,19 @@ export default function HomePage() {
   return (
     <main className="flex flex-1 flex-col">
       {/* 3.5rem offset matches the h-14 fumadocs home nav */}
-      <section className="relative isolate flex min-h-[calc(100svh-3.5rem)] w-full flex-col justify-center overflow-hidden bg-[#02030a]">
+      <section className="relative isolate flex w-full flex-col justify-start overflow-hidden bg-[#02030a] lg:min-h-[calc(100svh-3.5rem)] lg:justify-center">
         <OnchainFlare />
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(2,3,10,0.94)_0%,rgba(2,3,10,0.72)_52%,rgba(2,3,10,0.12)_100%)] lg:bg-[linear-gradient(90deg,rgba(2,3,10,0.98)_0%,rgba(2,3,10,0.82)_34%,rgba(2,3,10,0.18)_62%,rgba(2,3,10,0)_100%)]" />
-        <div className="relative z-10 mx-auto grid w-full max-w-6xl gap-12 px-6 py-16 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:py-20">
-          <div className="min-w-0 space-y-8">
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(2,3,10,0.06)_0%,rgba(2,3,10,0.12)_32%,rgba(2,3,10,0.96)_49%,#02030a_62%)] lg:bg-[linear-gradient(90deg,rgba(2,3,10,0.98)_0%,rgba(2,3,10,0.82)_34%,rgba(2,3,10,0.18)_62%,rgba(2,3,10,0)_100%)]" />
+        <div className="relative z-10 mx-auto grid w-full max-w-6xl gap-0 px-6 pb-14 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:gap-12 lg:py-20">
+          <div className="h-[42svh] min-h-72 lg:hidden" aria-hidden="true" />
+
+          <div className="min-w-0 space-y-6 sm:space-y-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-white/48 backdrop-blur-sm">
               <span className="inline-flex size-1.5 rounded-full bg-emerald-500" />
-              v0.1.0 / open source / shadcn registry / wagmi + viem
+              <span className="sm:hidden">Open source / shadcn registry</span>
+              <span className="hidden sm:inline">
+                v0.1.0 / open source / shadcn registry / wagmi + viem
+              </span>
             </div>
 
             <div className="space-y-5">
@@ -138,7 +143,7 @@ export default function HomePage() {
                 Copy&#8209;paste web3 components for shadcn apps.
               </h1>
 
-              <p className="max-w-xl text-base leading-7 text-white/52 md:text-lg">
+              <p className="hidden max-w-xl text-base leading-7 text-white/52 sm:block md:text-lg">
                 Wallet identity, token logos, chain context, icon stacks, and
                 market UI primitives built for teams shipping onchain products.
               </p>
@@ -155,7 +160,7 @@ export default function HomePage() {
                 href="https://github.com/GavinJaynes/onchain-ui"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-10 items-center justify-center rounded-full border border-white/12 bg-white/[0.04] px-5 text-sm font-medium text-white/78 backdrop-blur-sm transition-colors hover:bg-white/[0.09] hover:text-white"
+                className="hidden h-10 items-center justify-center rounded-full border border-white/12 bg-white/[0.04] px-5 text-sm font-medium text-white/78 backdrop-blur-sm transition-colors hover:bg-white/[0.09] hover:text-white sm:inline-flex"
               >
                 GitHub
               </a>
@@ -163,7 +168,7 @@ export default function HomePage() {
 
             <Tabs
               defaultValue="npm"
-              className="max-w-xl gap-0 overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] backdrop-blur-md"
+              className="hidden max-w-xl gap-0 overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] backdrop-blur-md sm:flex"
             >
               <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.03] py-1.5 pr-2 pl-4">
                 <span className="font-mono text-xs text-white/38">

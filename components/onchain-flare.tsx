@@ -170,7 +170,7 @@ export function OnchainFlare() {
         const time = (performance.now() - startedAt) / 1000;
         const aspect = canvas.width / Math.max(canvas.height, 1);
         const logoCenter: readonly [number, number] =
-          aspect > 1.05 ? [0.74, 0.5] : [0.58, 0.76];
+          aspect > 1.05 ? [0.74, 0.5] : [0.5, 0.22];
         const target: readonly [number, number] = pointer ?? [
           logoCenter[0] + Math.cos(time * 0.34) * 0.27,
           logoCenter[1] + Math.sin(time * 0.27) * 0.22,
@@ -230,7 +230,7 @@ export function OnchainFlare() {
       <svg
         viewBox="0 0 640 512"
         aria-hidden="true"
-        className="absolute right-[-16%] top-[76%] w-[112%] -translate-y-1/2 opacity-60 transition-opacity duration-700 group-data-[ready=true]:opacity-0 lg:right-[2%] lg:top-1/2 lg:w-[48%]"
+        className="absolute top-[22%] left-1/2 w-[80%] -translate-x-1/2 -translate-y-1/2 opacity-60 transition-opacity duration-700 group-data-[ready=true]:opacity-0 lg:top-1/2 lg:right-[2%] lg:left-auto lg:w-[48%] lg:translate-x-0"
       >
         <defs>
           <filter id="fallback-glow" x="-80%" y="-80%" width="260%" height="260%">
