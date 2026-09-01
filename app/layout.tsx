@@ -16,12 +16,26 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://onchain-ui.dev"),
   title: {
     default: "onchain-ui",
     template: "%s | onchain-ui",
   },
   description:
     "Open source shadcn registry of web3 UI components. Built with wagmi + viem.",
+  openGraph: {
+    type: "website",
+    siteName: "onchain-ui",
+    title: "onchain-ui",
+    description:
+      "Copy-paste web3 components for shadcn apps. Built with wagmi + viem.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "onchain-ui",
+    description:
+      "Copy-paste web3 components for shadcn apps. Built with wagmi + viem.",
+  },
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
