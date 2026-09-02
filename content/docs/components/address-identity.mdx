@@ -1,9 +1,9 @@
 ---
-title: Address Identity
+title: Address identity
 description: Resolves an EVM address to an ENS or Base name with optional avatar, copy-to-clipboard, and explorer link.
 ---
 
-Use `AddressIdentity` when an address should feel like a person or account, not only a hex string. It composes `AddressDisplay`, so the displayed label can resolve while copy and explorer behavior still use the underlying address.
+`AddressIdentity` displays an ENS name or Basename and avatar for an EVM address. It uses `AddressDisplay` for copy and explorer actions, which always use the original address.
 
 <ComponentPreview
   name="address-identity"
@@ -26,7 +26,7 @@ Use `AddressIdentity` when an address should feel like a person or account, not 
 
 ### Requirements
 
-Add `<Toaster />` to your root layout so copy feedback can show a toast. The install brings `@onchain-ui/sonner` — a framework-agnostic Toaster themed by your app's CSS tokens, with no `next-themes` dependency — unless your app already has a `components/ui/sonner.tsx`, in which case yours is used as-is.
+Add `<Toaster />` to your root layout to show a toast when someone copies an address. The install includes `@onchain-ui/sonner`, which uses your app's CSS tokens and does not depend on `next-themes`. If you already have `components/ui/sonner.tsx`, the install uses that file.
 
 ```tsx
 import { Toaster } from "@/components/ui/sonner"
@@ -61,17 +61,17 @@ By default, `AddressIdentity` tries Base reverse resolution first, then ENS reve
 
 ### Caching
 
-Lookups are cached in memory for the session, so many rows showing the same address resolve once — concurrent lookups for the same address share a single in-flight request. Two details worth knowing:
+The resolver caches lookup results in memory for the session. Concurrent lookups for the same address share one request.
 
-- **Failures are not cached.** A lookup that fails (rate-limited or unreachable RPC) is retried on the next mount instead of pinning "no name" for the rest of the session. Only genuine results — including "this address has no name" — stay cached.
-- **Caches are scoped per resolver config.** Each distinct set of clients in `resolverOptions` gets its own cache, so results from different RPC endpoints never mix, and custom clients keep full request deduplication.
+- **Failed lookups retry.** The resolver does not cache RPC errors, so a lookup can retry on the next mount. It does cache successful responses that report no name for an address.
+- **Each resolver config has its own cache.** Components using the same client instances and resolver settings share results and requests.
 
 Because the cache is scoped to the client instances, create clients once at module scope and reuse them. Building clients inline on every render still works, but each new instance starts with an empty cache.
 
 ### Custom RPC endpoints
 
 <Callout type="warn">
-The default resolvers use each chain's public RPC endpoint with an automatic fallback to a second public endpoint, since some public RPCs aggressively rate limit. Fine for demos and prototypes; in production, pass your own viem clients through `resolverOptions`.
+The default resolvers use public RPC endpoints and fall back to a second endpoint if a request fails. Public endpoints can rate limit requests. For production apps, pass your own viem clients through `resolverOptions`.
 </Callout>
 
 ```tsx
@@ -93,13 +93,13 @@ const resolverOptions = {
 <AddressIdentity address="0x..." resolverOptions={resolverOptions} />
 ```
 
-Both clients are optional — pass only `mainnetClient` to keep the default Base endpoint, or only `baseClient` to keep the default mainnet endpoint.
+Both clients are optional. Pass only `mainnetClient` to keep the default Base endpoint, or only `baseClient` to keep the default mainnet endpoint.
 
 ### Server-side resolution
 
-By default, resolution happens in the browser after mount, so the first paint shows the truncated address until the lookup lands. To render the resolved name from the first byte — no flash, no layout shift — resolve on the server and pass the result in. The resolvers only depend on viem, so they run in any server context.
+By default, the browser starts the lookup after mount and shows the truncated address while it waits. To include the name in the initial HTML, resolve it on the server and pass the result as props. The resolvers depend on viem and can run outside React.
 
-Pass `resolveIdentity={false}` alongside the resolved values so the component skips client-side lookups entirely.
+Pass `resolveIdentity={false}` with the resolved values to skip browser lookups.
 
 In a Next.js server component:
 
@@ -155,12 +155,12 @@ function Profile() {
 ```
 
 <Callout>
-The session cache is per server process, so hot addresses resolve once per deployment instance rather than once per request. For high-traffic pages, wrap the loader call in your framework's request-level cache or a TanStack Query prefetch with a long `staleTime` — see [Data Fetching](/docs/recipes/data-fetching).
+On the server, the in-memory cache lasts for the process lifetime. Each process has its own cache. To share results with other queries in your app, see [Data fetching](/docs/recipes/data-fetching).
 </Callout>
 
 ## Examples
 
-### Resolved Name
+### Resolved name
 
 Pass `name` and `avatarUrl` when you already have profile data from your own API or indexer.
 
@@ -182,9 +182,9 @@ Pass `name` and `avatarUrl` when you already have profile data from your own API
   ].join("\n")}
 />
 
-### Fallback Only
+### Fallback only
 
-Disable resolution when you want deterministic rendering or already know there is no profile.
+Set `resolveIdentity={false}` to show the address without requesting a name or avatar.
 
 <ComponentPreview
   name="address-identity-fallback"
@@ -203,9 +203,9 @@ Disable resolution when you want deterministic rendering or already know there i
   ].join("\n")}
 />
 
-### No Avatar
+### No avatar
 
-Hide the avatar when the identity sits inside dense tables or compact nav.
+Set `showAvatar={false}` to display only the name or address and its actions.
 
 <ComponentPreview
   name="address-identity-no-avatar"
@@ -225,9 +225,9 @@ Hide the avatar when the identity sits inside dense tables or compact nav.
   ].join("\n")}
 />
 
-### Resolver Order
+### Resolver order
 
-Use `resolverOptions` when your app wants ENS before Base Names, or when you want to pass custom viem clients.
+Set `resolverOptions.reverseLookupOrder` to try ENS before Basenames. You can also pass custom viem clients through `resolverOptions`.
 
 ```tsx
 <AddressIdentity
@@ -242,7 +242,7 @@ Use `resolverOptions` when your app wants ENS before Base Names, or when you wan
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `address` | `Address` | - | EVM wallet address (required) |
+| `address` | `Address` | - | Required EVM wallet address |
 | `name` | `string \| null` | - | Resolved name override |
 | `avatarUrl` | `string \| null` | - | Avatar URL override |
 | `resolveIdentity` | `boolean` | `true` | Resolve ENS/Base name and avatar |

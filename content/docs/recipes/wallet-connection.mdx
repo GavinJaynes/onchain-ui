@@ -1,12 +1,12 @@
 ---
-title: Wallet Connection
+title: Wallet connection
 description: Wire onchain-ui components to a connected wallet with wagmi.
 ---
 
-Most onchain-ui components are presentation-only — they take addresses, amounts, and metadata as props and don't care where those come from. For wallet connections on EVM chains we use [wagmi](https://wagmi.sh): typed hooks for accounts, balances, and chains, built on the same viem primitives the components already use.
+Most onchain-ui components display addresses, amounts, and metadata passed as props. This recipe uses [wagmi](https://wagmi.sh) to connect an EVM wallet and read its account, balance, and chain.
 
 <Callout>
-onchain-ui is EVM-first: components accept viem `Address` values and the resolvers understand ENS and Basenames. We don't have a recommendation for Solana or other ecosystems yet.
+onchain-ui targets EVM chains. Address components accept viem `Address` values, and the identity resolvers support ENS names and Basenames.
 </Callout>
 
 ## Setup
@@ -14,10 +14,10 @@ onchain-ui is EVM-first: components accept viem `Address` values and the resolve
 <InstallTabs packages="wagmi viem @tanstack/react-query" />
 
 <Callout type="info">
-These examples target **wagmi 3**. If you are on v2, the differences that matter here: `useConnection` was `useAccount`, `useConnectors()` was `useConnect().connectors`, `useChains()` was `useSwitchChain().chains`, and the mutation hooks were called directly (`connect({ connector })`) rather than through `mutate`. Only `connect-wallet` and `use-available-connectors` touch any of this — every other component in the registry is wagmi-agnostic and works on either.
+These examples target wagmi 3. In wagmi 2, use `useAccount` for account state, `useConnect().connectors` for connectors, and `useSwitchChain().chains` for chains. Call mutation functions directly, such as `connect({ connector })`, rather than through `mutate`. Only `ConnectWallet` and `useAvailableConnectors` import wagmi. Other registry components take props and do not depend on the wagmi version.
 </Callout>
 
-Wagmi is configured once and provided at the root. It uses TanStack Query for caching under the hood, so the same `QueryClient` serves your own data fetching too (see [Data Fetching](/docs/recipes/data-fetching)).
+Create the wagmi config and wrap your app with the providers below. Wagmi uses TanStack Query for caching, so you can reuse the same `QueryClient` for the [Data fetching](/docs/recipes/data-fetching) recipe.
 
 ```tsx
 // app/providers.tsx
@@ -48,9 +48,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
-## Connect surface
+## Connect a wallet
 
-Install [Connect Wallet](/docs/components/connect-wallet) and the connect, identity, and disconnect flow is done:
+Install [Connect wallet](/docs/components/connect-wallet) to add a wallet picker and connected account menu:
 
 <InstallTabs command="shadcn add @onchain-ui/connect-wallet" />
 
@@ -64,19 +64,19 @@ export function Header() {
 }
 ```
 
-It probes for wallets the browser actually announces, connects to the one the user picks, resolves the address to a Basename or ENS name, and offers disconnect. Scope is `injected()` plus EIP-6963 — browser extension wallets, no SDKs, no project id, nothing to sign up for.
+`ConnectWallet` lists available wallets, connects to the user's selection, and shows the address or resolved name. Its account menu includes a disconnect action. The setup above uses `injected()` and EIP-6963 to discover browser wallets without an extra SDK or project ID.
 
-If you want the flow but not the layout, the same install gives you the parts separately: `ConnectorList` and `WalletButton` take plain data, and `useAvailableConnectors` returns the probed wagmi connectors. Build your own arrangement from those rather than overriding ours.
+To build your own layout, use the items included in the install. `ConnectorList` and `WalletButton` accept props, and `useAvailableConnectors` returns the available wagmi connectors.
 
 ### When you need more than injected wallets
 
-QR codes, mobile deep links, email or passkey sign-in, and smart accounts all need a connector with its own SDK, which wagmi 3 ships as optional peer dependencies you install yourself — see [wagmi's connector list](https://wagmi.sh/react/api/connectors). Those connectors appear in `useConnectors()` like any other, so `ConnectWallet` lists them with no change on our side.
+For QR codes, mobile deep links, or other sign-in methods, add a connector that supports them and install its required dependencies. See [wagmi's connector list](https://wagmi.sh/react/api/connectors). `ConnectWallet` lists remote connectors from your config without probing them for an injected provider.
 
-Full modal kits (Reown AppKit, RainbowKit, Privy, Dynamic) bring their own connect UI and their own opinions. They work on the same wagmi config, but check their peer ranges first — several are still pinned to wagmi 2.
+Reown AppKit, RainbowKit, Privy, and Dynamic provide their own connection UI. Check a kit's wagmi peer dependency range before adding it to this setup.
 
 ## Account chip
 
-Prefer a hand-rolled chip? `useConnection` feeds `AddressIdentity` directly — it resolves the connected wallet's Basename or ENS name and avatar, and falls back to the truncated address.
+For a custom account button, pass the address from `useConnection` to `AddressIdentity`. It resolves a Basename or ENS name and avatar, with a truncated address as the fallback.
 
 <InstallTabs command="shadcn add button card @onchain-ui/address-identity" />
 
@@ -115,7 +115,7 @@ export function AccountChip() {
 
 ## Native balance
 
-`useBalance` returns a bigint value; format it with viem's `formatUnits` and hand it to `TokenBalance`.
+`useBalance` returns a bigint value. Format it with viem's `formatUnits` and pass the result to `TokenBalance`.
 
 ```tsx
 "use client"
@@ -139,7 +139,7 @@ export function GasBalance() {
 
 ## Reuse wagmi's clients for identity resolution
 
-`AddressIdentity` accepts viem clients through `resolverOptions`. Instead of configuring RPC endpoints twice, reuse the clients wagmi already created from your `transports` config:
+`AddressIdentity` accepts viem clients through `resolverOptions`. Use `usePublicClient` to get the clients from wagmi's `transports` config:
 
 ```tsx
 "use client"
@@ -162,4 +162,4 @@ export function ResolvedIdentity({ address }: { address: Address }) {
 }
 ```
 
-Lookup results are cached per client, so every component using the wagmi clients shares one cache — see [Address Identity → Caching](/docs/components/address-identity#caching).
+Components using the same client instances and resolver settings share cached lookups. See [identity caching](/docs/components/address-identity#caching).

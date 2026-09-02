@@ -3,11 +3,11 @@ title: Tables
 description: Sortable markets tables and virtualized lists with TanStack Table and onchain-ui cells.
 ---
 
-`AssetRow` covers most portfolio and watchlist lists. Reach for a real table when users need to sort, filter, or scan many columns — market pages, token screeners, holder lists. We recommend [TanStack Table](https://tanstack.com/table/latest): headless, typed, and its cell renderers compose naturally with onchain-ui components.
+Use `AssetRow` for a portfolio or watchlist. When users need sortable columns, use a table. This recipe uses [TanStack Table](https://tanstack.com/table/latest) for sorting and onchain-ui components to render token data in its cells.
 
 ## Sortable markets table
 
-`TokenLogo` in the asset column, `TokenPrice` for price and change, shadcn's `Table` for the markup.
+The asset column uses `TokenLogo`, the price column uses `TokenPrice`, and shadcn's `Table` provides the markup.
 
 <InstallTabs packages="@tanstack/react-table" />
 
@@ -127,11 +127,11 @@ export function MarketsTable({ markets }: { markets: Market[] }) {
 }
 ```
 
-Pair it with the [Data Fetching](/docs/recipes/data-fetching) recipe — the `markets` prop is typically a TanStack Query result with a 30–60s refetch window.
+Pass your API's market data through the `markets` prop. See [Data fetching](/docs/recipes/data-fetching) for a query with a 60-second polling interval.
 
 ## Virtual scrolling
 
-Past a few hundred rows, rendering everything gets slow — token screeners and holder lists easily hit thousands. Add [TanStack Virtual](https://tanstack.com/virtual/latest) and render only what's on screen. For row-shaped data, skip the table markup entirely and virtualize a list of `AssetRow`s:
+If a large list takes too long to render, use [TanStack Virtual](https://tanstack.com/virtual/latest) to mount the visible rows and a small buffer. This example virtualizes a list of `AssetRow` components:
 
 <InstallTabs packages="@tanstack/react-virtual" />
 
@@ -176,5 +176,5 @@ export function VirtualAssetList({ assets }: { assets: AssetRowProps[] }) {
 ```
 
 <Callout>
-Virtualization and identity resolution work well together: if rows contain `AddressIdentity`, only visible rows mount, so only visible addresses resolve — and the session cache means rows scrolled back into view render instantly.
+If your virtualized rows contain `AddressIdentity`, only mounted rows request identity data. That includes the visible rows and the overscan buffer. When a row mounts again, the resolver reuses its cached result.
 </Callout>

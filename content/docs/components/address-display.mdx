@@ -1,9 +1,9 @@
 ---
-title: Address Display
+title: Address display
 description: Displays an EVM wallet address with copy-to-clipboard and an optional block explorer link.
 ---
 
-Use `AddressDisplay` anywhere you need a compact wallet identity primitive in tables, cards, account headers, transaction rows, and activity feeds.
+`AddressDisplay` truncates a wallet address and adds buttons to copy it or open its block explorer page.
 
 <ComponentPreview
   name="address-display"
@@ -26,7 +26,7 @@ Use `AddressDisplay` anywhere you need a compact wallet identity primitive in ta
 
 ### Requirements
 
-Add `<Toaster />` to your root layout so copy feedback can show a toast. The install brings `@onchain-ui/sonner` — a framework-agnostic Toaster themed by your app's CSS tokens, with no `next-themes` dependency — unless your app already has a `components/ui/sonner.tsx`, in which case yours is used as-is.
+Add `<Toaster />` to your root layout to show a toast when someone copies an address. The install includes `@onchain-ui/sonner`, which uses your app's CSS tokens and does not depend on `next-themes`. If you already have `components/ui/sonner.tsx`, the install uses that file.
 
 ```tsx
 import { Toaster } from "@/components/ui/sonner"
@@ -49,7 +49,7 @@ The registry item uses `viem`, `sonner`, and `lucide-react` by default.
 
 <InstallTabs packages="viem sonner lucide-react" />
 
-The icons are replaceable. If your app uses another icon set, pass `copyIcon` and `explorerIcon` and keep the same component API.
+Pass `copyIcon` and `explorerIcon` to use another icon set.
 
 ```tsx
 import { Copy01Icon, LinkSquare02Icon } from "@hugeicons/core-free-icons"
@@ -73,15 +73,15 @@ import { AddressDisplay } from "@/components/ui/address-display"
 <AddressDisplay address="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" />
 ```
 
-Pass `chainId` to link to a known chain's explorer: Ethereum (1), Optimism (10), Polygon (137), Base (8453), and Arbitrum (42161). Without a `chainId`, explorer links point to Etherscan.
+Pass `chainId` to select a block explorer. Built-in chains include Ethereum with ID `1`, Optimism with `10`, Polygon with `137`, Base with `8453`, and Arbitrum with `42161`. Without a `chainId`, explorer links point to Etherscan.
 
-Explorer URLs come from the chains in [Configuration](/docs/configuration), read straight off viem's chain objects. Add a chain there — or point the config at your wagmi chains — and its explorer works here with no further setup.
+`AddressDisplay` also reads explorer URLs from the viem chains in [Configuration](/docs/configuration). Add a chain there or reuse your wagmi chain list to make its explorer available.
 
-For a one-off, pass a full `explorerUrl`. If you pass a `chainId` that is in neither the config nor the built-ins, and no `explorerUrl`, the explorer link is omitted rather than pointing at Etherscan — an address on an unrecognised chain does not live in mainnet's address space, so that link would be about a different account.
+Pass a full `explorerUrl` to override the link for one address. If the component cannot find the supplied `chainId` and you have not set `explorerUrl`, it hides the link. This avoids linking to activity on the wrong chain.
 
 ## Examples
 
-### With Base Explorer
+### With Base explorer
 
 Pass `chainId` to link to a known chain's explorer, or `explorerUrl` for any other chain.
 
@@ -102,7 +102,7 @@ Pass `chainId` to link to a known chain's explorer, or `explorerUrl` for any oth
   ].join("\n")}
 />
 
-### Full Address
+### Full address
 
 Disable truncation to show the full address. Full addresses can wrap in narrow containers, so prefer the default truncated display in dense layouts.
 
@@ -124,7 +124,7 @@ Disable truncation to show the full address. Full addresses can wrap in narrow c
   ].join("\n")}
 />
 
-### Copy Only
+### Copy only
 
 Hide the explorer link when you just need clipboard copy.
 
@@ -149,7 +149,7 @@ Hide the explorer link when you just need clipboard copy.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `address` | `Address` | - | EVM wallet address (required) |
+| `address` | `Address` | - | Required EVM wallet address |
 | `label` | `ReactNode` | Truncated address | Display label. The copied value is always the underlying address |
 | `truncate` | `boolean` | `true` | Truncate the address |
 | `truncateChars` | `number` | `4` | Characters shown at each end when truncated |

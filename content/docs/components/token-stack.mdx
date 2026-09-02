@@ -1,9 +1,9 @@
 ---
-title: Token Stack
+title: Token stack
 description: Displays overlapping token logos for baskets, pools, routes, and portfolio rows.
 ---
 
-Use `TokenStack` when a UI needs to show a group of assets at a glance: index baskets, liquidity pools, swap routes, portfolio composition, and multi-token positions.
+`TokenStack` overlaps token logos and shows a `+N` count when the list exceeds `limit`. Use it to show the tokens in a pool, basket, or swap route.
 
 <ComponentPreview
   name="token-stack"
@@ -31,7 +31,7 @@ Use `TokenStack` when a UI needs to show a group of assets at a glance: index ba
 
 ### Requirements
 
-Tooltips compose the standard shadcn [tooltip](https://ui.shadcn.com/docs/components/tooltip). The install adds it if your app does not already have `components/ui/tooltip.tsx`; if you do, your existing (possibly customized) tooltip is used as-is. Wrap your app with `TooltipProvider` if you have not already.
+This component uses the shadcn [tooltip](https://ui.shadcn.com/docs/components/tooltip). The install adds `components/ui/tooltip.tsx` if it is missing, or uses your existing file. Wrap your app with `TooltipProvider` to enable tooltips.
 
 ## Usage
 
@@ -41,9 +41,9 @@ import { TokenStack } from "@/components/ui/token-stack"
 <TokenStack tokens={tokens} limit={5} />
 ```
 
-`TokenStack` composes `TokenLogo` by default and supports a `renderToken` escape hatch for curated icon libraries, chain badge overlays, or app-specific token treatments.
+`TokenStack` renders each item with `TokenLogo`. Pass `renderToken` to use another icon component or add a chain badge.
 
-Each token may set `isNative` when its address is wrapped-token metadata but its visual identity is the chain's native currency.
+Set `isNative` on an item to show the chain's native currency icon, even if the item's metadata includes a wrapped-token address.
 
 ## Examples
 
@@ -81,7 +81,7 @@ Enable tooltips when the stack appears without a nearby legend. The overflow too
 
 ### Sizes
 
-Match the stack size to tables, cards, or larger app surfaces.
+Set `size` to change the size of every logo in the stack.
 
 <ComponentPreview
   name="token-stack-sizes"
@@ -101,9 +101,9 @@ Match the stack size to tables, cards, or larger app surfaces.
   ].join("\n")}
 />
 
-### Custom Render
+### Custom render
 
-Use `renderToken` when you want to render Cryptocons, chain overlays, or a branded token treatment.
+`renderToken` receives the token and its index. Return the element you want to show for that token.
 
 <ComponentPreview
   name="token-stack-custom-render"

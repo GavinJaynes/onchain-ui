@@ -1,9 +1,9 @@
 ---
-title: Token Price
+title: Token price
 description: Formats token prices with optional positive, negative, or neutral change.
 ---
 
-Use `TokenPrice` for token rows, market cards, swap quotes, portfolio summaries, and any UI that needs a price plus a compact change signal.
+`TokenPrice` formats a value in your chosen currency. Pass `change` to show a percentage with a direction icon and trend color.
 
 <ComponentPreview
   name="token-price"
@@ -30,11 +30,11 @@ import { TokenPrice } from "@/components/ui/token-price"
 <TokenPrice value={3241.82} change={2.41} />
 ```
 
-`TokenPrice` is display-only. Bring your own data from CoinGecko, DefiLlama, an indexer, an oracle, or your app backend, then pass the resolved value into the component.
+Fetch prices in your app and pass them through `value`. `TokenPrice` does not request price data.
 
 ## Examples
 
-### Change States
+### Change states
 
 Pass `change` as a percentage value. For example, `-2.34` renders as `-2.34%`.
 
@@ -56,7 +56,7 @@ Pass `change` as a percentage value. For example, `-2.34` renders as `-2.34%`.
   ].join("\n")}
 />
 
-### Small Values
+### Small values
 
 Small token prices automatically keep more decimal places.
 
@@ -80,7 +80,7 @@ Small token prices automatically keep more decimal places.
 
 ### Compact
 
-Use compact notation for larger market numbers or tight card layouts.
+Set `compact` to abbreviate large values with units such as K and M.
 
 <ComponentPreview
   name="token-price-compact"
@@ -94,9 +94,9 @@ Use compact notation for larger market numbers or tight card layouts.
   ].join("\n")}
 />
 
-### Custom Styling
+### Custom styling
 
-Use class hooks to match your table, card, or badge treatment.
+Use `priceClassName` to style the value and `changeClassName` to style the percentage change.
 
 <ComponentPreview
   name="token-price-custom"

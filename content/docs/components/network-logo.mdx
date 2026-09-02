@@ -1,9 +1,9 @@
 ---
-title: Network Logo
+title: Network logo
 description: Displays a network or chain logo from an EVM chain id.
 ---
 
-Use `NetworkLogo` for chain selectors, token badges, bridge routes, wallet rows, and cross-chain asset views. Pass a supported `chainId` and the matching network logo renders automatically.
+Pass a supported `chainId` to `NetworkLogo` to show its built-in logo. Use `showTooltip` to display the network name on hover.
 
 <ComponentPreview
   name="network-logo"
@@ -24,7 +24,7 @@ Use `NetworkLogo` for chain selectors, token badges, bridge routes, wallet rows,
 
 ### Requirements
 
-Tooltips compose the standard shadcn [tooltip](https://ui.shadcn.com/docs/components/tooltip). The install adds it if your app does not already have `components/ui/tooltip.tsx`; if you do, your existing (possibly customized) tooltip is used as-is. Wrap your app with `TooltipProvider` if you have not already.
+This component uses the shadcn [tooltip](https://ui.shadcn.com/docs/components/tooltip). The install adds `components/ui/tooltip.tsx` if it is missing, or uses your existing file. Wrap your app with `TooltipProvider` to enable tooltips.
 
 ## Usage
 
@@ -36,13 +36,13 @@ import { NetworkLogo } from "@/components/ui/network-logo"
 
 `NetworkLogo` ships with built-in logos for common EVM networks. Use `src` only when you need to override a logo or support a chain that is not built in yet.
 
-For a chain with no built-in logo, the fallback is the symbol, then the name, then the chain id — but only when the chain id fits inside the circle whole (3 characters at `xs` and `sm`, 4 from `md` up). A longer id renders `?` instead: a truncated chain id reads as a different, real chain, which is worse than admitting the network is unrecognised. Pass `fallback` for a mark of your own, or `showTooltip` to surface the full id on hover.
+Without a logo, the component uses the symbol, name, or chain ID as fallback text, in that order. A chain ID must fit in full. The limit is 3 characters at `xs` and `sm`, and 4 at larger sizes. Longer IDs show `?` because truncating an ID could identify a different chain. Pass `fallback` to supply your own content or `showTooltip` to show the full ID on hover.
 
 Names and symbols for common networks are built in. Anything else comes from the chains in [Configuration](/docs/configuration), so a chain you added to your wagmi config renders with its name here too.
 
-See [Icon Resolution](/docs/standards/icon-resolution) for the full network and token icon strategy.
+See [Icon resolution](/docs/standards/icon-resolution) for the lookup order and fallback rules.
 
-## Supported Chains
+## Supported chains
 
 | Chain | `chainId` |
 |-------|-----------|
@@ -98,9 +98,9 @@ See [Icon Resolution](/docs/standards/icon-resolution) for the full network and 
   ].join("\n")}
 />
 
-### Unknown Networks
+### Unknown networks
 
-A wallet can report any chain id. Four digits fit from `md` up; five never fit, at any size. Rather than clip the text against the border, the id is dropped.
+The examples show how the size limit affects unknown chain IDs. `5315` fits at `md` but shows `?` at `xs` and `sm`. `42220` shows `?` at every size.
 
 <ComponentPreview
   name="network-logo-unknown"
@@ -122,7 +122,7 @@ A wallet can report any chain id. Four digits fit from `md` up; five never fit, 
   ].join("\n")}
 />
 
-### Custom Network
+### Custom network
 
 <ComponentPreview
   name="network-logo-custom"

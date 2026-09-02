@@ -1,13 +1,13 @@
 ---
 title: Examples
-description: onchain-ui components composed into real product surfaces.
+description: Build a portfolio card, wallet header, and pool position list with onchain-ui components.
 ---
 
-Each component is useful alone, but they are designed to compose — with each other and with the shadcn/ui components you already have. These examples show small groups of registry items building the surfaces most onchain products need. Every example is copy-paste ready — install the listed components and the code below works as-is.
+These examples combine onchain-ui components with shadcn cards and badges. Install the listed components, copy the example, and replace the sample data with your app's data.
 
 ## Portfolio
 
-The classic wallet view: a shadcn `Card` wrapping an `AssetRow` per holding, with `TokenPrice` rendering the daily change next to the total. Network badges, fiat values, and amount formatting all come from the row's props.
+A shadcn `Card` contains an `AssetRow` for each holding. `TokenPrice` shows the total and daily change. Each row receives its network, fiat value, and token amount as props.
 
 <InstallTabs command="shadcn add card @onchain-ui/asset-row @onchain-ui/token-price" />
 
@@ -83,7 +83,7 @@ The classic wallet view: a shadcn `Card` wrapping an `AssetRow` per holding, wit
 
 ## Wallet header
 
-An account chip for a dapp navbar: `AddressIdentity` resolves the connected wallet to its Basename or ENS name (with avatar) live, while `TokenBalance` shows the gas balance — laid out in a horizontal `Card`. Copy and explorer actions come along for free.
+`AddressIdentity` resolves the supplied address to a Basename or ENS name and avatar. `TokenBalance` shows the supplied gas balance beside it in a horizontal `Card`. The identity includes copy and explorer buttons.
 
 <InstallTabs command="shadcn add card @onchain-ui/address-identity @onchain-ui/token-balance" />
 
@@ -118,12 +118,12 @@ An account chip for a dapp navbar: `AddressIdentity` resolves the connected wall
 />
 
 <Callout>
-The preview above performs a real reverse lookup against Base mainnet. See [Address Identity → Caching](/docs/components/address-identity#caching) for how lookups are cached and how to point resolution at your own RPC endpoints.
+The preview performs a reverse lookup against Base mainnet. See [identity caching](/docs/components/address-identity#caching) for cache behavior and [custom RPC endpoints](/docs/components/address-identity#custom-rpc-endpoints) to configure your clients.
 </Callout>
 
 ## Pool positions
 
-Liquidity positions and pair rows: `TokenStack` overlaps the pool's tokens (hover for tooltips), a shadcn `Badge` tags the venue, and `TokenPrice` renders the position value with its change.
+`TokenStack` shows overlapping logos for the pool's tokens, with tooltips on hover. A shadcn `Badge` names the venue. `TokenPrice` shows the position value and percentage change.
 
 <InstallTabs command="shadcn add card badge @onchain-ui/token-stack @onchain-ui/token-price" />
 

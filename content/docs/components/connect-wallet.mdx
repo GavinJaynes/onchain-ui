@@ -1,9 +1,9 @@
 ---
-title: Connect Wallet
-description: A complete connect, identity, and disconnect surface wired to wagmi.
+title: Connect wallet
+description: Connect a wallet, display its name or address, and disconnect through wagmi.
 ---
 
-`ConnectWallet` is the whole wallet surface in one component: it probes for wallets the browser actually has, connects, shows the resolved identity, and disconnects. It is the only item in the registry that calls wagmi — the pieces it composes stay presentational.
+`ConnectWallet` detects available wallets and handles connection and disconnection through wagmi. Once connected, it shows the wallet's address or resolved name. You can also use its `ConnectorList` and `WalletButton` components separately.
 
 <ComponentPreview
   name="connect-wallet"
@@ -17,7 +17,7 @@ description: A complete connect, identity, and disconnect surface wired to wagmi
 />
 
 <Callout type="info">
-The preview above runs against wagmi's `mock` connector, since the docs site has no wallet extension. Connecting it signs nothing. In your app the same component lists the real wallets the browser announces.
+The preview uses wagmi's `mock` connector. It does not connect to your wallet or request a signature. In your app, the component lists the available connectors from your wagmi config.
 </Callout>
 
 ## Installation
@@ -26,9 +26,9 @@ The preview above runs against wagmi's `mock` connector, since the docs site has
 
 ### Requirements
 
-Targets **wagmi 3**. `ConnectWallet` needs a `WagmiProvider` and a TanStack `QueryClientProvider` above it — see [Wallet Connection](/docs/recipes/wallet-connection) for the config. The menu composes the standard shadcn [dropdown-menu](https://ui.shadcn.com/docs/components/dropdown-menu).
+`ConnectWallet` targets wagmi 3 and needs a `WagmiProvider` and TanStack `QueryClientProvider` above it. See [Wallet connection](/docs/recipes/wallet-connection) for setup. The menu uses the shadcn [dropdown-menu](https://ui.shadcn.com/docs/components/dropdown-menu).
 
-Scope is deliberately narrow: `injected()` plus EIP-6963 discovery. That covers browser extension wallets with no extra SDKs and no project id. For QR codes and mobile deep links you need a connector with its own SDK, which wagmi 3 ships as separate optional peer dependencies.
+The default setup uses `injected()` and EIP-6963 discovery for browser extension wallets. It needs no extra SDK or project ID. For QR codes and mobile deep links, add a connector and install its SDK dependencies.
 
 ## Usage
 
@@ -38,24 +38,24 @@ import { ConnectWallet } from "@/components/ui/connect-wallet"
 <ConnectWallet />
 ```
 
-With one wallet installed the trigger connects directly — a menu of one is a worse click. With several, it opens the picker. While probing, it stays disabled rather than offering a list it is about to change.
+With one available wallet, the button connects directly. With several, it opens a picker. The button stays disabled while the component checks for providers.
 
 ## The pieces
 
-`ConnectWallet` is a thin wiring layer. If it does not fit your design, take the parts:
+To build your own connection UI, use the items installed with `ConnectWallet`:
 
 | Item | Type | What it does |
 |------|------|--------------|
-| `connector-list` | `registry:ui` | The wallet picker. Plain data in, id out |
-| `wallet-button` | `registry:ui` | The connected pill. Plain data in |
+| `connector-list` | `registry:ui` | Lists wallets and reports the selected ID |
+| `wallet-button` | `registry:ui` | Shows the connected address or name in a button |
 | `use-available-connectors` | `registry:hook` | EIP-6963 probing. Returns wagmi connectors |
-| `connect-wallet` | `registry:block` | The three above, wired |
+| `connect-wallet` | `registry:block` | Combines the picker, button, and hook with wagmi connection actions |
 
-Only the hook and the block import wagmi. That is the boundary: swap the wallet library, keep the UI.
+Only `useAvailableConnectors` and `ConnectWallet` import wagmi. You can use `ConnectorList` and `WalletButton` with another wallet library.
 
-### Connector List
+### Connector list
 
-Takes `{ id, name, icon, description }` — map wagmi connectors, or your own list.
+Pass a list of objects with `id` and `name` fields. Add `icon` and `description` as needed. Map wagmi connectors to this shape or provide your own list.
 
 <ComponentPreview
   name="connector-list"
@@ -75,7 +75,7 @@ Takes `{ id, name, icon, description }` — map wagmi connectors, or your own li
   ].join("\n")}
 />
 
-An empty list is a real state, not an error — a browser with no wallet installed. It says so instead of rendering nothing.
+When the list is empty, `ConnectorList` shows a message that no wallet is available.
 
 <ComponentPreview
   name="connector-list-empty"
@@ -89,7 +89,7 @@ An empty list is a real state, not an error — a browser with no wallet install
   ].join("\n")}
 />
 
-### Wallet Button
+### Wallet button
 
 <ComponentPreview
   name="wallet-button"
@@ -109,7 +109,7 @@ An empty list is a real state, not an error — a browser with no wallet install
   ].join("\n")}
 />
 
-It renders a plain button and forwards every prop, so it works as a menu trigger:
+`WalletButton` forwards button props to its underlying `button`, so you can use it as a menu trigger:
 
 ```tsx
 <DropdownMenuTrigger render={<WalletButton address={address} chainId={chainId} />} />
@@ -136,7 +136,7 @@ It renders a plain button and forwards every prop, so it works as a menu trigger
 
 ### useAvailableConnectors
 
-wagmi's `useConnectors()` always includes the generic `injected()` fallback, even in a browser with no wallet at all — connecting with it throws `ProviderNotFoundError` after the user clicks. The only reliable check is probing `getProvider()`, which is async.
+When your config includes `injected()`, wagmi can return that connector even if the browser has no wallet provider. Connecting then throws `ProviderNotFoundError`. `useAvailableConnectors` calls each injected connector's async `getProvider()` method and filters out those without a provider.
 
 ```tsx
 import { useAvailableConnectors } from "@/hooks/use-available-connectors"
@@ -144,9 +144,9 @@ import { useAvailableConnectors } from "@/hooks/use-available-connectors"
 const { connectors, isProbing } = useAvailableConnectors()
 ```
 
-It also handles wagmi's legacy `injected()` fallback — "whatever wallet put a provider at `window.ethereum`". The fallback is dropped when it would duplicate a wallet already in the list: when a named wallet announces itself over EIP-6963, and when the MetaMask SDK connector is present and the fallback's provider is MetaMask (the SDK replaces MetaMask's EIP-6963 announcement, so the named-wallet rule alone would miss it).
+The hook also removes wagmi's generic `injected()` fallback when it finds a named injected wallet. The fallback reads `window.ethereum` and can duplicate an announced wallet. The hook also removes a MetaMask fallback when the list contains the MetaMask SDK connector.
 
-When the fallback survives — a wallet injected a provider but never announced itself, common in in-app mobile browsers — `ConnectWallet` lists it as **"Browser wallet"** rather than wagmi's "Injected", which is plumbing jargon nobody picks a wallet by.
+If a provider has no matching named connector, `ConnectWallet` lists it as "Browser wallet". This covers wallets that inject a provider without announcing themselves through EIP-6963.
 
 ## Props
 
@@ -169,7 +169,7 @@ When the fallback survives — a wallet injected a provider but never announced 
 | `onSelect` | `(id: string) => void` | - | Called with the id of the wallet picked |
 | `pendingId` | `string \| null` | - | Connector being connected. Blocks selection |
 | `disabled` | `boolean` | `false` | Disable every row |
-| `emptyMessage` | `ReactNode` | No-wallet copy | Shown when `connectors` is empty |
+| `emptyMessage` | `ReactNode` | `"No compatible wallet connection is available on this device."` | Shown when `connectors` is empty |
 | `className` | `string` | - | Applied to the list wrapper |
 | `itemClassName` | `string` | - | Applied to each row |
 
@@ -186,4 +186,4 @@ When the fallback survives — a wallet injected a provider but never announced 
 | `showChevron` | `boolean` | `true` | Show the trailing chevron |
 | `size` | `"sm" \| "default"` | `"default"` | Visual size |
 
-Every other prop is forwarded to the underlying `button`.
+`WalletButton` forwards other button props to the underlying `button`.

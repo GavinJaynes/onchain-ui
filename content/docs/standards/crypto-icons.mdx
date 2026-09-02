@@ -1,15 +1,15 @@
 ---
-title: Crypto Icons
-description: One swappable adapter file resolves token and network icons for every onchain-ui component.
+title: Crypto icons
+description: Configure token and network icon sources in lib/onchain/crypto-icons.tsx.
 ---
 
-Crypto icons don't fit the way shadcn swaps UI icon libraries. UI icons are a closed set, so a lucide icon always has a HugeIcons equivalent. Tokens are an open set with canonical identity `(chainId, address)`: no icon package covers them all, symbols are not unique, and new tokens appear daily.
+Token symbols are not unique. Use `chainId` and the contract `address` to identify a token when looking up its icon.
 
-onchain-ui borrows the *pattern* instead of the mechanism: the icon decision is made once, in one file you own.
+onchain-ui keeps token and network icon lookups in `lib/onchain/crypto-icons.tsx`. Edit this file to change the source used by `TokenLogo` and `NetworkLogo`.
 
-## The Adapter
+## The adapter
 
-`lib/onchain/crypto-icons.tsx` is installed alongside `TokenLogo` and `NetworkLogo` and exports two functions:
+The file installs with `TokenLogo` and `NetworkLogo` and exports these functions:
 
 ```ts
 export function getTokenIcon(query: {
@@ -25,18 +25,21 @@ Both may return:
 
 - a `string`, treated as an image URL
 - a `ReactNode`, rendered directly in place of the image
-- `null`, meaning "unknown" — components fall back to readable initials
+- `null`, which tells the component to use its fallback content
 
-Explicit props always win. The full resolution order is:
+The component chooses an icon in this order:
 
 1. `src` prop
 2. Adapter result
-3. `fallback` prop and initials
+3. `fallback` prop or text derived from the asset metadata
 
-## Default Behavior
+If an explicit `src` fails to load, the component shows fallback content without trying the adapter.
 
-- **Networks**: crisp inline SVG marks for Ethereum (1), Optimism (10), Polygon (137), Base (8453), and Arbitrum (42161). `<NetworkLogo chainId={8453} />` works offline with zero configuration.
-- **Tokens**: icon URLs inferred from `chainId` + `address` via the community-maintained [Trust Wallet assets](https://github.com/trustwallet/assets) repo. Coverage is good for established tokens; misses degrade to initials, never broken images.
+## Default behavior
+
+`NetworkLogo` uses built-in SVG logos for Ethereum, Optimism, Polygon, Base, and Arbitrum. These logos need no image request. For example, `<NetworkLogo chainId={8453} />` shows the Base logo.
+
+For token contracts, the adapter builds image URLs from `chainId` and `address` using the [Trust Wallet assets](https://github.com/trustwallet/assets) repository. If an image fails to load, `TokenLogo` shows fallback text.
 
 ```tsx
 <TokenLogo
@@ -47,15 +50,14 @@ Explicit props always win. The full resolution order is:
 ```
 
 <Callout type="warn">
-The default token source hotlinks a community CDN with no SLA. Fine for demos and prototypes; production apps should pass `src` from their own token metadata or point the adapter at their own token list or CDN.
+The default token source loads images from a community repository. For production apps, pass `src` from your token metadata or point the adapter at your own token list or CDN.
 </Callout>
 
-## Swapping the Implementation
+## Change the icon source
 
-Because the adapter is copy-paste code in your app, changing icon strategy never touches component code:
+Edit `getTokenIcon` to return URLs from your token list or indexer. You can also return React elements from an icon package.
 
-- **Your token list or indexer**: edit `getTokenIcon` to build URLs from your own data.
-- **An icon package**: return rendered components, e.g. from [`@web3icons/react`](https://www.npmjs.com/package/@web3icons/react):
+This example uses [`@web3icons/react`](https://www.npmjs.com/package/@web3icons/react). It hardcodes Base for address lookups. Map `chainId` to the package's network identifier before using it for other chains.
 
 ```tsx
 import { TokenIcon, NetworkIcon } from "@web3icons/react"
@@ -71,13 +73,10 @@ export function getTokenIcon({ chainId, address, symbol }: TokenIconQuery): Cryp
 }
 ```
 
-- **More networks**: add entries to the chain maps, or return URLs for chains without inline marks.
+To support more networks, add entries to the chain maps or return image URLs from `getNetworkIcon`.
 
-A prebuilt `crypto-icons-web3icons` registry variant is planned so switching becomes a single install command.
+## Re-add the default
 
-## Re-adding the Default
-
-The adapter also ships as its own registry item, so you can restore or diff the default at any time:
+The adapter also has its own registry item. Use it to compare your file with the published version or restore the default:
 
 <InstallTabs command="shadcn add @onchain-ui/crypto-icons" />
-

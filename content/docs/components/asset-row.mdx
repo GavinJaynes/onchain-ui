@@ -1,9 +1,9 @@
 ---
-title: Asset Row
-description: Displays a practical portfolio or watchlist row from token identity, network, amount, value, and change.
+title: Asset row
+description: Display a token's logo, network, amount, fiat value, and percentage change in one row.
 ---
 
-Use `AssetRow` when you need the composed version of the primitives: wallet assets, watchlists, portfolio tables, token selectors, and positions.
+`AssetRow` shows a holding's token details on the left and its amount and fiat value on the right. Use one row per holding in a portfolio or watchlist.
 
 <ComponentPreview
   name="asset-row"
@@ -34,7 +34,7 @@ Use `AssetRow` when you need the composed version of the primitives: wallet asse
 
 ### Requirements
 
-Tooltips compose the standard shadcn [tooltip](https://ui.shadcn.com/docs/components/tooltip). The install adds it if your app does not already have `components/ui/tooltip.tsx`; if you do, your existing (possibly customized) tooltip is used as-is. Wrap your app with `TooltipProvider` if you have not already.
+This component uses the shadcn [tooltip](https://ui.shadcn.com/docs/components/tooltip). The install adds `components/ui/tooltip.tsx` if it is missing, or uses your existing file. Wrap your app with `TooltipProvider` to enable tooltips.
 
 ## Usage
 
@@ -52,7 +52,7 @@ import { AssetRow } from "@/components/ui/asset-row"
 />
 ```
 
-`AssetRow` composes `TokenLogo`, `NetworkLogo`, and `TokenPrice`. Use it as a starting point for product surfaces, then pass class hooks or child props when your app needs a tighter treatment.
+`AssetRow` uses `TokenLogo`, `NetworkLogo`, and `TokenPrice`. Customize them through `logoProps`, `networkLogoProps`, and `priceProps`. Use `identityClassName` and `valueClassName` to style the two sides of the row.
 
 ## Examples
 

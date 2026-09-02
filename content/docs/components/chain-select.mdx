@@ -1,9 +1,9 @@
 ---
-title: Chain Select
+title: Chain select
 description: Network selector for wallet switching or filtering, with optional all-networks and unsupported-chain states.
 ---
 
-Use `ChainSelect` wherever a user picks a network: an app header, a bridge form, or a token filter. It takes the chains you support as props and reports the id you picked — the wallet connection and the switch call stay in your app.
+`ChainSelect` lists the chains you pass in and calls `onSelect` with the selected chain ID. Your app handles wallet connections and network switching.
 
 <ComponentPreview
   name="chain-select"
@@ -36,7 +36,7 @@ Use `ChainSelect` wherever a user picks a network: an app header, a bridge form,
 
 ### Requirements
 
-The menu composes the standard shadcn [dropdown-menu](https://ui.shadcn.com/docs/components/dropdown-menu). The install adds it if your app does not already have `components/ui/dropdown-menu.tsx`; if you do, your existing (possibly customized) menu is used as-is. `NetworkLogo` comes along for the chain marks.
+`ChainSelect` uses the shadcn [dropdown-menu](https://ui.shadcn.com/docs/components/dropdown-menu). The install adds `components/ui/dropdown-menu.tsx` if it is missing, or uses your existing file. It also installs `NetworkLogo` for the chain logos.
 
 ## Usage
 
@@ -46,10 +46,9 @@ import { ChainSelect } from "@/components/ui/chain-select"
 <ChainSelect chains={chains} value={chainId} onSelect={setChainId} />
 ```
 
-`ChainSelect` holds no connection state and performs no network calls. It renders the chains you hand it and calls `onSelect` — which makes it testable with plain data and keeps your wallet library out of the component.
+Control the selection through `value` and `onSelect`. `ChainSelect` does not store connection state or make network calls.
 
-For filters rather than wallet switching, add an all-networks item and keep
-`null` as the unfiltered state:
+To use it as a filter, set `allLabel` and `onClear` to add an all-networks item. Use `null` for the unfiltered state:
 
 ```tsx
 const [chainId, setChainId] = useState<number | null>(null)
@@ -66,7 +65,7 @@ const [chainId, setChainId] = useState<number | null>(null)
 
 ## Wiring with wagmi
 
-Your configured chains are already the right list, so the wiring is a mapping:
+Read the available chains with `useChains` and call `useSwitchChain` when the user selects one:
 
 ```tsx
 "use client"
@@ -98,19 +97,16 @@ export function ChainSwitcher() {
 ```
 
 <Callout type="info">
-`onSelect` hands you a `number`, but if you augment wagmi's `Register` type,
-`switchChain` expects your config's literal chain-id union — so passing the id
-straight through fails to compile. Looking the chain back up, as above, keeps it
-type-safe without a cast.
+`onSelect` returns a `number`. If you augment wagmi's `Register` type, `switchChain` expects one of your configured chain IDs. The example looks up the selected chain to narrow the type before calling `mutate`.
 </Callout>
 
 <Callout type="info">
-The snippet targets wagmi 3. On wagmi 2, read `chainId` from `useAccount()`, take the list from `useSwitchChain().chains` rather than `useChains()`, and call `switchChain({ chainId })` instead of `switchChain.mutate(...)`. The component itself is identical either way — it never imports wagmi.
+The snippet targets wagmi 3. On wagmi 2, read `chainId` from `useAccount()` and the chain list from `useSwitchChain().chains`. Call `switchChain({ chainId })` instead of `switchChain.mutate(...)`. `ChainSelect` itself does not import wagmi.
 </Callout>
 
 ## Unsupported networks
 
-A wallet can sit on any network, including ones your app was never configured for. When `value` is set but absent from `chains`, the trigger switches to a warning treatment and names the problem, and the menu still offers every supported chain so the user can get out.
+A wallet can connect to a network your app does not support. When `value` is set to an ID absent from `chains`, the trigger shows "Unsupported network" with warning styles. The menu still lists your supported chains so the user can switch.
 
 <ComponentPreview
   name="chain-select-unsupported"
@@ -129,13 +125,13 @@ A wallet can sit on any network, including ones your app was never configured fo
   ].join("\n")}
 />
 
-Without this state the chain id leaks into the UI as a bare number, which reads as a bug rather than as something the user can fix. Pass `unsupportedLabel` to reword it.
+Pass `unsupportedLabel` to change the warning text.
 
 ## Examples
 
 ### Disconnected
 
-`value={null}` renders the placeholder with a dashed logo slot, so the control keeps its footprint before a wallet connects.
+`value={null}` shows the placeholder and reserves space for the network logo.
 
 <ComponentPreview
   name="chain-select-disconnected"

@@ -1,9 +1,9 @@
 ---
-title: Token Logo
-description: Displays a token image with resilient symbol, name, or address fallback.
+title: Token logo
+description: Display a token image with a symbol, name, or address fallback when no image loads.
 ---
 
-Use `TokenLogo` anywhere you need a compact token identity: tables, swap rows, portfolio cards, asset selectors, and token stacks.
+`TokenLogo` shows a token image from `src` or looks one up using `chainId` and `address`. If no image loads, it shows fallback text.
 
 <ComponentPreview
   name="token-logo"
@@ -30,7 +30,7 @@ Use `TokenLogo` anywhere you need a compact token identity: tables, swap rows, p
 
 ### Requirements
 
-Tooltips compose the standard shadcn [tooltip](https://ui.shadcn.com/docs/components/tooltip). The install adds it if your app does not already have `components/ui/tooltip.tsx`; if you do, your existing (possibly customized) tooltip is used as-is. Wrap your app with `TooltipProvider` if you have not already.
+This component uses the shadcn [tooltip](https://ui.shadcn.com/docs/components/tooltip). The install adds `components/ui/tooltip.tsx` if it is missing, or uses your existing file. Wrap your app with `TooltipProvider` to enable tooltips.
 
 ## Usage
 
@@ -46,15 +46,15 @@ import { TokenLogo } from "@/components/ui/token-logo"
 
 `TokenLogo` uses a plain `img` element for portability. It does not require Next.js image configuration and works with arbitrary token image URLs from APIs, indexers, and token lists.
 
-Set `isNative` for native currencies such as ETH. This prevents a wrapped-token address used for balance reads from being mistaken for the asset's visual identity.
+Set `isNative` to show the chain's native currency icon. Use this for ETH even if your metadata includes a wrapped-token address.
 
-See [Icon Resolution](/docs/standards/icon-resolution) for the full network and token icon strategy.
+See [Icon resolution](/docs/standards/icon-resolution) for the lookup order and fallback rules.
 
 ## Examples
 
-### Automatic Icons
+### Automatic icons
 
-Without a `src`, `TokenLogo` asks the [crypto-icons adapter](/docs/standards/crypto-icons) to resolve an icon from `chainId` + `address`. The default adapter uses the community Trust Wallet assets CDN, and misses degrade to the initials fallback.
+Without a `src`, `TokenLogo` asks the [crypto-icons adapter](/docs/standards/crypto-icons) to find an icon using `chainId` and `address`. The default adapter builds a URL for the Trust Wallet assets repository. If the image fails to load, the component shows fallback text.
 
 <ComponentPreview
   name="token-logo-inferred"
@@ -76,12 +76,12 @@ Without a `src`, `TokenLogo` asks the [crypto-icons adapter](/docs/standards/cry
 />
 
 <Callout type="info">
-The default adapter is great for demos and prototypes. In production, prefer explicit `src` from your token metadata, or edit `lib/onchain/crypto-icons.tsx` to point at your own token list or CDN.
+For production apps, pass `src` from your token metadata or edit `lib/onchain/crypto-icons.tsx` to use your own token list or CDN.
 </Callout>
 
 ### Fallback
 
-When `src` is missing or the image fails to load, the component falls back to the token symbol, name, address, or `?`.
+If the selected image fails to load or no icon is available, the component shows `fallback`. Without a custom fallback, it uses text from the token symbol, name, or address, then `?`.
 
 <ComponentPreview
   name="token-logo-fallback"
@@ -97,7 +97,7 @@ When `src` is missing or the image fails to load, the component falls back to th
 
 ### Sizes
 
-Use size tokens for predictable layout in tables and dense controls.
+Set `size` to `xs`, `sm`, `md`, `lg`, or `xl`.
 
 <ComponentPreview
   name="token-logo-sizes"
@@ -119,9 +119,9 @@ Use size tokens for predictable layout in tables and dense controls.
   ].join("\n")}
 />
 
-### Custom Fallback
+### Custom fallback
 
-Pass fallback content and classes when your product has a preferred token treatment.
+Pass `fallback` to replace the default text. Use `fallbackClassName` to style it.
 
 <ComponentPreview
   name="token-logo-custom-fallback"

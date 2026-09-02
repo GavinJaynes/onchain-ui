@@ -1,25 +1,24 @@
 ---
 title: Introduction
-description: Open source shadcn registry of web3 UI components built with wagmi + viem.
+description: Install wallet, token, and network components into your shadcn app as source code.
 ---
 
 ## What is onchain-ui?
 
 onchain-ui is an open source [shadcn registry](https://ui.shadcn.com/docs/registry) of web3 UI components.
-Components are built with [wagmi](https://wagmi.sh) and [viem](https://viem.sh), and styled with Tailwind CSS.
+The components use [viem](https://viem.sh) for EVM addresses and identity resolution, [wagmi](https://wagmi.sh) for wallet connections, and Tailwind CSS for styles.
 
-You own the code. Copy and paste, or install directly:
+Install a component to add its source code to your app:
 
 <InstallTabs command="shadcn add @onchain-ui/address-display" />
 
-## Philosophy
+## How the components work
 
-- **Copy-paste first** - components live in your codebase, not in node_modules
-- **wagmi + viem** - typed, composable, the ecosystem standard
-- **shadcn primitives** - built on the same components you already have
-- **Chain-agnostic** - works across EVM chains
+Edit the installed files to change styles or behavior. Components use shadcn buttons, menus, and tooltips, so they share your app's theme.
 
-## Getting Started
+Pass balances, prices, and token metadata as props. `AddressIdentity` can resolve ENS names and Basenames, and `ConnectWallet` handles connections through wagmi. See [Configuration](/docs/configuration) to set your EVM chains and RPC endpoints.
+
+## Getting started
 
 onchain-ui is listed in the [shadcn registry directory](https://ui.shadcn.com/registries), so the `@onchain-ui` namespace works with no setup. Install the [shadcn CLI](https://ui.shadcn.com/docs/cli) if you haven't already, then add any component:
 

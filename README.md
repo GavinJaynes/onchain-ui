@@ -6,20 +6,20 @@
 
 Copy-paste web3 UI components for shadcn apps.
 
-onchain-ui is an open source [shadcn registry](https://ui.shadcn.com/docs/registry) for product teams building onchain interfaces: wallet identity, token displays, chain context, balances, market values, and portfolio rows. Components install into your app as source code — inspect them, restyle them, and wire them into your own data layer.
+onchain-ui is an open source [shadcn registry](https://ui.shadcn.com/docs/registry) for wallet connections, address identity, and token displays. Install components into your app as source code, then edit their styles and pass in your data.
 
-**Docs, live examples, and recipes: [onchain-ui.dev](https://onchain-ui.dev)**
+[Read the docs and try the live examples](https://onchain-ui.dev).
 
 ## Install
 
-onchain-ui is listed in the [shadcn registry directory](https://ui.shadcn.com/registries), so the `@onchain-ui` namespace works out of the box — add any component with the shadcn CLI:
+onchain-ui is listed in the [shadcn registry directory](https://ui.shadcn.com/registries). Add any component through the `@onchain-ui` namespace:
 
 ```bash
 npx shadcn add @onchain-ui/asset-row
 # or: pnpm dlx shadcn add … / bunx shadcn add …
 ```
 
-To register the namespace in your project up front (it also persists automatically on first add):
+The CLI saves the namespace when you first add a component. You can also register it beforehand:
 
 ```bash
 npx shadcn registry add @onchain-ui
@@ -31,35 +31,35 @@ Direct item URLs work too: `npx shadcn add https://onchain-ui.dev/r/asset-row.js
 
 | Component | Description |
 | --- | --- |
-| [Address Display](https://onchain-ui.dev/docs/components/address-display) | Truncated address with copy and block explorer link |
-| [Address Identity](https://onchain-ui.dev/docs/components/address-identity) | Live ENS / Basename resolution with avatar |
-| [Token Logo](https://onchain-ui.dev/docs/components/token-logo) | Token image with resilient fallbacks |
-| [Token Stack](https://onchain-ui.dev/docs/components/token-stack) | Overlapping logos for pools, baskets, and routes |
-| [Token Price](https://onchain-ui.dev/docs/components/token-price) | Price formatting with change and trend color |
-| [Network Logo](https://onchain-ui.dev/docs/components/network-logo) | Chain logo with known-chain fallbacks |
-| [Token Balance](https://onchain-ui.dev/docs/components/token-balance) | Amount with optional logo, fiat value, and change |
-| [Asset Row](https://onchain-ui.dev/docs/components/asset-row) | Composed portfolio / watchlist row |
-| [Chain Select](https://onchain-ui.dev/docs/components/chain-select) | Network selector for wallet switching or filtering |
-| [Connect Wallet](https://onchain-ui.dev/docs/components/connect-wallet) | Complete connect, identity, and disconnect surface |
-| [Crypto Icons](https://onchain-ui.dev/docs/standards/crypto-icons) | Swappable token/network icon adapter |
+| [Address display](https://onchain-ui.dev/docs/components/address-display) | Truncated address with copy and block explorer link |
+| [Address identity](https://onchain-ui.dev/docs/components/address-identity) | ENS name or Basename resolution with avatar |
+| [Token logo](https://onchain-ui.dev/docs/components/token-logo) | Token image with fallback text when no image loads |
+| [Token stack](https://onchain-ui.dev/docs/components/token-stack) | Overlapping logos with an overflow count |
+| [Token price](https://onchain-ui.dev/docs/components/token-price) | Price formatting with percentage change and trend color |
+| [Network logo](https://onchain-ui.dev/docs/components/network-logo) | Built-in chain logos and fallback text |
+| [Token balance](https://onchain-ui.dev/docs/components/token-balance) | Amount with optional logo, fiat value, and change |
+| [Asset row](https://onchain-ui.dev/docs/components/asset-row) | Token details and holding value in one row |
+| [Chain select](https://onchain-ui.dev/docs/components/chain-select) | Network selector for wallet switching or filtering |
+| [Connect wallet](https://onchain-ui.dev/docs/components/connect-wallet) | Wallet picker and account menu using wagmi |
+| [Crypto icons](https://onchain-ui.dev/docs/standards/crypto-icons) | Editable token and network icon lookup functions |
 
-See [Examples](https://onchain-ui.dev/docs/examples) for composed surfaces (portfolio card, wallet header, pool positions) and [Recipes](https://onchain-ui.dev/docs/recipes/wallet-connection) for wiring components to wagmi, TanStack Query, and TanStack Table.
+See [Examples](https://onchain-ui.dev/docs/examples) for a portfolio card, wallet header, and pool positions. The [Recipes](https://onchain-ui.dev/docs/recipes/wallet-connection) show how to connect components to wagmi, TanStack Query, and TanStack Table.
 
 ## Use with AI assistants
 
-The registry is MCP-compatible — its index is served at [`/r/registry.json`](https://onchain-ui.dev/r/registry.json), so assistants like Claude Code and Cursor can browse and install components through the [shadcn MCP server](https://onchain-ui.dev/docs/mcp). Items can also be opened directly in v0 from each docs page.
+The [shadcn MCP server](https://onchain-ui.dev/docs/mcp) reads the component index at [`/r/registry.json`](https://onchain-ui.dev/r/registry.json) so AI assistants can browse and install components. Component pages also include links to open supported demos in v0.
 
 ## Why
 
-Most crypto apps rebuild the same UI pieces: truncated addresses, ENS/Base name display, token icons, network badges, token amounts, price changes, and portfolio rows.
+Wallet and portfolio screens need truncated addresses, name resolution, token icons, and formatted amounts. onchain-ui provides these as editable shadcn registry items.
 
-onchain-ui packages those patterns as shadcn registry items so the code lands inside your app — no wrapper library, no lock-in. Components are EVM-first and built on the same viem primitives as wagmi.
+The components target EVM chains and use viem for address handling and identity resolution. `ConnectWallet` adds wallet connections through wagmi.
 
 ## Status
 
-Early and actively developed. The focus is a small, useful registry of composable primitives rather than a broad component library. Registry URLs (`/r/{name}.json`) are stable; component APIs may still evolve between minor versions while the project is pre-1.0.
+onchain-ui is pre-1.0. Registry URLs use the stable `/r/{name}.json` format. Component APIs may change between minor versions.
 
-## Local Development
+## Local development
 
 ```bash
 npm install     # install dependencies
@@ -82,7 +82,7 @@ Check the stack monthly and before each release:
 4. Run `npm run lint`, `npm run typecheck`, `npm run test`, and `npm run build`.
 5. Smoke-test `shadcn add @onchain-ui/connect-wallet` in a newly initialized shadcn app before publishing.
 
-## Project Structure
+## Project structure
 
 ```txt
 app/
@@ -101,11 +101,11 @@ scripts/
   build-registry.mjs Generates registry.json and registry/generated/
 ```
 
-`registry.json` and `registry/generated/` are build artifacts — edit `registry/meta/` and the source components, then run `npm run registry:build`.
+The build generates `registry.json` and `registry/generated/`. To change registry items, edit `registry/meta/` and the source components, then run `npm run registry:build`.
 
 ## Contributing
 
-Issues and pull requests are welcome. The best contributions are small, practical components that solve repeated onchain product UI needs while staying easy to copy, inspect, and customize.
+Open an issue or pull request with a bug fix, docs correction, or component proposal. For a new component, describe where you use it and include an example.
 
 ## Author
 

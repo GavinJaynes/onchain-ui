@@ -1,9 +1,9 @@
 ---
-title: Token Balance
+title: Token balance
 description: Displays a token amount with optional logo, fiat value, and change.
 ---
 
-Use `TokenBalance` for wallet balances, portfolio summaries, account drawers, and compact asset cells.
+`TokenBalance` formats a token amount beside its symbol. Add `fiatValue` and `change` to show the balance's value and percentage change below it.
 
 <ComponentPreview
   name="token-balance"
@@ -33,7 +33,7 @@ Use `TokenBalance` for wallet balances, portfolio summaries, account drawers, an
 
 ### Requirements
 
-Tooltips compose the standard shadcn [tooltip](https://ui.shadcn.com/docs/components/tooltip). The install adds it if your app does not already have `components/ui/tooltip.tsx`; if you do, your existing (possibly customized) tooltip is used as-is. Wrap your app with `TooltipProvider` if you have not already.
+This component uses the shadcn [tooltip](https://ui.shadcn.com/docs/components/tooltip). The install adds `components/ui/tooltip.tsx` if it is missing, or uses your existing file. Wrap your app with `TooltipProvider` to enable tooltips.
 
 ## Usage
 
@@ -43,7 +43,7 @@ import { TokenBalance } from "@/components/ui/token-balance"
 <TokenBalance amount={1.2845} symbol="ETH" fiatValue={4163.91} change={2.41} />
 ```
 
-`TokenBalance` composes `TokenLogo` and `TokenPrice`, so it keeps token identity, amount formatting, and fiat value display consistent.
+`TokenBalance` uses `TokenLogo` for the icon and `TokenPrice` for the fiat value. Pass `logoProps` or `priceProps` to customize them.
 
 ## Examples
 

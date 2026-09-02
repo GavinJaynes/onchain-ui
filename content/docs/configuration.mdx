@@ -1,19 +1,17 @@
 ---
 title: Configuration
-description: One file for app-wide chain settings, with no provider to wrap your app in.
+description: Set chains, identity clients, and avatar gateways in lib/onchain/config.ts.
 ---
 
-Most onchain-ui components take everything they need as props. A few things are app-wide rather than per-instance — which chains you support, where their block explorers live, which RPC endpoints identity resolution should use — and those live in one file.
+Set shared chains and identity resolution options in `lib/onchain/config.ts`. Components read explorer URLs from those chains and use the configured clients for name and avatar lookups.
 
 <InstallTabs command="shadcn add @onchain-ui/onchain-config" />
 
-It arrives with the components that read it, so you usually do not install it directly.
+Components that read this file include it in their installation.
 
-## No provider
+## Edit the config file
 
-There is no `OnchainUIProvider`. `lib/onchain/config.ts` is a plain module that components import, which means it works the same in a client component, a server component, a test, or a script — and there is no wrapper to add, no context to thread, and nothing to remember when you render a component somewhere new.
-
-You own the file. Configuring onchain-ui means editing it.
+`lib/onchain/config.ts` exports a plain object. Edit it to configure onchain-ui. Components import it directly, so you do not need an `OnchainUIProvider`.
 
 ```ts
 // lib/onchain/config.ts
@@ -24,7 +22,7 @@ export const onchainConfig: OnchainUIConfig = {
 
 ## Define your chains once
 
-If you use wagmi, you already wrote this list. Point at it instead of repeating it:
+If you use wagmi, reuse its chain list:
 
 ```ts
 // lib/onchain/config.ts
@@ -35,17 +33,17 @@ export const onchainConfig: OnchainUIConfig = {
 }
 ```
 
-That one line gives every component your chains. Explorer URLs come from viem's chain objects — `chain.blockExplorers` — so adding a chain to your wagmi config is enough for `AddressDisplay` to link to the right explorer. There is no second map of explorer URLs to maintain.
+`AddressDisplay` reads explorer URLs from `chain.blockExplorers`. When you reuse wagmi's chain list, adding a chain there also makes its explorer available to `AddressDisplay`.
 
 <Callout type="info">
-Not using wagmi? Nothing changes. The default list covers the common EVM networks, and the components behave exactly as before.
+You can also list viem chains directly, as in the first example. The default list includes Ethereum, Base, Arbitrum, Optimism, and Polygon.
 </Callout>
 
 ## Share your RPC endpoints
 
-ENS and Basename resolution happen outside React's render — `AddressIdentity` resolves a name whether or not a wallet is connected — so they need a client of their own. By default that is a public endpoint.
+`AddressIdentity` uses read clients to resolve ENS names and Basenames, even when no wallet is connected. The default clients use public RPC endpoints.
 
-If you have already configured transports, hand them over rather than configuring RPC twice:
+Use `getClient` to share the clients from your wagmi config:
 
 ```ts
 // lib/onchain/config.ts
@@ -62,35 +60,35 @@ export const onchainConfig: OnchainUIConfig = {
 }
 ```
 
-Now identity lookups go through your paid endpoint, your rate limits, and your fallbacks, with no provider and no hooks involved.
+Identity lookups now use the endpoints and fallbacks in your wagmi transports.
 
-Avatar text records often contain `ipfs://` or `ar://` URLs. The gateway options turn those records into URLs the browser can load. The bundled public gateways are suitable for demos; use your own gateway when availability and rate limits matter.
+Avatar text records can contain `ipfs://` or `ar://` URLs. The gateway options convert those records into URLs the browser can load. Use your own gateway if the bundled public gateways do not meet your availability or rate limit needs.
 
 ## Re-installing and `--overwrite`
 
-Because `lib/onchain/config.ts` ships inside every component item, it arrives with whichever component you install first — and every later install carries a copy too. By default the CLI prompts before touching a file that already exists, so keep declining and your customized config survives any number of installs.
+Registry items that use `lib/onchain/config.ts` include a copy of it. When a later install prompts to overwrite the file, decline to keep your changes.
 
-`shadcn add --overwrite` skips that prompt and resets every file in the item to stock, **including this one**: your chains, `getClient`, and gateway settings go back to the defaults. The same applies to the other file you own, the icon seam `lib/onchain/crypto-icons.tsx`.
+`shadcn add --overwrite` skips that prompt and replaces the item's files with the published source. This resets your chains, `getClient`, and gateway settings when the item includes `config.ts`. It also replaces `lib/onchain/crypto-icons.tsx` when the item includes that file.
 
 <Callout type="warn">
-Use `--overwrite` only when you mean to reset a component to its published source, and expect to re-apply your `config.ts` edits afterwards. Committing the file before updating keeps recovery one `git diff` away.
+Commit your changes before using `--overwrite`. Review the diff after installation and restore any config or icon changes you want to keep.
 </Callout>
 
 ## Precedence
 
-Three levels, most specific first:
+Components check settings in this order:
 
-1. **Props** — `<NetworkLogo name="Zora" />`, `<AddressDisplay explorerUrl="…" />`, `resolverOptions` on `AddressIdentity`.
-2. **This file** — app-wide chains, clients, and avatar gateways.
-3. **Built-in defaults** — curated names and symbols, public RPC endpoints, and public asset gateways.
+1. Component props, such as `name` on `NetworkLogo`, `explorerUrl` on `AddressDisplay`, and `resolverOptions` on `AddressIdentity`.
+2. Shared chains, clients, and avatar gateways in `config.ts`.
+3. Built-in names and symbols, public RPC endpoints, and public asset gateways.
 
-A component never reaches past a level you have set, so a one-off override is always a prop and never a reason to change the config.
+Use a prop to override a setting for one component instance.
 
-## What is not here
+## Icons and data sources
 
-Token and network **icons** have their own seam, `lib/onchain/crypto-icons.tsx`, because the default implementation ships inline SVG marks and a token-list URL builder — hundreds of lines you would not want in a config file. See [Icon Resolution](/docs/standards/icon-resolution).
+Edit `lib/onchain/crypto-icons.tsx` to change token and network icons. It contains the built-in SVG logos and token icon URL builder. See [Icon resolution](/docs/standards/icon-resolution).
 
-**Balances, prices, and token lists** are not configured here and never will be. Those have no single correct source — a multicall over a curated list and an indexer API are both right answers for different apps — so they stay explicit at the call site. See [Data Fetching](/docs/recipes/data-fetching).
+Fetch balances, prices, and token lists in your app and pass them as props. See [Data fetching](/docs/recipes/data-fetching) for an example using TanStack Query.
 
 ## Reference
 
