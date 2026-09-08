@@ -76,6 +76,44 @@
       ]
     },
     {
+      "name": "amount-input",
+      "type": "registry:ui",
+      "title": "Amount Input",
+      "description": "Controlled decimal string input for token amounts. Preserves precision and incomplete edits, with an optional fractional digit limit.",
+      "registryDependencies": [
+        "input"
+      ],
+      "files": [
+        {
+          "path": "registry/onchain-ui/amount-input.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/amount-input.tsx"
+        }
+      ]
+    },
+    {
+      "name": "asset-input",
+      "type": "registry:ui",
+      "title": "Asset Input",
+      "description": "Labeled amount field for swaps, sells, and deposits, with slots for token selection, supporting text, balances, and actions. No wallet provider required.",
+      "registryDependencies": [
+        "input",
+        "field"
+      ],
+      "files": [
+        {
+          "path": "registry/onchain-ui/asset-input.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/asset-input.tsx"
+        },
+        {
+          "path": "registry/onchain-ui/amount-input.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/amount-input.tsx"
+        }
+      ]
+    },
+    {
       "name": "asset-row",
       "type": "registry:ui",
       "title": "Asset Row",

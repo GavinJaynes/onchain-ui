@@ -39,6 +39,8 @@ Direct item URLs work too: `npx shadcn add https://onchain-ui.dev/r/asset-row.js
 | [Network logo](https://onchain-ui.dev/docs/components/network-logo) | Built-in chain logos and fallback text |
 | [Token balance](https://onchain-ui.dev/docs/components/token-balance) | Amount with optional logo, fiat value, and change |
 | [Asset row](https://onchain-ui.dev/docs/components/asset-row) | Token details and holding value in one row |
+| [Amount input](https://onchain-ui.dev/docs/components/amount-input) | Decimal string input that preserves precision while editing |
+| [Asset input](https://onchain-ui.dev/docs/components/asset-input) | Labeled amount field with slots for token selection, balances, and actions |
 | [Chain select](https://onchain-ui.dev/docs/components/chain-select) | Network selector for wallet switching or filtering |
 | [Connect wallet](https://onchain-ui.dev/docs/components/connect-wallet) | Wallet picker and account menu using wagmi |
 | [Crypto icons](https://onchain-ui.dev/docs/standards/crypto-icons) | Editable token and network icon lookup functions |
@@ -64,9 +66,16 @@ onchain-ui is pre-1.0. Registry URLs use the stable `/r/{name}.json` format. Com
 ```bash
 npm install     # install dependencies
 npm run dev     # docs site at http://localhost:3000
-npm run test    # registry contract tests
+npm run test    # registry contracts, component rendering, and input interaction tests
 npm run build   # registry + site build
 ```
+
+### Tests
+
+Tests use Node 24's built-in test runner. Input interaction tests mount the actual
+registry components with Testing Library and jsdom, exercising typing, pasting,
+selection, focus, disabled/read-only states, error associations, and exact form
+values. They run with the rest of the suite through `npm test` and in CI.
 
 ### wagmi, viem, and Tempo Accounts compatibility
 

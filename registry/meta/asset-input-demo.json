@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "asset-input-demo",
+  "type": "registry:component",
+  "title": "Asset Input Demo",
+  "description": "Editable sell field with an app-owned asset selector and Max action. Used by Open in v0.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": ["button", "native-select"],
+  "meta": { "composes": "asset-input" },
+  "files": [
+    { "path": "registry/onchain-ui/asset-input-demo.tsx", "type": "registry:component", "target": "components/ui/asset-input-demo.tsx" }
+  ]
+}

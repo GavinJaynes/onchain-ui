@@ -1,0 +1,61 @@
+---
+title: Amount input
+description: Edit token amounts as decimal strings without rounding or losing precision.
+---
+
+`AmountInput` is a controlled text input with a decimal keyboard and an optional fractional digit limit. Use it alone in forms, or use [Asset input](/docs/components/asset-input) for a labeled field with token selection and balance actions.
+
+<ComponentPreview name="amount-input" code={'const [amount, setAmount] = useState("")\n\n<AmountInput aria-label="Amount" value={amount} onValueChange={setAmount} decimals={18} />'} />
+
+## Installation
+
+<InstallTabs command="shadcn add @onchain-ui/amount-input" />
+
+<OpenInV0 name="amount-input-demo" />
+
+## Usage
+
+The primitive composes your shadcn `Input`; installation adds it when missing. It preserves the input's theme, focus, disabled, and invalid styles.
+
+```tsx
+"use client"
+
+import { useState } from "react"
+import { AmountInput } from "@/components/ui/amount-input"
+
+export function DepositAmount() {
+  const [amount, setAmount] = useState("")
+  return (
+    <AmountInput
+      aria-label="Deposit amount"
+      name="amount"
+      value={amount}
+      onValueChange={setAmount}
+      decimals={18}
+    />
+  )
+}
+```
+
+## Editing contract
+
+- Values stay strings, including `""`, `"."`, `"0."`, `".5"`, and `"1.00"`. Typing and blur never round or reformat them.
+- Accepted edits contain ASCII digits and at most one decimal point. Signs, scientific notation, whitespace, grouping separators, and decimal commas are rejected as a whole. For example, pasting `1e3` never becomes `13`.
+- `decimals={6}` accepts up to six fractional digits. `decimals={0}` accepts integers only. Omit `decimals` for unrestricted precision.
+- Controlled values supplied by your app are displayed as given. The editing filter does not validate externally supplied quotes or Max values.
+- Omitting `onValueChange` makes the input read-only by default. Use `readOnly` explicitly for a quote and `disabled` to prevent interaction.
+
+This is an editing primitive. Before submitting, validate that the string contains digits, has the token's allowed precision, represents a positive amount, and is within the spendable balance. Convert the validated string to base units with an exact decimal utility such as viem's `parseUnits`; keep transaction amounts out of JavaScript `Number`. Incomplete edits like `"."` must not be submitted. A precision change should be handled by the app: clear the amount or show an error rather than silently round it.
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | Required | Raw decimal editing value |
+| `onValueChange` | `(value: string) => void` | — | Called for accepted user edits |
+| `decimals` | `number` | Unrestricted | Non-negative integer limiting fractional digits |
+| `readOnly` | `boolean` | True when no callback | Keep the value focusable and selectable without editing |
+| `disabled` | `boolean` | `false` | Disable the input |
+| `className` | `string` | — | Input styles |
+
+Native input props such as `id`, `name`, `ref`, `required`, `onBlur`, `maxLength`, and ARIA attributes are forwarded. Supply a visible label or `aria-label`. `type` and `inputMode` are fixed; `defaultValue`, native `onChange`, `min`, `max`, and `step` are excluded. Use `onValueChange` and validate amount limits in your app.

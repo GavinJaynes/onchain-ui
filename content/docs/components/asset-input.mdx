@@ -1,0 +1,85 @@
+---
+title: Asset input
+description: A reusable amount field for swaps, sells, and deposits, with your own asset picker and balance actions.
+---
+
+`AssetInput` wraps [Amount input](/docs/components/amount-input) with a visible label, an asset slot, supporting text, a footer, and an accessible error message. It works with plain data and needs no wallet provider.
+
+<ComponentPreview name="asset-input" code={'<AssetInput\n  label="Sell"\n  value={amount}\n  onValueChange={setAmount}\n  decimals={6}\n  asset={<YourTokenPicker />}\n  footer={<YourBalanceActions />}\n/>'} />
+
+## Installation
+
+<InstallTabs command="shadcn add @onchain-ui/asset-input" />
+
+<OpenInV0 name="asset-input-demo" />
+
+The install includes `AmountInput` and declares shadcn `input` and `field` dependencies, so it uses your app's existing components or installs them when missing. Demos also use shadcn `Button` and `NativeSelect`.
+
+## Usage
+
+```tsx
+"use client"
+
+import { useState } from "react"
+import { AssetInput } from "@/components/ui/asset-input"
+
+export function SellAmount({ spendable }: { spendable: string }) {
+  const [amount, setAmount] = useState("")
+  return (
+    <AssetInput
+      label="Sell"
+      name="sellAmount"
+      value={amount}
+      onValueChange={setAmount}
+      decimals={6}
+      asset={<span>USDC</span>}
+      footer={
+        <>
+          <span>Available: {spendable} USDC</span>
+          <button type="button" onClick={() => setAmount(spendable)}>
+            Max
+          </button>
+        </>
+      }
+    />
+  )
+}
+```
+
+The app supplies an exact spendable string, including any native-currency gas reserve. Calculate percentages with integer base units, then format back to a decimal string. The field never fetches balances, calculates quotes, chooses a gas reserve, or sends transactions.
+
+## Composition
+
+`asset` accepts static identity (including `TokenLogo`) or your own dialog, sheet, or menu trigger. Keep the picker outside the field if that fits your layout. The app owns its open state, selection, and focus restoration; label its trigger, for example `aria-label="Select sell asset"`.
+
+Use `description` for a fiat estimate or helper text and `footer` for balances and actions. Unknown values can render a skeleton or `--`. Pass `aria-busy` to the input while a quote is loading. Use `type="button"` for shortcut buttons inside forms.
+
+`disabled` disables the amount and native controls within the fieldset, including slot buttons. Custom controls and portaled content must also receive their own disabled state. `readOnly` applies to the amount alone, so a receive-token picker can remain interactive.
+
+## States
+
+Error text is linked to the input and sets `aria-invalid`. Existing `aria-describedby` IDs are preserved alongside the built-in description and error IDs.
+
+<ComponentPreview name="asset-input-states" codeOpen={false} code={'<AssetInput label="Sell" value={amount} onValueChange={setAmount} error={error} />\n<AssetInput label="Receive" value={quotedAmount} readOnly />\n<AssetInput label="Deposit" value="" disabled />'} />
+
+## Pair deposits
+
+Compose two fields for liquidity or pair creation. Each amount stays independently controlled; your app decides whether changing one should update the other.
+
+<ComponentPreview name="asset-input-pair" codeOpen={false} code={'<AssetInput label="First deposit" value={first} onValueChange={setFirst} decimals={18} asset={<span>ETH</span>} />\n<AssetInput label="Second deposit" value={second} onValueChange={setSecond} decimals={6} asset={<span>USDC</span>} />'} />
+
+## Props
+
+All `AmountInput` props are accepted, plus:
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `label` | `ReactNode` | Required visible label connected to the input |
+| `asset` | `ReactNode` | Static token identity or app-owned selection control |
+| `description` | `ReactNode` | Supporting text connected to the input |
+| `footer` | `ReactNode` | Balances, shortcuts, or other supporting content |
+| `error` | `ReactNode` | Validation message; marks the input invalid |
+| `className` | `string` | Field container styles |
+| `inputClassName` | `string` | Amount input styles |
+
+`id`, `ref`, `name`, event handlers, and ARIA attributes target the amount input. An ID is generated when omitted. Amounts follow the primitive's [editing contract](/docs/components/amount-input#editing-contract); validate before transaction submission.

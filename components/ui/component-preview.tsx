@@ -38,6 +38,14 @@ const transformerLineNumbers: ShikiTransformer = {
 type DemoLoader = () => Promise<{ default: React.ComponentType }>;
 
 const demos: Record<string, DemoLoader> = {
+  "amount-input": () =>
+    import("@/components/demos/amount-input-demo").then((m) => ({ default: m.AmountInputDemo })),
+  "asset-input": () =>
+    import("@/components/demos/asset-input-demo").then((m) => ({ default: m.AssetInputDemo })),
+  "asset-input-states": () =>
+    import("@/components/demos/asset-input-demo").then((m) => ({ default: m.AssetInputStatesDemo })),
+  "asset-input-pair": () =>
+    import("@/components/demos/asset-input-demo").then((m) => ({ default: m.AssetInputPairDemo })),
   "address-display": () =>
     import("@/components/demos/address-display-demo").then((m) => ({
       default: m.AddressDisplayDemo,

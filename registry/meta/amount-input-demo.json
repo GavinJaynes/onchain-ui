@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "amount-input-demo",
+  "type": "registry:component",
+  "title": "Amount Input Demo",
+  "description": "Editable amount input with 18 decimal places. Used by Open in v0.",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": ["label"],
+  "meta": { "composes": "amount-input" },
+  "files": [
+    { "path": "registry/onchain-ui/amount-input-demo.tsx", "type": "registry:component", "target": "components/ui/amount-input-demo.tsx" }
+  ]
+}

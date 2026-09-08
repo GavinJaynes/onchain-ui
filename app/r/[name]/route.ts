@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import registryIndex from "@/registry.json";
+import amountInput from "@/registry/generated/amount-input.json";
+import amountInputDemo from "@/registry/generated/amount-input-demo.json";
+import assetInput from "@/registry/generated/asset-input.json";
+import assetInputDemo from "@/registry/generated/asset-input-demo.json";
 import addressDisplay from "@/registry/generated/address-display.json";
 import addressDisplayDemo from "@/registry/generated/address-display-demo.json";
 import addressIdentityDemo from "@/registry/generated/address-identity-demo.json";
@@ -41,6 +45,10 @@ type RegistryItem = {
 };
 
 const registryItems = {
+  "amount-input": amountInput,
+  "amount-input-demo": amountInputDemo,
+  "asset-input": assetInput,
+  "asset-input-demo": assetInputDemo,
   "address-display": addressDisplay,
   "address-display-demo": addressDisplayDemo,
   "address-identity-demo": addressIdentityDemo,
