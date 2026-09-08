@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CopyButton } from "@/components/ui/copy-button";
 import { OnchainFlare } from "@/components/onchain-flare";
-import { ExampleShowcaseMedia } from "@/components/example-showcase-media";
+import { ExampleSwapPreview } from "@/components/example-swap-preview";
+import { version } from "@/package.json";
 
 import { AddressDisplay } from "@/registry/onchain-ui/address-display";
 import { AddressIdentity } from "@/registry/onchain-ui/address-identity";
@@ -109,6 +110,7 @@ const installVariants = [
 ];
 
 const demoComponents = [
+  "Asset Input",
   "Connect Wallet",
   "Address Identity",
   "Chain Select",
@@ -134,7 +136,7 @@ export default function HomePage() {
               <span className="inline-flex size-1.5 rounded-full bg-emerald-500" />
               <span className="sm:hidden">Open source / shadcn registry</span>
               <span className="hidden sm:inline">
-                v0.1.0 / open source / shadcn registry / wagmi + viem
+                v{version} / open source / shadcn registry / wagmi + viem
               </span>
             </div>
 
@@ -144,7 +146,7 @@ export default function HomePage() {
               </h1>
 
               <p className="hidden max-w-xl text-base leading-7 text-white/52 sm:block md:text-lg">
-                Wallet identity, token logos, chain context, icon stacks, and
+                Asset inputs, wallet identity, token logos, chain context, and
                 market UI primitives built for teams shipping onchain products.
               </p>
             </div>
@@ -221,7 +223,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid overflow-hidden rounded-2xl border border-border bg-card shadow-sm lg:grid-cols-[1.55fr_0.75fr]">
-            <ExampleShowcaseMedia />
+            <ExampleSwapPreview />
 
             <div className="flex flex-col justify-between border-t border-border p-6 sm:p-8 lg:border-t-0 lg:border-l">
               <div>
@@ -233,7 +235,7 @@ export default function HomePage() {
                   A swap interface built from source you own.
                 </h3>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  Wallet state, asset discovery, chain context, live pricing,
+                  Reusable amount inputs, asset discovery, chain context, live pricing,
                   and route details—assembled without a locked component SDK.
                 </p>
 
@@ -267,6 +269,12 @@ export default function HomePage() {
                   View source
                 </a>
               </div>
+              <Link
+                href="/docs/components/asset-input"
+                className="mt-4 text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+              >
+                Explore AssetInput examples →
+              </Link>
             </div>
           </div>
 
