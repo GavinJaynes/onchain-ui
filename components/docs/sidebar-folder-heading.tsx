@@ -12,9 +12,9 @@ export function SidebarFolderHeading({
 }) {
   return (
     <div className="flex flex-col gap-0.5 my-4">
-      <div className="px-2 pt-4 pb-1 text-xs font-medium text-fd-muted-foreground first:pt-0">
+      <h2 className="px-2 pt-4 pb-1 text-base font-bold text-fd-foreground first:pt-0">
         {item.name}
-      </div>
+      </h2>
       {children}
     </div>
   );
