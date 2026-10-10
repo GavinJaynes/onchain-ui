@@ -50,6 +50,15 @@ test("price change colours use theme tokens", () => {
   assert.match(render("token-price", "TokenPrice", { value: 1, change: 0 }), /text-muted-foreground/);
 });
 
+test("Robinhood Chain is a known network with its Blockscout explorer", () => {
+  const { getExplorerUrl, getNetworkMeta } = loadSource("lib/onchain/config.ts");
+  assert.deepEqual(getNetworkMeta(4663), { name: "Robinhood Chain", symbol: "RH" });
+  assert.equal(getExplorerUrl(4663), "https://robinhoodchain.blockscout.com");
+  assert.match(render("address-display", "AddressDisplay", { address, chainId: 4663 }), /href="https:\/\/robinhoodchain\.blockscout\.com\/address\/0x0+1"/);
+  const logo = render("network-logo", "NetworkLogo", { chainId: 4663, size: "xs" });
+  assert.match(logo, />RH</);
+});
+
 test("connector list blocks selection during connection and handles an empty list", () => {
   assert.match(render("connector-list", "ConnectorList", { connectors: [], onSelect: () => {} }), /No compatible wallet/);
   const html = render("connector-list", "ConnectorList", { connectors: [{ id: "a", name: "Wallet A" }, { id: "b", name: "Wallet B" }], pendingId: "a", onSelect: () => {} });

@@ -16,7 +16,7 @@ Components that read this file include it in their installation.
 ```ts
 // lib/onchain/config.ts
 export const onchainConfig: OnchainUIConfig = {
-  chains: [mainnet, base, arbitrum, optimism, polygon],
+  chains: [mainnet, base, arbitrum, optimism, polygon, robinhood],
 }
 ```
 
@@ -36,7 +36,7 @@ export const onchainConfig: OnchainUIConfig = {
 `AddressDisplay` reads explorer URLs from `chain.blockExplorers`. When you reuse wagmi's chain list, adding a chain there also makes its explorer available to `AddressDisplay`.
 
 <Callout type="info">
-You can also list viem chains directly, as in the first example. The default list includes Ethereum, Base, Arbitrum, Optimism, and Polygon.
+You can also list viem chains directly, as in the first example. The default list includes Ethereum, Base, Arbitrum, Optimism, Polygon, and Robinhood Chain.
 </Callout>
 
 ## Share your RPC endpoints
