@@ -17,6 +17,12 @@ const sizeClasses = {
   xl: "size-12 text-base",
 } as const;
 
+// Pixel sizes for layouts that size marks in px rather than steps. The font
+// tracks the named sizes (~3/8 of the diameter) with a floor for legibility.
+function getPixelSizeStyle(size: number) {
+  return { width: size, height: size, fontSize: Math.max(8, Math.round(size * 0.375)) };
+}
+
 export interface TokenLogoProps {
   /** Token image URL. Always wins over inferred icons */
   src?: string | null;
@@ -30,8 +36,8 @@ export interface TokenLogoProps {
   chainId?: number | null;
   /** Use the native-currency icon rather than the wrapped token at `address` */
   isNative?: boolean;
-  /** Visual size. Default: md */
-  size?: keyof typeof sizeClasses;
+  /** Named size, or a diameter in pixels such as 28. Default: md */
+  size?: keyof typeof sizeClasses | number;
   /** Custom fallback content when the image is missing or fails */
   fallback?: ReactNode;
   /** Show an animated tooltip. Default: false */
@@ -99,9 +105,10 @@ export function TokenLogo({
     <span
       className={cn(
         "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border bg-muted font-medium text-muted-foreground",
-        sizeClasses[size],
+        typeof size === "number" ? null : sizeClasses[size],
         className
       )}
+      style={typeof size === "number" ? getPixelSizeStyle(size) : undefined}
     >
       {shouldShowImage ? (
         <img

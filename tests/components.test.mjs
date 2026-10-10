@@ -59,6 +59,14 @@ test("Robinhood Chain is a known network with its Blockscout explorer", () => {
   assert.match(logo, />RH</);
 });
 
+test("token logos and stacks accept a pixel size", () => {
+  const logo = render("token-logo", "TokenLogo", { symbol: "ETH", size: 28 });
+  assert.match(logo, /style="width:28px;height:28px;font-size:11px"/);
+  assert.doesNotMatch(logo, /size-8/);
+  const stack = render("token-stack", "TokenStack", { tokens: [{ symbol: "AAA" }, { symbol: "BBB" }], limit: 1, size: 28 });
+  assert.equal([...stack.matchAll(/width:28px;height:28px/g)].length, 2);
+});
+
 test("connector list blocks selection during connection and handles an empty list", () => {
   assert.match(render("connector-list", "ConnectorList", { connectors: [], onSelect: () => {} }), /No compatible wallet/);
   const html = render("connector-list", "ConnectorList", { connectors: [{ id: "a", name: "Wallet A" }, { id: "b", name: "Wallet B" }], pendingId: "a", onSelect: () => {} });

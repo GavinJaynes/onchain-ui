@@ -81,7 +81,7 @@ Enable tooltips when the stack appears without a nearby legend. The overflow too
 
 ### Sizes
 
-Set `size` to change the size of every logo in the stack.
+Set `size` to change the size of every logo in the stack. It accepts the named sizes or a pixel diameter, such as `size={28}`.
 
 <ComponentPreview
   name="token-stack-sizes"
@@ -136,7 +136,7 @@ Set `size` to change the size of every logo in the stack.
 |------|------|---------|-------------|
 | `tokens` | `TokenStackItem[]` | - | Tokens to display |
 | `limit` | `number` | `5` | Maximum visible tokens before overflow |
-| `size` | `"xs" \| "sm" \| "md" \| "lg" \| "xl"` | `"md"` | Token logo size |
+| `size` | `"xs" \| "sm" \| "md" \| "lg" \| "xl" \| number` | `"md"` | Token logo size, named or in pixels |
 | `direction` | `"left" \| "right"` | `"left"` | Overlap direction |
 | `showOverflow` | `boolean` | `true` | Show overflow count when tokens exceed limit |
 | `renderOverflow` | `(count: number) => ReactNode` | - | Custom overflow renderer |
