@@ -9,10 +9,14 @@ import type { ReactNode } from "react";
 type PriceValue = NumericValue;
 type Trend = "down" | "neutral" | "up";
 
+// `positive` and `negative` are theme tokens, like `destructive`: the registry
+// item adds `--positive` and `--negative` to your CSS for light and dark mode
+// (keeping any values you already define), so you retheme gains and losses in
+// your stylesheet rather than here.
 const trendClasses = {
-  down: "text-red-600 dark:text-red-400",
+  down: "text-negative",
   neutral: "text-muted-foreground",
-  up: "text-emerald-600 dark:text-emerald-400",
+  up: "text-positive",
 } as const;
 
 export interface TokenPriceProps {

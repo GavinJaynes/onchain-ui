@@ -111,12 +111,39 @@ Use `priceClassName` to style the value and `changeClassName` to style the perce
     "      change={-3.18}",
     '      className="rounded-md border bg-card px-3 py-2"',
     '      priceClassName="text-lg font-semibold"',
-    '      changeClassName="rounded-sm bg-red-500/10 px-1.5 py-0.5"',
+    '      changeClassName="rounded-sm bg-negative/10 px-1.5 py-0.5"',
     "    />",
     "  )",
     "}",
   ].join("\n")}
 />
+
+## Theming
+
+The change color comes from two theme tokens, used like shadcn's `destructive`: `text-positive` for gains and `text-negative` for losses. Neutral changes use `text-muted-foreground`.
+
+Installing the component adds both tokens to your CSS file for light and dark mode, plus the `@theme inline` entries that turn them into Tailwind classes. The CLI keeps any `--positive` or `--negative` you already define, so an existing palette wins. Edit the values to match your brand:
+
+```css
+:root {
+  --positive: oklch(0.596 0.145 163.225);
+  --negative: oklch(0.577 0.245 27.325);
+}
+
+.dark {
+  --positive: oklch(0.765 0.177 163.223);
+  --negative: oklch(0.704 0.191 22.216);
+}
+
+@theme inline {
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+}
+```
+
+If you copy the file by hand instead of using the CLI, add these lines yourself. Without them the change text uses the surrounding text color, and the sign and arrow still show the direction.
+
+The tokens also work in your own styles, for example `changeClassName="bg-negative/10"`.
 
 ## Props
 

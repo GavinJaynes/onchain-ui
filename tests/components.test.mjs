@@ -44,6 +44,12 @@ test("logos, stacks, and rows render useful fallback states", () => {
   assert.doesNotMatch(row, /NaN|\$0\.00/);
 });
 
+test("price change colours use theme tokens", () => {
+  assert.match(render("token-price", "TokenPrice", { value: 1, change: 2.5 }), /text-positive/);
+  assert.match(render("token-price", "TokenPrice", { value: 1, change: -2.5 }), /text-negative/);
+  assert.match(render("token-price", "TokenPrice", { value: 1, change: 0 }), /text-muted-foreground/);
+});
+
 test("connector list blocks selection during connection and handles an empty list", () => {
   assert.match(render("connector-list", "ConnectorList", { connectors: [], onSelect: () => {} }), /No compatible wallet/);
   const html = render("connector-list", "ConnectorList", { connectors: [{ id: "a", name: "Wallet A" }, { id: "b", name: "Wallet B" }], pendingId: "a", onSelect: () => {} });

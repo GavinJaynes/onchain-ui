@@ -201,6 +201,49 @@ test("generated registry items include source file content", async () => {
   }
 });
 
+// Registry components must style through theme tokens (text-positive,
+// bg-muted, ...) so consuming apps can retheme them and strict design-system
+// lint rules accept them. Brand colours inside SVG logos are attributes, not
+// classes, and are not matched here.
+const rawPaletteClass =
+  /\b(?:[a-z]+:)*(?:text|bg|border|ring|fill|stroke|from|via|to|outline|decoration|divide|shadow|accent|caret|placeholder)-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b/;
+
+test("registry source files use theme tokens instead of raw palette colours", async () => {
+  const metaItems = await getMetaItems();
+  const sourcePaths = new Set(
+    metaItems.flatMap(({ item }) => item.files.map((file) => file.path))
+  );
+
+  for (const sourcePath of sourcePaths) {
+    const content = await readFile(path.join(root, sourcePath), "utf-8");
+    const match = content.match(rawPaletteClass);
+    assert.equal(match, null, `${sourcePath} uses raw palette class ${match?.[0]}`);
+  }
+});
+
+test("items that ship token-price define its positive and negative theme tokens", async () => {
+  const metaItems = await getMetaItems();
+
+  for (const { item } of metaItems) {
+    const generated = await getGeneratedItem(item.name);
+    const shipsTokenPrice = generated.files.some(
+      (file) => file.path === "registry/onchain-ui/token-price.tsx"
+    );
+    if (!shipsTokenPrice) continue;
+
+    for (const mode of ["light", "dark"]) {
+      for (const token of ["positive", "negative"]) {
+        assert.ok(
+          generated.cssVars?.[mode]?.[token],
+          `${item.name} is missing cssVars.${mode}.${token}`
+        );
+      }
+    }
+    assert.equal(generated.cssVars.theme?.["color-positive"], "var(--positive)");
+    assert.equal(generated.cssVars.theme?.["color-negative"], "var(--negative)");
+  }
+});
+
 test("registry route statically imports every generated registry item", async () => {
   const routeSource = await readFile(registryRoutePath, "utf-8");
   const metaItems = await getMetaItems();
