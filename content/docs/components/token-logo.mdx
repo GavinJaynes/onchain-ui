@@ -97,7 +97,7 @@ If the selected image fails to load or no icon is available, the component shows
 
 ### Sizes
 
-Set `size` to `xs`, `sm`, `md`, `lg`, or `xl`.
+Set `size` to `xs`, `sm`, `md`, `lg`, or `xl`, or pass a number to set the diameter in pixels, such as `size={28}`. A pixel size is applied as an inline style, so it takes precedence over size classes in `className`.
 
 <ComponentPreview
   name="token-logo-sizes"
@@ -134,7 +134,7 @@ Pass `fallback` to replace the default text. Use `fallbackClassName` to style it
     "    <TokenLogo",
     '      symbol="WETH"',
     '      fallback="Ξ"',
-    '      className="border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-300"',
+    '      className="border-primary/30 bg-primary/10 text-primary"',
     "    />",
     "  )",
     "}",
@@ -172,7 +172,7 @@ Enable an animated tooltip when the logo appears without nearby token text.
 | `symbol` | `string \| null` | - | Token symbol, used for alt text and fallback |
 | `name` | `string \| null` | - | Token name, used for alt text and fallback |
 | `address` | `string \| null` | - | Token contract address, used for icon inference and as a fallback label |
-| `size` | `"xs" \| "sm" \| "md" \| "lg" \| "xl"` | `"md"` | Visual size |
+| `size` | `"xs" \| "sm" \| "md" \| "lg" \| "xl" \| number` | `"md"` | Named size, or diameter in pixels |
 | `fallback` | `ReactNode` | Symbol/name/address fallback | Custom fallback content |
 | `chainId` | `number \| null` | - | EVM chain id, used with `address` to infer an icon |
 | `isNative` | `boolean` | `false` | Use the native-currency icon instead of the token contract icon |

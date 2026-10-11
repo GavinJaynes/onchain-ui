@@ -58,7 +58,7 @@ export function TokenLogoDemoCustomFallback() {
     <TokenLogo
       symbol="WETH"
       fallback="Ξ"
-      className="border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-300"
+      className="border-primary/30 bg-primary/10 text-primary"
     />
   );
 }

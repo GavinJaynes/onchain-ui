@@ -13,6 +13,17 @@ async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, "utf-8"));
 }
 
+// Theme tokens a base item ships (e.g. --positive/--negative) must reach the
+// demo too, or Open in v0 renders the demo with undefined colour classes.
+function mergeCssVars(base, own) {
+  if (!base && !own) return undefined;
+  const merged = {};
+  for (const key of new Set([...Object.keys(base ?? {}), ...Object.keys(own ?? {})])) {
+    merged[key] = { ...base?.[key], ...own?.[key] };
+  }
+  return merged;
+}
+
 // Demo items declare `meta.composes: "<base-item>"` and inherit the base
 // item's files (before their own) and dependencies. The demo file stays last
 // on purpose: Open in v0 scaffolds a page that default-imports the last file.
@@ -22,9 +33,11 @@ async function resolveItemDefinition(metaFile) {
   if (!composes) return item;
 
   const base = await readJson(path.join(metaDir, `${composes}.json`));
+  const cssVars = mergeCssVars(base.cssVars, item.cssVars);
 
   return {
     ...item,
+    ...(cssVars ? { cssVars } : {}),
     dependencies: [...new Set([...base.dependencies, ...item.dependencies])],
     devDependencies: [
       ...new Set([...base.devDependencies, ...item.devDependencies]),

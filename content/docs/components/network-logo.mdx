@@ -34,7 +34,7 @@ import { NetworkLogo } from "@/components/ui/network-logo"
 <NetworkLogo chainId={8453} />
 ```
 
-`NetworkLogo` ships with built-in logos for common EVM networks. Use `src` only when you need to override a logo or support a chain that is not built in yet.
+`NetworkLogo` ships with built-in logos for common EVM networks. Robinhood Chain has a built-in name and symbol but no logo yet, so it renders an `RH` badge until you return an icon from `getNetworkIcon`. Use `src` only when you need to override a logo or support a chain that is not built in yet.
 
 Without a logo, the component uses the symbol, name, or chain ID as fallback text, in that order. A chain ID must fit in full. The limit is 3 characters at `xs` and `sm`, and 4 at larger sizes. Longer IDs show `?` because truncating an ID could identify a different chain. Pass `fallback` to supply your own content or `showTooltip` to show the full ID on hover.
 
@@ -51,6 +51,7 @@ See [Icon resolution](/docs/standards/icon-resolution) for the lookup order and 
 | Polygon | `137` |
 | Base | `8453` |
 | Arbitrum One | `42161` |
+| Robinhood Chain | `4663` |
 
 ## Examples
 

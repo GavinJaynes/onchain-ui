@@ -35,7 +35,7 @@ export function TokenPriceDemoCustom() {
       change={-3.18}
       className="rounded-md border bg-card px-3 py-2"
       priceClassName="text-lg font-semibold"
-      changeClassName="rounded-sm bg-red-500/10 px-1.5 py-0.5"
+      changeClassName="rounded-sm bg-negative/10 px-1.5 py-0.5"
     />
   );
 }

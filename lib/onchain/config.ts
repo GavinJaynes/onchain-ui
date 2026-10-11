@@ -1,4 +1,11 @@
-import { arbitrum, base, mainnet, optimism, polygon } from "viem/chains";
+import {
+  arbitrum,
+  base,
+  mainnet,
+  optimism,
+  polygon,
+  robinhood,
+} from "viem/chains";
 import type { AssetGatewayUrls, Chain, PublicClient } from "viem";
 
 /** The small client surface identity resolution actually consumes. */
@@ -56,7 +63,7 @@ export interface OnchainUIConfig {
 }
 
 export const onchainConfig: OnchainUIConfig = {
-  chains: [mainnet, base, arbitrum, optimism, polygon],
+  chains: [mainnet, base, arbitrum, optimism, polygon, robinhood],
   avatarGatewayUrls: {
     ipfs: "https://gateway.pinata.cloud",
     arweave: "https://arweave.net",
@@ -77,6 +84,7 @@ const knownNetworks: Partial<
   1: { name: "Ethereum", symbol: "ETH" },
   10: { name: "Optimism", symbol: "OP" },
   137: { name: "Polygon", symbol: "POL" },
+  4663: { name: "Robinhood Chain", symbol: "RH" },
   8453: { name: "Base", symbol: "BASE" },
   42161: { name: "Arbitrum", symbol: "ARB" },
 };

@@ -28,7 +28,7 @@ export interface TokenStackProps {
   tokens: TokenStackItem[];
   /** Maximum visible tokens before overflow. Default: 5 */
   limit?: number;
-  /** Token logo size. Default: md */
+  /** Token logo size: a named size or pixels, e.g. 28. Default: md */
   size?: TokenLogoProps["size"];
   /** Overlap direction. Default: left */
   direction?: "left" | "right";
@@ -66,6 +66,11 @@ const overflowSizeClasses = {
   lg: "size-10 text-sm",
   xl: "size-12 text-base",
 } as const;
+
+// Mirrors TokenLogo so a pixel-sized overflow badge matches the logos.
+function getPixelSizeStyle(size: number) {
+  return { width: size, height: size, fontSize: Math.max(8, Math.round(size * 0.375)) };
+}
 
 function getTokenKey(token: TokenStackItem, index: number) {
   // Index-suffixed so the same token can legitimately appear twice, e.g. in
@@ -164,9 +169,10 @@ export function TokenStack({
           <span
             className={cn(
               "relative inline-flex shrink-0 items-center justify-center rounded-full border bg-muted font-medium text-muted-foreground ring-2 ring-background/70",
-              overflowSizeClasses[size],
+              typeof size === "number" ? null : overflowSizeClasses[size],
               overflowClassName
             )}
+            style={typeof size === "number" ? getPixelSizeStyle(size) : undefined}
             aria-label={`${overflowCount} more tokens`}
             role="listitem"
           >
