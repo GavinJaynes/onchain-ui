@@ -7,7 +7,7 @@ const root = process.cwd();
 const metaDir = path.join(root, "registry", "meta");
 const generatedDir = path.join(root, "registry", "generated");
 const registryIndexPath = path.join(root, "registry.json");
-// Radix dialect of every item, served at /r/{style}/{name}.json for shadcn
+// Radix dialect of every item, served at /r/styles/{style}/{name}.json for shadcn
 // apps whose style is not a base-* one (new-york, default, radix-*).
 const radixDir = path.join(generatedDir, "styles", "radix");
 

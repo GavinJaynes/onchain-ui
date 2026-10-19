@@ -1,5 +1,5 @@
 /**
- * Which build a shadcn style gets from /r/{style}/{name}.json.
+ * Which build a shadcn style gets from /r/styles/{style}/{name}.json.
  *
  * shadcn names Base UI styles `base-*` (base-nova, base-vega, …). Everything
  * else is Radix: the legacy `new-york` and `default`, and `radix-*`. An

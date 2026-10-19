@@ -6,10 +6,12 @@ import { radixRegistryItems } from "@/registry/generated/styles/radix";
 import { isBaseUiStyle, KNOWN_STYLES } from "@/lib/registry-style";
 
 /**
- * Per-style registry items: `/r/{style}/{name}.json`.
+ * Per-style registry items: `/r/styles/{style}/{name}.json`.
  *
  * The shadcn CLI fills `{style}` from the app's components.json when the
- * namespace is registered as `https://onchain-ui.dev/r/{style}/{name}.json`.
+ * namespace is registered as `https://onchain-ui.dev/r/styles/{style}/{name}.json`
+ * (the path shape shadcn's own registry and reui use; a bare /r/[style]/[name]
+ * clashes with /r/[name] in Next).
  * Base UI styles (`base-*`) get the source as written. Every other style
  * (`new-york`, `default`, `radix-*`) gets the Radix build from
  * scripts/lib/to-radix.mjs. Added 2026-10-19: a new-york app installing the

@@ -2,7 +2,7 @@ import ts from "typescript";
 
 /**
  * Rewrites a registry source written against Base UI (the docs site's base)
- * into the Radix dialect, so `/r/{style}/{name}.json` can serve shadcn apps on
+ * into the Radix dialect, so `/r/styles/{style}/{name}.json` can serve shadcn apps on
  * either primitive library.
  *
  * Added 2026-10-19 after installing into bskts, a new-york (Radix) app: the
