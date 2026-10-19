@@ -35,6 +35,20 @@ export interface AssetRowProps {
   networkSrc?: string | null | undefined;
   /** Secondary metadata shown beside the token name */
   subtitle?: ReactNode | undefined;
+  /** A second line under the name, e.g. the symbol and contract address */
+  description?: ReactNode | undefined;
+  /**
+   * Replaces the token logo and network badge, e.g. with a TokenStack for a
+   * basket or LP position
+   */
+  logo?: ReactNode | undefined;
+  /**
+   * Formats the right-side amount instead of "1,234.5678 SYMBOL", for apps
+   * with a house number style
+   */
+  formatAmount?: ((amount: number) => ReactNode) | undefined;
+  /** Row density. `sm` suits pickers and dense lists. Default: default */
+  size?: "default" | "sm" | undefined;
   /** Hide the right-side amount. Default: false */
   hideAmount?: boolean | undefined;
   /** Locale passed to Intl.NumberFormat */
@@ -45,7 +59,7 @@ export interface AssetRowProps {
   logoProps?: Partial<TokenLogoProps> | undefined;
   /** Props passed to NetworkLogo */
   networkLogoProps?: Partial<NetworkLogoProps> | undefined;
-  /** Props passed to TokenPrice */
+  /** Props passed to TokenPrice, e.g. `format` and `formatChange` */
   priceProps?: Partial<TokenPriceProps> | undefined;
   /** Applied to the root wrapper */
   className?: string | undefined;
@@ -69,6 +83,33 @@ function formatAmount({
   }).format(value);
 }
 
+// Spacing and type per size. `default` is the portfolio-card row; `sm` is a
+// dense list row, e.g. a token picker inside a menu or dialog.
+const sizeClasses = {
+  default: {
+    root: "gap-4 px-1 py-3",
+    identity: "gap-3",
+    name: "text-base font-medium leading-tight",
+    secondary: "text-sm",
+    value: "text-base",
+    valueWeight: "font-semibold",
+    valueGap: "gap-1",
+    logo: "xl",
+    network: "xs",
+  },
+  sm: {
+    root: "gap-3 px-3 py-2.5",
+    identity: "gap-3",
+    name: "text-sm font-medium",
+    secondary: "text-xs",
+    value: "text-sm",
+    valueWeight: "font-medium",
+    valueGap: "gap-0",
+    logo: "md",
+    network: "xs",
+  },
+} as const;
+
 export function AssetRow({
   symbol,
   name,
@@ -82,9 +123,13 @@ export function AssetRow({
   networkName,
   networkSrc,
   subtitle,
+  description,
+  logo,
   hideAmount = false,
   locale,
   maximumFractionDigits = 4,
+  formatAmount: formatAmountProp,
+  size = "default",
   logoProps,
   networkLogoProps,
   priceProps,
@@ -96,54 +141,76 @@ export function AssetRow({
   const hasNetwork = Boolean(chainId || networkName || networkSrc);
   const hasValue = value !== null && value !== undefined && value !== "";
   const hasChange = typeof change === "number" && Number.isFinite(change);
+  const hasDescription = description != null && description !== false;
+  const showAmount = !hideAmount && parsedAmount !== null;
+  const s = sizeClasses[size];
 
+  // Spans throughout, so the row can sit inside a <button> or <a> (a picker
+  // row is usually one); div and p are not valid there.
   return (
-    <div
+    <span
+      data-slot="asset-row"
       className={cn(
-        "flex w-full min-w-0 items-center justify-between gap-4 rounded-lg px-1 py-3",
+        "flex w-full min-w-0 items-center justify-between rounded-lg",
+        s.root,
         className
       )}
     >
-      <div
+      <span
         className={cn(
-          "flex min-w-0 flex-1 items-center gap-3",
+          "flex min-w-0 flex-1 items-center",
+          s.identity,
           identityClassName
         )}
       >
         <span className="relative shrink-0">
-          <TokenLogo
-            address={address}
-            chainId={chainId}
-            isNative={isNative}
-            name={name}
-            size="xl"
-            src={src}
-            symbol={symbol}
-            {...logoProps}
-          />
-          {hasNetwork && (
-            <NetworkLogo
-              chainId={chainId}
-              className="absolute -bottom-1 -right-1 ring-2 ring-background"
-              name={networkName}
-              size="xs"
-              src={networkSrc}
-              {...networkLogoProps}
-            />
+          {logo ?? (
+            <>
+              <TokenLogo
+                address={address}
+                chainId={chainId}
+                isNative={isNative}
+                name={name}
+                size={s.logo}
+                src={src}
+                symbol={symbol}
+                {...logoProps}
+              />
+              {hasNetwork && (
+                <NetworkLogo
+                  chainId={chainId}
+                  className="absolute -bottom-1 -right-1 ring-2 ring-background"
+                  name={networkName}
+                  size={s.network}
+                  src={networkSrc}
+                  {...networkLogoProps}
+                />
+              )}
+            </>
           )}
         </span>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex min-w-0 items-baseline gap-2">
-            <p className="truncate text-base font-medium leading-tight">
+        <span className="block min-w-0 flex-1">
+          <span className="flex min-w-0 items-baseline gap-2">
+            <span className={cn("block truncate", s.name)}>
               {name ?? symbol}
-            </p>
+            </span>
             {subtitle && (
-              <span className="truncate text-sm text-muted-foreground">
+              <span className={cn("truncate text-muted-foreground", s.secondary)}>
                 {subtitle}
               </span>
             )}
-          </div>
+          </span>
+          {hasDescription && (
+            <span
+              className={cn(
+                "flex min-w-0 items-center gap-1.5 text-muted-foreground",
+                s.secondary
+              )}
+            >
+              {description}
+            </span>
+          )}
           {hasChange && (
             <TokenPrice
               {...priceProps}
@@ -152,29 +219,39 @@ export function AssetRow({
               change={change}
               className="mt-1 gap-0"
               priceClassName="hidden"
-              changeClassName={cn("text-sm", priceProps?.changeClassName)}
+              changeClassName={cn(s.secondary, priceProps?.changeClassName)}
             />
           )}
-        </div>
-      </div>
+        </span>
+      </span>
 
-      <div className={cn("grid shrink-0 gap-1 text-right", valueClassName)}>
-        {hasValue && (
-          <TokenPrice
-            {...priceProps}
-            value={value}
-            change={null}
-            className={cn("justify-end text-base", priceProps?.className)}
-            priceClassName={cn("font-semibold", priceProps?.priceClassName)}
-          />
-        )}
-        {!hideAmount && parsedAmount !== null && (
-          <p className="font-mono text-sm text-muted-foreground tabular-nums">
-            {formatAmount({ locale, maximumFractionDigits, value: parsedAmount })}{" "}
-            {symbol}
-          </p>
-        )}
-      </div>
-    </div>
+      {/* Omitted when empty: an empty block still takes the row's gap, which
+          truncated the name early on rows with nothing held. */}
+      {(hasValue || showAmount) && (
+        <span className={cn("grid shrink-0 text-right", s.valueGap, valueClassName)}>
+          {hasValue && (
+            <TokenPrice
+              {...priceProps}
+              value={value}
+              change={null}
+              className={cn("justify-end", s.value, priceProps?.className)}
+              priceClassName={cn(s.valueWeight, priceProps?.priceClassName)}
+            />
+          )}
+          {showAmount && (
+            <span
+              className={cn(
+                "block font-mono text-muted-foreground tabular-nums",
+                s.secondary
+              )}
+            >
+              {formatAmountProp
+                ? formatAmountProp(parsedAmount)
+                : `${formatAmount({ locale, maximumFractionDigits, value: parsedAmount })} ${symbol}`}
+            </span>
+          )}
+        </span>
+      )}
+    </span>
   );
 }

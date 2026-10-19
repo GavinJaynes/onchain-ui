@@ -231,16 +231,31 @@ test("items that ship token-price define its positive and negative theme tokens"
     );
     if (!shipsTokenPrice) continue;
 
+    // Defaults live under onchain-* names and the theme colour prefers the
+    // app's own token. Shipping --positive itself let the CLI add dark values
+    // to an app's .dark block, beating the app's :root tokens (bskts,
+    // 2026-10-19: every gain/loss colour on a dark site would have changed).
     for (const mode of ["light", "dark"]) {
       for (const token of ["positive", "negative"]) {
         assert.ok(
+          generated.cssVars?.[mode]?.[`onchain-${token}`],
+          `${item.name} is missing cssVars.${mode}.onchain-${token}`
+        );
+        assert.equal(
           generated.cssVars?.[mode]?.[token],
-          `${item.name} is missing cssVars.${mode}.${token}`
+          undefined,
+          `${item.name} must not write the app's own --${token}`
         );
       }
     }
-    assert.equal(generated.cssVars.theme?.["color-positive"], "var(--positive)");
-    assert.equal(generated.cssVars.theme?.["color-negative"], "var(--negative)");
+    assert.equal(
+      generated.cssVars.theme?.["color-positive"],
+      "var(--positive, var(--onchain-positive))"
+    );
+    assert.equal(
+      generated.cssVars.theme?.["color-negative"],
+      "var(--negative, var(--onchain-negative))"
+    );
   }
 });
 

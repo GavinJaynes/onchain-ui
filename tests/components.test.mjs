@@ -72,3 +72,46 @@ test("connector list blocks selection during connection and handles an empty lis
   const html = render("connector-list", "ConnectorList", { connectors: [{ id: "a", name: "Wallet A" }, { id: "b", name: "Wallet B" }], pendingId: "a", onSelect: () => {} });
   assert.equal([...html.matchAll(/<button[^>]*disabled=""/g)].length, 2);
 });
+
+test("house formats replace the Intl defaults for price, change and amount", () => {
+  const price = render("token-price", "TokenPrice", {
+    value: 1234.5,
+    change: 0.0374,
+    format: (v) => `$${Math.round(v)}`,
+    formatChange: (c) => `+${(c * 100).toFixed(2)}%`,
+  });
+  assert.match(price, /\$1235/);
+  assert.match(price, /\+3\.74%/);
+  assert.doesNotMatch(price, /1,234\.50/);
+
+  const row = render("asset-row", "AssetRow", {
+    symbol: "MAG6",
+    amount: 1.5,
+    formatAmount: (n) => `${n} units`,
+  });
+  assert.match(row, /1\.5 units/);
+  assert.doesNotMatch(row, /1\.5 MAG6/, "the default amount format is replaced");
+});
+
+test("asset row takes a logo slot, a description line and a small size, in button-safe markup", () => {
+  const row = render("asset-row", "AssetRow", {
+    symbol: "MAG6",
+    name: "Mega-cap Tech",
+    size: "sm",
+    logo: createElement("i", { "data-testid": "custom-logo" }),
+    description: "MAG6 · 0x6A19…f6d9",
+  });
+  assert.match(row, /data-testid="custom-logo"/);
+  assert.doesNotMatch(row, /<img/, "the default TokenLogo is replaced");
+  assert.match(row, /MAG6 · 0x6A19…f6d9/);
+  assert.match(row, /py-2\.5/);
+  assert.doesNotMatch(row, /<(div|p)[\s>]/, "only phrasing content, valid inside <button>");
+});
+
+test("asset row drops the value block when there is nothing to show", () => {
+  const empty = render("asset-row", "AssetRow", { symbol: "MAG6", size: "sm" });
+  assert.doesNotMatch(empty, /text-right/, "no empty block taking the row's gap");
+  const held = render("asset-row", "AssetRow", { symbol: "MAG6", size: "sm", value: 12, amount: 0.5 });
+  assert.match(held, /text-right/);
+  assert.match(held, /gap-0/, "sm keeps value and amount lines tight");
+});

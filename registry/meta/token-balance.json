@@ -15,16 +15,16 @@
   ],
   "cssVars": {
     "theme": {
-      "color-positive": "var(--positive)",
-      "color-negative": "var(--negative)"
+      "color-positive": "var(--positive, var(--onchain-positive))",
+      "color-negative": "var(--negative, var(--onchain-negative))"
     },
     "light": {
-      "positive": "oklch(0.596 0.145 163.225)",
-      "negative": "oklch(0.577 0.245 27.325)"
+      "onchain-positive": "oklch(0.596 0.145 163.225)",
+      "onchain-negative": "oklch(0.577 0.245 27.325)"
     },
     "dark": {
-      "positive": "oklch(0.765 0.177 163.223)",
-      "negative": "oklch(0.704 0.191 22.216)"
+      "onchain-positive": "oklch(0.765 0.177 163.223)",
+      "onchain-negative": "oklch(0.704 0.191 22.216)"
     }
   },
   "files": [
