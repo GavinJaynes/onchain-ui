@@ -9,10 +9,11 @@ import type { ReactNode } from "react";
 type PriceValue = NumericValue;
 type Trend = "down" | "neutral" | "up";
 
-// `positive` and `negative` are theme tokens, like `destructive`: the registry
-// item adds `--positive` and `--negative` to your CSS for light and dark mode
-// (keeping any values you already define), so you retheme gains and losses in
-// your stylesheet rather than here.
+// `positive` and `negative` are theme tokens, like `destructive`. Define
+// `--positive` and `--negative` in your CSS to retheme gains and losses; until
+// you do, the registry's light and dark defaults (`--onchain-positive`,
+// `--onchain-negative`) apply. The defaults use their own names so installing
+// never overrides tokens you already have, in any mode.
 const trendClasses = {
   down: "text-negative",
   neutral: "text-muted-foreground",
