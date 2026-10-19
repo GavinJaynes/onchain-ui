@@ -42,7 +42,7 @@ export interface ChainSelectProps {
   /** Called with the chain id the user picked */
   onSelect: (chainId: number) => void;
   /** Called when the optional all-networks item is picked */
-  onClear?: () => void | undefined;
+  onClear?: (() => void) | undefined;
   /** Renders an item that clears the selected chain, e.g. "All networks" */
   allLabel?: string | undefined;
   /** Chain id currently being switched to. Blocks further selection */

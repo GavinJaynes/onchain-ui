@@ -41,15 +41,15 @@ export interface TokenStackProps {
   /** Show overflow count when tokens exceed limit. Default: true */
   showOverflow?: boolean | undefined;
   /** Custom overflow renderer */
-  renderOverflow?: (count: number) => ReactNode | undefined;
+  renderOverflow?: ((count: number) => ReactNode) | undefined;
   /** Custom token renderer for icon libraries or chain overlays */
-  renderToken?: (token: TokenStackItem, index: number) => ReactNode | undefined;
+  renderToken?: ((token: TokenStackItem, index: number) => ReactNode) | undefined;
   /** Show animated tooltips for tokens. Default: false */
   showTooltip?: boolean | undefined;
   /** Token tooltip content. Defaults to name, symbol, then address. */
-  getTooltipContent?: (token: TokenStackItem, index: number) => ReactNode | undefined;
+  getTooltipContent?: ((token: TokenStackItem, index: number) => ReactNode) | undefined;
   /** Overflow tooltip content. Defaults to hidden token symbols/names. */
-  getOverflowTooltipContent?: (tokens: TokenStackItem[]) => ReactNode | undefined;
+  getOverflowTooltipContent?: ((tokens: TokenStackItem[]) => ReactNode) | undefined;
   /** Accessible label for the group */
   "aria-label"?: string | undefined;
   /** Applied to the root wrapper */

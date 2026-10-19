@@ -4,15 +4,18 @@ import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 
+// Props come from the app's own Input rather than a bare <input>, so variants
+// the app added to it (bskts has an `amount` variant for money forms) pass
+// straight through.
 export interface AmountInputProps
   extends Omit<
-    ComponentProps<"input">,
+    ComponentProps<typeof Input>,
     "type" | "inputMode" | "value" | "defaultValue" | "onChange" | "min" | "max" | "step"
   > {
   /** Unformatted decimal string. Empty and incomplete values are valid while editing. */
   value: string;
   /** Receives accepted edits without numeric conversion or rounding. */
-  onValueChange?: (value: string) => void | undefined;
+  onValueChange?: ((value: string) => void) | undefined;
   /** Maximum fractional digits. Omit for unrestricted precision; 0 allows integers only. */
   decimals?: number | undefined;
 }

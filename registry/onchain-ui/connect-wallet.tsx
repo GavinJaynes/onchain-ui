@@ -30,7 +30,7 @@ export interface ConnectWalletProps {
   /** Visual size. Default: "default" */
   size?: "sm" | "default" | undefined;
   /** Called when a connection attempt fails */
-  onError?: (error: Error) => void | undefined;
+  onError?: ((error: Error) => void) | undefined;
   /** Applied to the trigger */
   className?: string | undefined;
   /** Applied to the menu */

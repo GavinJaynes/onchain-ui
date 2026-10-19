@@ -27,8 +27,13 @@ export interface NetworkLogoProps {
   name?: string | null | undefined;
   /** Short network symbol, used for fallback */
   symbol?: string | null | undefined;
-  /** Visual size. Default: md */
-  size?: keyof typeof sizeClasses | undefined;
+  /** Named size, or a diameter in pixels such as 16. Default: md */
+  size?: keyof typeof sizeClasses | number | undefined;
+  /**
+   * `tile` draws the mark on a bordered muted circle. `bare` draws it on
+   * nothing, for full-bleed brand art that should not sit in a ring. Default: tile
+   */
+  variant?: "tile" | "bare" | undefined;
   /** Custom fallback content for unsupported chains */
   fallback?: ReactNode | undefined;
   /** Show an animated tooltip. Default: false */
@@ -53,6 +58,17 @@ const fallbackMaxChars = {
   lg: 4,
   xl: 4,
 } as const;
+
+// Pixel sizes follow the named steps: up to xs/sm (24px) fits three
+// characters, larger fits four. The font tracks ~1/3 of the diameter.
+function getMaxChars(size: keyof typeof sizeClasses | number) {
+  if (typeof size !== "number") return fallbackMaxChars[size];
+  return size <= 24 ? 3 : 4;
+}
+
+function getPixelFontSize(size: number) {
+  return Math.max(7, Math.round(size * 0.33));
+}
 
 function getFallbackText({
   chainId,
@@ -80,6 +96,7 @@ export function NetworkLogo({
   name,
   symbol,
   size = "md",
+  variant = "tile",
   fallback,
   showTooltip = false,
   tooltipContent,
@@ -109,13 +126,24 @@ export function NetworkLogo({
 
   const tooltip = tooltipContent ?? displayName ?? displaySymbol ?? chainId;
 
+  const px = typeof size === "number" ? size : undefined;
+  // The fallback keeps its tile in every variant, so an unknown network is
+  // still a visible shape.
+  const bare = variant === "bare" && (shouldShowImage || (knownIcon != null && !fallback));
+
   const logo = (
     <span
       className={cn(
-        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border bg-muted font-semibold text-muted-foreground",
-        sizeClasses[size],
+        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full font-semibold text-muted-foreground",
+        bare ? null : "border bg-muted",
+        px === undefined ? sizeClasses[size as keyof typeof sizeClasses] : null,
         className
       )}
+      style={{
+        width: px,
+        height: px,
+        fontSize: px === undefined ? undefined : getPixelFontSize(px),
+      }}
     >
       {shouldShowImage ? (
         <img
@@ -136,7 +164,7 @@ export function NetworkLogo({
               chainId,
               name: displayName,
               symbol: displaySymbol,
-              maxChars: fallbackMaxChars[size],
+              maxChars: getMaxChars(size),
             })}
         </span>
       )}
