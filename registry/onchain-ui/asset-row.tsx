@@ -93,6 +93,7 @@ const sizeClasses = {
     secondary: "text-sm",
     value: "text-base",
     valueWeight: "font-semibold",
+    valueGap: "gap-1",
     logo: "xl",
     network: "xs",
   },
@@ -103,6 +104,7 @@ const sizeClasses = {
     secondary: "text-xs",
     value: "text-sm",
     valueWeight: "font-medium",
+    valueGap: "gap-0",
     logo: "md",
     network: "xs",
   },
@@ -140,6 +142,7 @@ export function AssetRow({
   const hasValue = value !== null && value !== undefined && value !== "";
   const hasChange = typeof change === "number" && Number.isFinite(change);
   const hasDescription = description != null && description !== false;
+  const showAmount = !hideAmount && parsedAmount !== null;
   const s = sizeClasses[size];
 
   // Spans throughout, so the row can sit inside a <button> or <a> (a picker
@@ -222,29 +225,33 @@ export function AssetRow({
         </span>
       </span>
 
-      <span className={cn("grid shrink-0 gap-1 text-right", valueClassName)}>
-        {hasValue && (
-          <TokenPrice
-            {...priceProps}
-            value={value}
-            change={null}
-            className={cn("justify-end", s.value, priceProps?.className)}
-            priceClassName={cn(s.valueWeight, priceProps?.priceClassName)}
-          />
-        )}
-        {!hideAmount && parsedAmount !== null && (
-          <span
-            className={cn(
-              "block font-mono text-muted-foreground tabular-nums",
-              s.secondary
-            )}
-          >
-            {formatAmountProp
-              ? formatAmountProp(parsedAmount)
-              : `${formatAmount({ locale, maximumFractionDigits, value: parsedAmount })} ${symbol}`}
-          </span>
-        )}
-      </span>
+      {/* Omitted when empty: an empty block still takes the row's gap, which
+          truncated the name early on rows with nothing held. */}
+      {(hasValue || showAmount) && (
+        <span className={cn("grid shrink-0 text-right", s.valueGap, valueClassName)}>
+          {hasValue && (
+            <TokenPrice
+              {...priceProps}
+              value={value}
+              change={null}
+              className={cn("justify-end", s.value, priceProps?.className)}
+              priceClassName={cn(s.valueWeight, priceProps?.priceClassName)}
+            />
+          )}
+          {showAmount && (
+            <span
+              className={cn(
+                "block font-mono text-muted-foreground tabular-nums",
+                s.secondary
+              )}
+            >
+              {formatAmountProp
+                ? formatAmountProp(parsedAmount)
+                : `${formatAmount({ locale, maximumFractionDigits, value: parsedAmount })} ${symbol}`}
+            </span>
+          )}
+        </span>
+      )}
     </span>
   );
 }

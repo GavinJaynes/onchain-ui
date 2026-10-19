@@ -107,3 +107,11 @@ test("asset row takes a logo slot, a description line and a small size, in butto
   assert.match(row, /py-2\.5/);
   assert.doesNotMatch(row, /<(div|p)[\s>]/, "only phrasing content, valid inside <button>");
 });
+
+test("asset row drops the value block when there is nothing to show", () => {
+  const empty = render("asset-row", "AssetRow", { symbol: "MAG6", size: "sm" });
+  assert.doesNotMatch(empty, /text-right/, "no empty block taking the row's gap");
+  const held = render("asset-row", "AssetRow", { symbol: "MAG6", size: "sm", value: 12, amount: 0.5 });
+  assert.match(held, /text-right/);
+  assert.match(held, /gap-0/, "sm keeps value and amount lines tight");
+});
