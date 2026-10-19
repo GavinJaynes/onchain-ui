@@ -59,7 +59,14 @@ export interface OnchainUIConfig {
    * Replace these with your own gateway in production when reliability or
    * rate limits matter.
    */
-  avatarGatewayUrls?: AssetGatewayUrls;
+  avatarGatewayUrls?: AssetGatewayUrls | undefined;
+
+  /**
+   * The chain an address is assumed to live on when a component is given no
+   * chain id. Default: 1 (Ethereum). An app on one L2 sets its own, or every
+   * explorer link points at the wrong chain.
+   */
+  defaultChainId?: number | undefined;
 }
 
 export const onchainConfig: OnchainUIConfig = {
@@ -120,6 +127,11 @@ export function getNetworkMeta(chainId?: number | null): NetworkMeta {
 export function getExplorerUrl(chainId?: number | null): string | null {
   const chain = findChain(chainId);
   return chain?.blockExplorers?.default.url ?? null;
+}
+
+/** The chain to assume when a component is given none. */
+export function getDefaultChainId(): number {
+  return onchainConfig.defaultChainId ?? 1;
 }
 
 /** A read client for `chainId`, if the app configured one. */

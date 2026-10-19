@@ -14,45 +14,45 @@ export interface AssetRowProps {
   /** Token symbol */
   symbol: string;
   /** Token name */
-  name?: string | null;
+  name?: string | null | undefined;
   /** Token image URL */
-  src?: string | null;
+  src?: string | null | undefined;
   /** Token contract address */
-  address?: string | null;
+  address?: string | null | undefined;
   /** Whether the asset is the chain's native currency */
-  isNative?: boolean;
+  isNative?: boolean | undefined;
   /** Token amount held by the user */
-  amount?: AmountValue;
+  amount?: AmountValue | undefined;
   /** Fiat value for the position */
-  value?: TokenPriceProps["value"];
+  value?: TokenPriceProps["value"] | undefined;
   /** Price or position change percentage */
-  change?: TokenPriceProps["change"];
+  change?: TokenPriceProps["change"] | undefined;
   /** Optional network chain id for the logo badge */
-  chainId?: number | null;
+  chainId?: number | null | undefined;
   /** Optional network name for the logo badge */
-  networkName?: string | null;
+  networkName?: string | null | undefined;
   /** Optional network image URL for the logo badge */
-  networkSrc?: string | null;
+  networkSrc?: string | null | undefined;
   /** Secondary metadata shown beside the token name */
-  subtitle?: ReactNode;
+  subtitle?: ReactNode | undefined;
   /** Hide the right-side amount. Default: false */
-  hideAmount?: boolean;
+  hideAmount?: boolean | undefined;
   /** Locale passed to Intl.NumberFormat */
-  locale?: string;
+  locale?: string | undefined;
   /** Maximum fraction digits for the token amount. Default: 4 */
-  maximumFractionDigits?: number;
+  maximumFractionDigits?: number | undefined;
   /** Props passed to TokenLogo */
-  logoProps?: Partial<TokenLogoProps>;
+  logoProps?: Partial<TokenLogoProps> | undefined;
   /** Props passed to NetworkLogo */
-  networkLogoProps?: Partial<NetworkLogoProps>;
+  networkLogoProps?: Partial<NetworkLogoProps> | undefined;
   /** Props passed to TokenPrice */
-  priceProps?: Partial<TokenPriceProps>;
+  priceProps?: Partial<TokenPriceProps> | undefined;
   /** Applied to the root wrapper */
-  className?: string;
+  className?: string | undefined;
   /** Applied to the token identity block */
-  identityClassName?: string;
+  identityClassName?: string | undefined;
   /** Applied to the right-side value block */
-  valueClassName?: string;
+  valueClassName?: string | undefined;
 }
 
 function formatAmount({
@@ -60,7 +60,7 @@ function formatAmount({
   maximumFractionDigits,
   value,
 }: {
-  locale?: string;
+  locale?: string | undefined;
   maximumFractionDigits: number;
   value: number;
 }) {

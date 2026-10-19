@@ -24,17 +24,17 @@ type ProbedConnector = ReturnType<
 
 export interface ConnectWalletProps {
   /** Label for the disconnected trigger. Default: "Connect wallet" */
-  label?: string;
+  label?: string | undefined;
   /** Show the network mark on the connected pill. Default: true */
-  showNetwork?: boolean;
+  showNetwork?: boolean | undefined;
   /** Visual size. Default: "default" */
-  size?: "sm" | "default";
+  size?: "sm" | "default" | undefined;
   /** Called when a connection attempt fails */
-  onError?: (error: Error) => void;
+  onError?: (error: Error) => void | undefined;
   /** Applied to the trigger */
-  className?: string;
+  className?: string | undefined;
   /** Applied to the menu */
-  contentClassName?: string;
+  contentClassName?: string | undefined;
 }
 
 const triggerSizes = {
@@ -130,12 +130,13 @@ export function ConnectWallet({
   }
 
   // Exactly one wallet: a menu of one is a worse click than connecting.
-  if (!isProbing && connectors.length === 1) {
+  const [onlyConnector] = connectors;
+  if (!isProbing && connectors.length === 1 && onlyConnector) {
     return (
       <button
         type="button"
         disabled={connect.isPending}
-        onClick={() => handleConnect(connectors[0].uid)}
+        onClick={() => handleConnect(onlyConnector.uid)}
         className={triggerClassName}
       >
         <WalletIcon className="size-4" aria-hidden="true" />

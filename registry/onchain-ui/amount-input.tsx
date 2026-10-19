@@ -12,9 +12,9 @@ export interface AmountInputProps
   /** Unformatted decimal string. Empty and incomplete values are valid while editing. */
   value: string;
   /** Receives accepted edits without numeric conversion or rounding. */
-  onValueChange?: (value: string) => void;
+  onValueChange?: (value: string) => void | undefined;
   /** Maximum fractional digits. Omit for unrestricted precision; 0 allows integers only. */
-  decimals?: number;
+  decimals?: number | undefined;
 }
 
 /** Checks editing syntax, not whether an amount is ready for a transaction. */

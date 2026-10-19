@@ -10,11 +10,11 @@ export interface ConnectorOption {
   /** Wallet name, e.g. "MetaMask" */
   name: string;
   /** Wallet icon. EIP-6963 wallets announce a data URI */
-  icon?: string | null;
+  icon?: string | null | undefined;
   /** Secondary line, e.g. "Installed" or "Scan with your phone" */
-  description?: ReactNode;
+  description?: ReactNode | undefined;
   /** Render but do not allow selection */
-  disabled?: boolean;
+  disabled?: boolean | undefined;
 }
 
 export interface ConnectorListProps {
@@ -23,15 +23,15 @@ export interface ConnectorListProps {
   /** Called with the id of the wallet the user picked */
   onSelect: (connectorId: string) => void;
   /** Connector currently being connected. Blocks further selection */
-  pendingId?: string | null;
+  pendingId?: string | null | undefined;
   /** Disable every row */
-  disabled?: boolean;
+  disabled?: boolean | undefined;
   /** Shown when `connectors` is empty */
-  emptyMessage?: ReactNode;
+  emptyMessage?: ReactNode | undefined;
   /** Applied to the list wrapper */
-  className?: string;
+  className?: string | undefined;
   /** Applied to each row */
-  itemClassName?: string;
+  itemClassName?: string | undefined;
 }
 
 function ConnectorIcon({ connector }: { connector: ConnectorOption }) {

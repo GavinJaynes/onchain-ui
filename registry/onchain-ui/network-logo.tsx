@@ -20,27 +20,27 @@ const sizeClasses = {
 
 export interface NetworkLogoProps {
   /** EVM chain id */
-  chainId?: number | null;
+  chainId?: number | null | undefined;
   /** Network image URL override */
-  src?: string | null;
+  src?: string | null | undefined;
   /** Network name, used for alt text and fallback */
-  name?: string | null;
+  name?: string | null | undefined;
   /** Short network symbol, used for fallback */
-  symbol?: string | null;
+  symbol?: string | null | undefined;
   /** Visual size. Default: md */
-  size?: keyof typeof sizeClasses;
+  size?: keyof typeof sizeClasses | undefined;
   /** Custom fallback content for unsupported chains */
-  fallback?: ReactNode;
+  fallback?: ReactNode | undefined;
   /** Show an animated tooltip. Default: false */
-  showTooltip?: boolean;
+  showTooltip?: boolean | undefined;
   /** Tooltip content. Defaults to network name, symbol, then chain id */
-  tooltipContent?: ReactNode;
+  tooltipContent?: ReactNode | undefined;
   /** Applied to the root wrapper */
-  className?: string;
+  className?: string | undefined;
   /** Applied to the image */
-  imageClassName?: string;
+  imageClassName?: string | undefined;
   /** Applied to the fallback */
-  fallbackClassName?: string;
+  fallbackClassName?: string | undefined;
 }
 
 // How many characters fit inside the circle at each size, measured rather than

@@ -13,19 +13,19 @@ export interface WalletButtonProps
   /** Connected wallet address */
   address: Address;
   /** Connected chain id. Renders a network mark when set */
-  chainId?: number | null;
+  chainId?: number | null | undefined;
   /** Resolved name override, e.g. vitalik.eth. Skips resolution when set */
-  name?: string | null;
+  name?: string | null | undefined;
   /** Avatar URL override */
-  avatarUrl?: string | null;
+  avatarUrl?: string | null | undefined;
   /** Show a spinner in place of the chevron */
-  isPending?: boolean;
+  isPending?: boolean | undefined;
   /** Show the network mark. Default: true */
-  showNetwork?: boolean;
+  showNetwork?: boolean | undefined;
   /** Show the trailing chevron. Default: true */
-  showChevron?: boolean;
+  showChevron?: boolean | undefined;
   /** Visual size. Default: "default" */
-  size?: "sm" | "default";
+  size?: "sm" | "default" | undefined;
 }
 
 const buttonSizes = {

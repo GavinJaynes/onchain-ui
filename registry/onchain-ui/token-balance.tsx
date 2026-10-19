@@ -13,43 +13,43 @@ export interface TokenBalanceProps {
   /** Token amount */
   amount: BalanceValue;
   /** Token symbol, shown after the amount */
-  symbol?: string | null;
+  symbol?: string | null | undefined;
   /** Token name, used for logo alt text */
-  name?: string | null;
+  name?: string | null | undefined;
   /** Token image URL */
-  src?: string | null;
+  src?: string | null | undefined;
   /** Token contract address, used for icon inference and as a fallback label */
-  address?: string | null;
+  address?: string | null | undefined;
   /** EVM chain id, used with address to infer a token icon */
-  chainId?: number | null;
+  chainId?: number | null | undefined;
   /** Whether the asset is the chain's native currency */
-  isNative?: boolean;
+  isNative?: boolean | undefined;
   /** Fiat value for the token balance */
-  fiatValue?: TokenPriceProps["value"];
+  fiatValue?: TokenPriceProps["value"] | undefined;
   /** Fiat value percentage change */
-  change?: TokenPriceProps["change"];
+  change?: TokenPriceProps["change"] | undefined;
   /** Show the token logo. Default: true */
-  showLogo?: boolean;
+  showLogo?: boolean | undefined;
   /** Show fiat value when provided. Default: true */
-  showFiatValue?: boolean;
+  showFiatValue?: boolean | undefined;
   /** Locale passed to Intl.NumberFormat */
-  locale?: string;
+  locale?: string | undefined;
   /** Maximum fraction digits for the token amount. Default: 4 */
-  maximumFractionDigits?: number;
+  maximumFractionDigits?: number | undefined;
   /** Minimum fraction digits for the token amount */
-  minimumFractionDigits?: number;
+  minimumFractionDigits?: number | undefined;
   /** Value shown when amount is null, undefined, empty, or invalid. Default: -- */
-  fallback?: ReactNode;
+  fallback?: ReactNode | undefined;
   /** Props passed to TokenLogo */
-  logoProps?: Partial<TokenLogoProps>;
+  logoProps?: Partial<TokenLogoProps> | undefined;
   /** Props passed to TokenPrice */
-  priceProps?: Partial<TokenPriceProps>;
+  priceProps?: Partial<TokenPriceProps> | undefined;
   /** Applied to the root wrapper */
-  className?: string;
+  className?: string | undefined;
   /** Applied to the amount line */
-  amountClassName?: string;
+  amountClassName?: string | undefined;
   /** Applied to the fiat value line */
-  fiatClassName?: string;
+  fiatClassName?: string | undefined;
 }
 
 function formatAmount({
@@ -58,9 +58,9 @@ function formatAmount({
   minimumFractionDigits,
   value,
 }: {
-  locale?: string;
+  locale?: string | undefined;
   maximumFractionDigits: number;
-  minimumFractionDigits?: number;
+  minimumFractionDigits?: number | undefined;
   value: number;
 }) {
   return new Intl.NumberFormat(locale, {

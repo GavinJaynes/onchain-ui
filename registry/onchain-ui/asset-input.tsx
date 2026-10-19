@@ -9,17 +9,17 @@ export interface AssetInputProps extends Omit<AmountInputProps, "className"> {
   /** Visible label connected to the amount input. */
   label: ReactNode;
   /** Token identity or your app's picker trigger. */
-  asset?: ReactNode;
+  asset?: ReactNode | undefined;
   /** Supporting text, such as a fiat estimate. Connected via aria-describedby. */
-  description?: ReactNode;
+  description?: ReactNode | undefined;
   /** Validation message. Marks the input invalid and connects the message. */
-  error?: ReactNode;
+  error?: ReactNode | undefined;
   /** Balance, Max actions, or other app-owned supporting content. */
-  footer?: ReactNode;
+  footer?: ReactNode | undefined;
   /** Applied to the field container. */
-  className?: string;
+  className?: string | undefined;
   /** Applied to the amount input. */
-  inputClassName?: string;
+  inputClassName?: string | undefined;
 }
 
 export function AssetInput({
