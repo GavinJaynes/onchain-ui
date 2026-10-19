@@ -20,21 +20,21 @@ export interface AddressIdentityProps
   /** EVM wallet address */
   address: Address;
   /** Resolved name override, e.g. vitalik.eth or alice.base.eth */
-  name?: string | null;
+  name?: string | null | undefined;
   /** Avatar URL override */
-  avatarUrl?: string | null;
+  avatarUrl?: string | null | undefined;
   /** Resolve ENS/Base name and avatar. Default: true */
-  resolveIdentity?: boolean;
+  resolveIdentity?: boolean | undefined;
   /** Resolver client and lookup overrides */
-  resolverOptions?: OnchainResolverOptions;
+  resolverOptions?: OnchainResolverOptions | undefined;
   /** Show avatar when available. Default: true */
-  showAvatar?: boolean;
+  showAvatar?: boolean | undefined;
   /** Applied to the root wrapper */
-  className?: string;
+  className?: string | undefined;
   /** Applied to the avatar */
-  avatarClassName?: string;
+  avatarClassName?: string | undefined;
   /** Applied to the identity text group */
-  contentClassName?: string;
+  contentClassName?: string | undefined;
 }
 
 export function AddressIdentity({

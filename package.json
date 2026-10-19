@@ -9,7 +9,7 @@
     "build": "next build",
     "pretest": "npm run registry:build",
     "test": "node --test tests/*.test.mjs",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.registry.json",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "fumadocs-mdx"

@@ -23,33 +23,33 @@ export interface TokenPriceProps {
   /** Token price value */
   value: PriceValue;
   /** ISO 4217 currency code. Default: USD */
-  currency?: string;
+  currency?: string | undefined;
   /** Locale passed to Intl.NumberFormat */
-  locale?: string;
+  locale?: string | undefined;
   /** Use compact notation, e.g. $3.2K */
-  compact?: boolean;
+  compact?: boolean | undefined;
   /** Value shown when price is null, undefined, empty, or invalid. Default: -- */
-  fallback?: ReactNode;
+  fallback?: ReactNode | undefined;
   /** Minimum fraction digits for the price */
-  minimumFractionDigits?: number;
+  minimumFractionDigits?: number | undefined;
   /** Maximum fraction digits for the price */
-  maximumFractionDigits?: number;
+  maximumFractionDigits?: number | undefined;
   /** 24h-style percentage change, e.g. -2.34 means -2.34% */
-  change?: number | null;
+  change?: number | null | undefined;
   /** Override the derived change direction */
-  trend?: Trend;
+  trend?: Trend | undefined;
   /** Show trend icon before the change. Default: true */
-  showChangeIcon?: boolean;
+  showChangeIcon?: boolean | undefined;
   /** Fraction digits for the change value. Default: 2 */
-  changeFractionDigits?: number;
+  changeFractionDigits?: number | undefined;
   /** Hide the plus sign for positive changes. Default: false */
-  hidePositiveSign?: boolean;
+  hidePositiveSign?: boolean | undefined;
   /** Applied to the root wrapper */
-  className?: string;
+  className?: string | undefined;
   /** Applied to the formatted price */
-  priceClassName?: string;
+  priceClassName?: string | undefined;
   /** Applied to the change badge */
-  changeClassName?: string;
+  changeClassName?: string | undefined;
 }
 
 function getMaximumFractionDigits(value: number) {
@@ -69,9 +69,9 @@ function formatPrice({
 }: {
   compact: boolean;
   currency: string;
-  locale?: string;
-  maximumFractionDigits?: number;
-  minimumFractionDigits?: number;
+  locale?: string | undefined;
+  maximumFractionDigits?: number | undefined;
+  minimumFractionDigits?: number | undefined;
   value: number;
 }) {
   const abs = Math.abs(value);

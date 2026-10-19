@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sonner",
+  "type": "registry:ui",
+  "title": "Sonner",
+  "description": "Toast notifications themed by your app's CSS tokens. A framework-agnostic Toaster with no next-themes dependency.",
+  "docs": "```tsx\nimport { Toaster } from \"@/components/ui/sonner\"\n\n// Render once near the root of your app\n<Toaster />\n```",
+  "dependencies": [
+    "sonner",
+    "lucide-react"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/onchain-ui/sonner.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/sonner.tsx",
+      "content": "\"use client\";\n\nimport { Toaster as Sonner, type ToasterProps } from \"sonner\";\nimport {\n  CircleCheckIcon,\n  InfoIcon,\n  TriangleAlertIcon,\n  OctagonXIcon,\n  Loader2Icon,\n} from \"lucide-react\";\nimport type { CSSProperties } from \"react\";\n\n/**\n * Toast surface colors come from your app's CSS tokens (`--popover`,\n * `--border`, …), so this Toaster follows class-based and attribute-based\n * dark modes with no theme library involved — unlike the stock shadcn item,\n * there is no next-themes dependency here.\n *\n * The `theme` prop only drives sonner's built-in palette, which the token\n * variables above already override; pass your app's resolved theme if you\n * ever remove those overrides.\n */\nconst Toaster = ({ theme = \"system\", ...props }: ToasterProps) => {\n  return (\n    <Sonner\n      theme={theme}\n      className=\"toaster group\"\n      icons={{\n        success: <CircleCheckIcon className=\"size-4\" />,\n        info: <InfoIcon className=\"size-4\" />,\n        warning: <TriangleAlertIcon className=\"size-4\" />,\n        error: <OctagonXIcon className=\"size-4\" />,\n        loading: <Loader2Icon className=\"size-4 animate-spin\" />,\n      }}\n      style={\n        {\n          \"--normal-bg\": \"var(--popover)\",\n          \"--normal-text\": \"var(--popover-foreground)\",\n          \"--normal-border\": \"var(--border)\",\n          \"--border-radius\": \"var(--radius)\",\n        } as CSSProperties\n      }\n      {...props}\n    />\n  );\n};\n\nexport { Toaster };\n"
+    }
+  ]
+}

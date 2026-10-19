@@ -136,3 +136,23 @@ test("a token precision change does not silently round an existing value", async
   await user.type(input, "1.1234567");
   assert.equal(input.value, "1.123456");
 });
+
+test("a suffix sits inside the field, stays out of the accessible name, and pads the text clear of it", async () => {
+  const user = userEvent.setup();
+  const view = render(h(EditableAmount, { decimals: 6, suffix: "USDC" }));
+  const input = view.getByRole("textbox", { name: "Amount" });
+  const group = input.closest('[data-slot="amount-input-group"]');
+  assert.ok(group, "the input is wrapped in a group");
+  const suffix = view.getByText("USDC");
+  assert.equal(suffix.getAttribute("aria-hidden"), "true");
+  assert.ok(input.style.getPropertyValue("--amount-input-suffix"), "end padding is set");
+  await user.type(input, "1.25");
+  assert.equal(input.value, "1.25");
+});
+
+test("without a suffix the field renders bare, as before", () => {
+  const view = render(h(EditableAmount, {}));
+  const input = view.getByRole("textbox", { name: "Amount" });
+  assert.equal(input.closest('[data-slot="amount-input-group"]'), null);
+  assert.equal(input.style.getPropertyValue("--amount-input-suffix"), "");
+});

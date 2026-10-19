@@ -21,13 +21,13 @@ export type CryptoIcon = string | ReactNode | null;
 
 export interface TokenIconQuery {
   /** EVM chain id the token lives on */
-  chainId?: number | null;
+  chainId?: number | null | undefined;
   /** Token contract address */
-  address?: string | null;
+  address?: string | null | undefined;
   /** Token symbol. Unused by the default adapter: symbols are not canonical */
-  symbol?: string | null;
+  symbol?: string | null | undefined;
   /** Whether this is the chain's native currency rather than an ERC-20 */
-  isNative?: boolean;
+  isNative?: boolean | undefined;
 }
 
 // Chain folder names in the Trust Wallet assets repo.

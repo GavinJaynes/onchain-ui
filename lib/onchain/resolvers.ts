@@ -51,11 +51,11 @@ const baseNamesAbi = [
 ] as const;
 
 export interface OnchainResolverOptions {
-  mainnetClient?: OnchainReadClient;
-  baseClient?: OnchainReadClient;
-  basenameResolverAddress?: Address;
-  avatarGatewayUrls?: AssetGatewayUrls;
-  reverseLookupOrder?: Array<"ens" | "basename">;
+  mainnetClient?: OnchainReadClient | undefined;
+  baseClient?: OnchainReadClient | undefined;
+  basenameResolverAddress?: Address | undefined;
+  avatarGatewayUrls?: AssetGatewayUrls | undefined;
+  reverseLookupOrder?: Array<"ens" | "basename"> | undefined;
 }
 
 export interface OnchainIdentity {

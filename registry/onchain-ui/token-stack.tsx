@@ -20,44 +20,49 @@ export interface TokenStackItem
     | "src"
     | "symbol"
   > {
-  id?: string;
+  id?: string | undefined;
 }
 
 export interface TokenStackProps {
   /** Tokens to display in the stack */
   tokens: TokenStackItem[];
   /** Maximum visible tokens before overflow. Default: 5 */
-  limit?: number;
+  limit?: number | undefined;
   /** Token logo size: a named size or pixels, e.g. 28. Default: md */
-  size?: TokenLogoProps["size"];
-  /** Overlap direction. Default: left */
-  direction?: "left" | "right";
+  size?: TokenLogoProps["size"] | undefined;
+  /** Which logo is drawn on top where two overlap. Default: left (the first) */
+  direction?: "left" | "right" | undefined;
+  /** Pixels each logo overlaps the one before it. Default: 8 */
+  overlap?: number | undefined;
+  /** Ring each logo in the background colour to separate the overlap. Default: true */
+  ring?: boolean | undefined;
+  /** Passed to each TokenLogo. Default: tile */
+  variant?: TokenLogoProps["variant"];
   /** Show overflow count when tokens exceed limit. Default: true */
-  showOverflow?: boolean;
+  showOverflow?: boolean | undefined;
   /** Custom overflow renderer */
-  renderOverflow?: (count: number) => ReactNode;
+  renderOverflow?: ((count: number) => ReactNode) | undefined;
   /** Custom token renderer for icon libraries or chain overlays */
-  renderToken?: (token: TokenStackItem, index: number) => ReactNode;
+  renderToken?: ((token: TokenStackItem, index: number) => ReactNode) | undefined;
   /** Show animated tooltips for tokens. Default: false */
-  showTooltip?: boolean;
+  showTooltip?: boolean | undefined;
   /** Token tooltip content. Defaults to name, symbol, then address. */
-  getTooltipContent?: (token: TokenStackItem, index: number) => ReactNode;
+  getTooltipContent?: ((token: TokenStackItem, index: number) => ReactNode) | undefined;
   /** Overflow tooltip content. Defaults to hidden token symbols/names. */
-  getOverflowTooltipContent?: (tokens: TokenStackItem[]) => ReactNode;
+  getOverflowTooltipContent?: ((tokens: TokenStackItem[]) => ReactNode) | undefined;
   /** Accessible label for the group */
-  "aria-label"?: string;
+  "aria-label"?: string | undefined;
   /** Applied to the root wrapper */
-  className?: string;
+  className?: string | undefined;
   /** Applied to each token wrapper */
-  itemClassName?: string;
+  itemClassName?: string | undefined;
   /** Applied to the overflow item */
-  overflowClassName?: string;
+  overflowClassName?: string | undefined;
 }
 
-const overlapClasses = {
-  left: "-space-x-2",
-  right: "space-x-reverse -space-x-2",
-} as const;
+// A pixel margin rather than -space-x-2: a fixed 8px swallowed most of a
+// 12px logo and barely touched a 40px one.
+const DEFAULT_OVERLAP = 8;
 
 const overflowSizeClasses = {
   xs: "size-5 text-[9px]",
@@ -68,8 +73,8 @@ const overflowSizeClasses = {
 } as const;
 
 // Mirrors TokenLogo so a pixel-sized overflow badge matches the logos.
-function getPixelSizeStyle(size: number) {
-  return { width: size, height: size, fontSize: Math.max(8, Math.round(size * 0.375)) };
+function getPixelFontSize(size: number) {
+  return Math.max(8, Math.round(size * 0.375));
 }
 
 function getTokenKey(token: TokenStackItem, index: number) {
@@ -83,6 +88,9 @@ export function TokenStack({
   limit = 5,
   size = "md",
   direction = "left",
+  overlap = DEFAULT_OVERLAP,
+  ring = true,
+  variant,
   showOverflow = true,
   renderOverflow,
   renderToken,
@@ -113,7 +121,7 @@ export function TokenStack({
 
   return (
     <div
-      className={cn("flex items-center", overlapClasses[direction], className)}
+      className={cn("flex items-center", className)}
       aria-label={ariaLabel}
       role="list"
     >
@@ -122,13 +130,15 @@ export function TokenStack({
           <span
             key={getTokenKey(token, index)}
             className={cn(
-              "relative inline-flex rounded-full ring-2 ring-background/70",
+              "relative inline-flex rounded-full",
+              ring && "ring-2 ring-background/70",
               "hover:z-10",
               itemClassName
             )}
             title={!showTooltip ? token.name ?? token.symbol ?? undefined : undefined}
             role="listitem"
             style={{
+              marginLeft: index === 0 ? undefined : -overlap,
               zIndex:
                 direction === "left" ? visibleTokens.length - index : index + 1,
             }}
@@ -145,6 +155,7 @@ export function TokenStack({
                 size={size}
                 src={token.src}
                 symbol={token.symbol}
+                variant={variant}
               />
             )}
           </span>
@@ -168,11 +179,17 @@ export function TokenStack({
         const overflowItem = (
           <span
             className={cn(
-              "relative inline-flex shrink-0 items-center justify-center rounded-full border bg-muted font-medium text-muted-foreground ring-2 ring-background/70",
+              "relative inline-flex shrink-0 items-center justify-center rounded-full border bg-muted font-medium text-muted-foreground",
+              ring && "ring-2 ring-background/70",
               typeof size === "number" ? null : overflowSizeClasses[size],
               overflowClassName
             )}
-            style={typeof size === "number" ? getPixelSizeStyle(size) : undefined}
+            style={{
+              width: typeof size === "number" ? size : undefined,
+              height: typeof size === "number" ? size : undefined,
+              fontSize: typeof size === "number" ? getPixelFontSize(size) : undefined,
+              marginLeft: visibleTokens.length === 0 ? undefined : -overlap,
+            }}
             aria-label={`${overflowCount} more tokens`}
             role="listitem"
           >

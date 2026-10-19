@@ -1,0 +1,14 @@
+{
+  // Registry sources are copied into apps with stricter settings than this
+  // docs site uses. exactOptionalPropertyTypes caught every optional prop
+  // typed without `| undefined` when bskts installed them (2026-10-19).
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noEmit": true,
+    "incremental": false
+  },
+  "include": ["registry/onchain-ui/**/*.tsx", "lib/onchain/**/*", "hooks/**/*", "next-env.d.ts"]
+}

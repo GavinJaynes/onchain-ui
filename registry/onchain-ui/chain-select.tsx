@@ -23,52 +23,55 @@ export interface ChainSelectOption {
   /** EVM chain id */
   id: number;
   /** Display name. Falls back to the built-in network name, then the chain id */
-  name?: string | null;
+  name?: string | null | undefined;
   /** Network image URL override, forwarded to NetworkLogo */
-  logoSrc?: string | null;
+  logoSrc?: string | null | undefined;
   /** Short symbol, used for the logo fallback */
-  symbol?: string | null;
+  symbol?: string | null | undefined;
   /** Render but do not allow selection */
-  disabled?: boolean;
+  disabled?: boolean | undefined;
   /** Rendered after the name, e.g. a "Testnet" badge */
-  badge?: ReactNode;
+  badge?: ReactNode | undefined;
 }
 
 export interface ChainSelectProps {
   /** Selectable chains, usually the ones your app is configured for */
   chains: Array<ChainSelectOption>;
   /** Selected chain id. Null when disconnected or showing all networks */
-  value?: number | null;
+  value?: number | null | undefined;
   /** Called with the chain id the user picked */
   onSelect: (chainId: number) => void;
   /** Called when the optional all-networks item is picked */
-  onClear?: () => void;
+  onClear?: (() => void) | undefined;
   /** Renders an item that clears the selected chain, e.g. "All networks" */
-  allLabel?: string;
+  allLabel?: string | undefined;
   /** Chain id currently being switched to. Blocks further selection */
-  pendingChainId?: number | null;
+  pendingChainId?: number | null | undefined;
   /** Disable the whole control */
-  disabled?: boolean;
+  disabled?: boolean | undefined;
   /** Trigger label when `value` is null. Default: "Select network" */
-  placeholder?: string;
+  placeholder?: string | undefined;
   /**
    * Trigger label when `value` is set but missing from `chains` — a wallet on a
    * network the app does not support. Default: "Unsupported network"
    */
-  unsupportedLabel?: string;
+  unsupportedLabel?: string | undefined;
   /** Heading above the menu items. Default: "Switch network" */
-  menuLabel?: ReactNode;
+  menuLabel?: ReactNode | undefined;
   /** Show the network name in the trigger. Default: true */
-  showLabel?: boolean;
+  showLabel?: boolean | undefined;
   /** Visual size. Default: "default" */
-  size?: "sm" | "default";
+  size?: "sm" | "default" | undefined;
   /** Menu alignment against the trigger. Default: "start" */
-  align?: "start" | "center" | "end";
+  align?: "start" | "center" | "end" | undefined;
   /** Applied to the trigger */
-  className?: string;
+  className?: string | undefined;
   /** Applied to the menu */
-  contentClassName?: string;
+  contentClassName?: string | undefined;
 }
+
+// The "all networks" radio value. Not a chain id, so it can never collide.
+const ALL_VALUE = "all";
 
 const triggerSizes = {
   sm: "h-7 gap-1.5 px-2 text-xs",
@@ -189,14 +192,16 @@ export function ChainSelect({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align={align} className={cn("w-52", contentClassName)}>
+        {/* String values: Radix radio groups only carry strings, and Base UI
+            accepts them too, so one source works on either base. */}
         <DropdownMenuRadioGroup
-          value={value ?? null}
-          onValueChange={(next) => {
-            if (next == null) {
+          value={value == null ? ALL_VALUE : String(value)}
+          onValueChange={(next: unknown) => {
+            if (next == null || next === ALL_VALUE) {
               onClear?.();
               return;
             }
-            onSelect(next as number);
+            onSelect(Number(next));
           }}
         >
           {/* GroupLabel reads its group from context, so it has to live inside
@@ -205,7 +210,7 @@ export function ChainSelect({
 
           {allLabel && onClear && (
             <DropdownMenuRadioItem
-              value={null}
+              value={ALL_VALUE}
               disabled={isPending}
               closeOnClick
               className="gap-2 py-1.5"
@@ -218,7 +223,7 @@ export function ChainSelect({
           {chains.map((chain) => (
             <DropdownMenuRadioItem
               key={chain.id}
-              value={chain.id}
+              value={String(chain.id)}
               disabled={chain.disabled || isPending}
               // Radio items keep the menu open by default, which suits a
               // settings menu. Picking a network is a one-shot action.

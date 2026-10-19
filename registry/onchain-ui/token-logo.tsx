@@ -19,37 +19,47 @@ const sizeClasses = {
 
 // Pixel sizes for layouts that size marks in px rather than steps. The font
 // tracks the named sizes (~3/8 of the diameter) with a floor for legibility.
-function getPixelSizeStyle(size: number) {
-  return { width: size, height: size, fontSize: Math.max(8, Math.round(size * 0.375)) };
+// Kept as numbers for a literal style object: shadcn/lint's no-inline-styles
+// cannot check a computed one.
+function getPixelFontSize(size: number) {
+  return Math.max(8, Math.round(size * 0.375));
 }
 
 export interface TokenLogoProps {
   /** Token image URL. Always wins over inferred icons */
-  src?: string | null;
+  src?: string | null | undefined;
   /** Token symbol, used for alt text and fallback initials */
-  symbol?: string | null;
+  symbol?: string | null | undefined;
   /** Token name, used for alt text */
-  name?: string | null;
+  name?: string | null | undefined;
   /** Token contract address, used for icon inference and as a fallback label */
-  address?: string | null;
+  address?: string | null | undefined;
   /** EVM chain id, used with address to infer an icon via the crypto-icons adapter */
-  chainId?: number | null;
+  chainId?: number | null | undefined;
   /** Use the native-currency icon rather than the wrapped token at `address` */
-  isNative?: boolean;
+  isNative?: boolean | undefined;
   /** Named size, or a diameter in pixels such as 28. Default: md */
-  size?: keyof typeof sizeClasses | number;
+  size?: keyof typeof sizeClasses | number | undefined;
   /** Custom fallback content when the image is missing or fails */
-  fallback?: ReactNode;
+  fallback?: ReactNode | undefined;
   /** Show an animated tooltip. Default: false */
-  showTooltip?: boolean;
+  showTooltip?: boolean | undefined;
   /** Tooltip content. Defaults to name, symbol, then address. */
-  tooltipContent?: ReactNode;
+  tooltipContent?: ReactNode | undefined;
+  /**
+   * `tile` draws the image on a bordered muted circle. `bare` draws it on
+   * nothing, for logos that bring their own padding on a transparent canvas,
+   * where a tile reads as a ring around every mark. Default: tile
+   */
+  variant?: "tile" | "bare" | undefined;
+  /** Load the image eagerly at high priority, for logos above the fold */
+  priority?: boolean | undefined;
   /** Applied to the root wrapper */
-  className?: string;
+  className?: string | undefined;
   /** Applied to the image */
-  imageClassName?: string;
+  imageClassName?: string | undefined;
   /** Applied to the fallback */
-  fallbackClassName?: string;
+  fallbackClassName?: string | undefined;
 }
 
 function getFallbackText({
@@ -74,6 +84,8 @@ export function TokenLogo({
   fallback,
   showTooltip = false,
   tooltipContent,
+  variant = "tile",
+  priority = false,
   className,
   imageClassName,
   fallbackClassName,
@@ -101,21 +113,36 @@ export function TokenLogo({
 
   const tooltip = tooltipContent ?? name ?? symbol ?? address;
 
+  // The fallback keeps its tile in every variant, so a missing logo is still
+  // a visible shape.
+  const bare = variant === "bare" && (shouldShowImage || inferredNode != null);
+  const px = typeof size === "number" ? size : undefined;
+
   const logo = (
     <span
       className={cn(
-        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border bg-muted font-medium text-muted-foreground",
-        typeof size === "number" ? null : sizeClasses[size],
+        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full font-medium text-muted-foreground",
+        bare ? null : "border bg-muted",
+        px === undefined ? sizeClasses[size as keyof typeof sizeClasses] : null,
         className
       )}
-      style={typeof size === "number" ? getPixelSizeStyle(size) : undefined}
+      style={{
+        width: px,
+        height: px,
+        fontSize: px === undefined ? undefined : getPixelFontSize(px),
+      }}
     >
       {shouldShowImage ? (
         <img
           src={resolvedSrc ?? undefined}
           alt={alt}
-          className={cn("size-full object-cover", imageClassName)}
-          loading="lazy"
+          className={cn(
+            "size-full",
+            variant === "bare" ? "object-contain" : "object-cover",
+            imageClassName
+          )}
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : undefined}
           decoding="async"
           referrerPolicy="no-referrer"
           onError={() => setFailedSrc(resolvedSrc)}
