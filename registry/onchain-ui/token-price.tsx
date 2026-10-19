@@ -44,6 +44,17 @@ export interface TokenPriceProps {
   changeFractionDigits?: number | undefined;
   /** Hide the plus sign for positive changes. Default: false */
   hidePositiveSign?: boolean | undefined;
+  /**
+   * Formats the price instead of Intl.NumberFormat, for apps with a house
+   * number style. Receives the parsed number; currency, locale, compact and
+   * the fraction digit props are then unused.
+   */
+  format?: ((value: number) => ReactNode) | undefined;
+  /**
+   * Formats the change instead of the default "+2.34%". Receives `change` as
+   * passed, so an app that stores fractions (0.0234) can format them itself.
+   */
+  formatChange?: ((change: number) => ReactNode) | undefined;
   /** Applied to the root wrapper */
   className?: string | undefined;
   /** Applied to the formatted price */
@@ -112,7 +123,7 @@ function getTrend(change?: number | null): Trend {
   return change > 0 ? "up" : "down";
 }
 
-function formatChange(
+function formatPercent(
   change: number,
   fractionDigits: number,
   hidePositiveSign: boolean
@@ -140,6 +151,8 @@ export function TokenPrice({
   showChangeIcon = true,
   changeFractionDigits = 2,
   hidePositiveSign = false,
+  format,
+  formatChange,
   className,
   priceClassName,
   changeClassName,
@@ -153,7 +166,9 @@ export function TokenPrice({
       <span className={cn("font-mono tabular-nums", priceClassName)}>
         {parsedValue === null
           ? fallback
-          : formatPrice({
+          : format
+            ? format(parsedValue)
+            : formatPrice({
               compact,
               currency,
               locale,
@@ -172,7 +187,9 @@ export function TokenPrice({
           )}
         >
           {showChangeIcon && <TrendIcon trend={derivedTrend} />}
-          {formatChange(change, changeFractionDigits, hidePositiveSign)}
+          {formatChange
+            ? formatChange(change)
+            : formatPercent(change, changeFractionDigits, hidePositiveSign)}
         </span>
       )}
     </span>
